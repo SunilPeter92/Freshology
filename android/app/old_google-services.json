@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "77361112986",
+    "firebase_url": "https://freshology-77c5b.firebaseio.com",
+    "project_id": "freshology-77c5b",
+    "storage_bucket": "freshology-77c5b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:77361112986:android:3999605f107860d9453c23",
+        "android_client_info": {
+          "package_name": "com.flutterapp.freshology"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "77361112986-d4k9adbqach11mjah5er8v30q767movv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.flutterapp.freshology",
+            "certificate_hash": "d5ccee19f128b09dea28c621b2237792fe2e13c9"
+          }
+        },
+        {
+          "client_id": "77361112986-m21c9sucdonfer7qlouttcreiarehead.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDzvtYH0tzb0yYDg1FkowTO06mvyAU9L6k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "77361112986-m21c9sucdonfer7qlouttcreiarehead.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "77361112986-6po4l67vp2fahjoftss975kte9h64rtv.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.flutterapp.freshology"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

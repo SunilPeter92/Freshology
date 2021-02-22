@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>77361112986-ubiqhep2ebhqojfhfnnq0fint80avfqj.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.77361112986-ubiqhep2ebhqojfhfnnq0fint80avfqj</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>77361112986-aqjjj87rthsbspma9a15mide207k80io.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyB4x86-4xVpy6gZHW588L0nN-ckxjm94mg</string>
+	<key>GCM_SENDER_ID</key>
+	<string>77361112986</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>in.freshology.app</string>
+	<key>PROJECT_ID</key>
+	<string>freshology-77c5b</string>
+	<key>STORAGE_BUCKET</key>
+	<string>freshology-77c5b.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:77361112986:ios:7c0ff821485f0b66453c23</string>
+	<key>DATABASE_URL</key>
+	<string>https://freshology-77c5b.firebaseio.com</string>
+</dict>
+</plist>
