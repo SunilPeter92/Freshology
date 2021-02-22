@@ -27,6 +27,7 @@ import 'package:freshology/screens/orders.dart';
 import 'package:freshology/screens/productDetails.dart';
 import 'package:freshology/screens/wallet.dart';
 import 'package:freshology/widget/CategoryWidget.dart';
+import 'package:freshology/widget/HorizontalBannerWidget.dart';
 import 'package:freshology/widget/VipUserDialog.dart';
 import 'package:freshology/widget/announcement.dart';
 import 'package:freshology/widget/bannerWidget.dart';
@@ -228,6 +229,7 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
       _con.fetchSingleProduct("1");
       _con.fetchMainCategories();
       _con.fetchAnnouncement();
+      _con.fetchBanners();
       getGeneralData();
       Provider.of<ProductProvider>(context, listen: false).getFruitsAndVeg();
 
@@ -1152,6 +1154,10 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                                   ),
                                 )
                               : Container(),
+
+                          HorizontalBannerWidget(
+                            bannerList: _con.adBanners,
+                          ),
                           SizedBox(height: 20),
                         ],
                       ),

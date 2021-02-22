@@ -1,4 +1,5 @@
 // import 'package:freshology/functions/invoice.dart';
+import 'package:freshology/models/AdBanner.dart';
 import 'package:freshology/models/Announcement.dart';
 import 'package:freshology/models/category.dart';
 import 'package:freshology/models/mainCategory.dart';
@@ -14,6 +15,8 @@ class HomeController extends ControllerMVC {
   List<Category> categories = [];
   Announcement announcement = Announcement();
   bool showAnnouncement = false;
+  List<AdBanner> adBanners = [];
+
   void fetchSingleProduct(String idRestaurant) async {
     final prod = await getSingleProductId("1");
     if (prod != null) {
@@ -67,6 +70,13 @@ class HomeController extends ControllerMVC {
 
       setState(() {});
     } else {}
+  }
+
+  void fetchBanners() async {
+    List<AdBanner> res = await getAdBanners();
+    adBanners = res;
+    print("BANNER: ${adBanners[0].bData}");
+    setState(() {});
   }
 
   void fetchAnnouncement() async {
