@@ -348,7 +348,7 @@ class _AccountState extends State<Account> {
                       SizedBox(height: 10),
                       Container(
                         child: Text(
-                          user.userName,
+                          user.name,
                           style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,

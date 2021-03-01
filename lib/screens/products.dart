@@ -96,7 +96,7 @@ class _ProductsState extends StateMVC<Products>
               child: Row(
                 children: [
                   Text(
-                    _con.subCategory.name.toUpperCase(),
+                    _con.subCategory.data.name.toUpperCase(),
                     style: TextStyle(
                       fontSize: 18,
                       color: kDarkGreen,
@@ -151,7 +151,7 @@ class _ProductsState extends StateMVC<Products>
                                     childAspectRatio: 2 / 3.3),
                             itemBuilder: (BuildContext context, int index) {
                               print(
-                                  "CON PRODUCTS : ${_con.products[index].pName}");
+                                  "CON PRODUCTS : ${_con.products[index].name}");
                               return ProductWidget(
                                 product: _con.products[index],
                               );

@@ -23,7 +23,10 @@ class _ItemState extends State<Item> {
     final productProvider = Provider.of<ProductProvider>(context);
     final item = productProvider.selectedProduct;
     final user = Provider.of<UserProvider>(context).userDetail;
-    List<ProductModel> products = productProvider.selectedCategoryName == 'fruits' ? productProvider.fruitsProductList : productProvider.vegetablesProductList;
+    List<ProductModel> products =
+        productProvider.selectedCategoryName == 'fruits'
+            ? productProvider.fruitsProductList
+            : productProvider.vegetablesProductList;
     //products = products.shuffle();
     products.shuffle();
     return Scaffold(
@@ -255,38 +258,49 @@ class _ItemState extends State<Item> {
                               height: 180,
                               child: ListView.builder(
                                   scrollDirection: Axis.horizontal,
-                                  itemCount: products.length > 5 ? 5 : products.length,
+                                  itemCount:
+                                      products.length > 5 ? 5 : products.length,
                                   itemBuilder: (context, index) {
                                     var product = products[index];
                                     return product.name != item.name
                                         ? GestureDetector(
                                             onTap: () {
-                                              productProvider.selectedProduct = product;
-                                              Navigator.pushNamed(context, 'item');
+                                              productProvider.selectedProduct =
+                                                  product;
+                                              Navigator.pushNamed(
+                                                  context, 'item');
                                             },
                                             child: Container(
                                               width: 125,
-                                              margin: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-                                              padding: EdgeInsets.symmetric(vertical: 2, horizontal: 10),
+                                              margin: EdgeInsets.symmetric(
+                                                  vertical: 10, horizontal: 5),
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 2, horizontal: 10),
                                               decoration: BoxDecoration(
                                                 border: Border.all(
                                                   width: 2,
                                                   color: Colors.black38,
                                                 ),
-                                                borderRadius: BorderRadius.circular(5),
+                                                borderRadius:
+                                                    BorderRadius.circular(5),
                                               ),
                                               child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceEvenly,
                                                 children: [
                                                   Image(
-                                                    image: NetworkImage(product.imageUrl),
+                                                    image: NetworkImage(
+                                                        product.imageUrl),
                                                     height: 100,
                                                     width: 150,
                                                   ),
                                                   Text(
                                                     product.name,
-                                                    style: kProductNameTextStyle,
+                                                    style:
+                                                        kProductNameTextStyle,
                                                     overflow: TextOverflow.fade,
                                                     maxLines: 1,
                                                     softWrap: false,
@@ -294,7 +308,8 @@ class _ItemState extends State<Item> {
                                                   SizedBox(height: 5),
                                                   Text(
                                                     "₹ " + product.price,
-                                                    style: kProductPriceTextStyle,
+                                                    style:
+                                                        kProductPriceTextStyle,
                                                   ),
                                                 ],
                                               ),
@@ -322,7 +337,7 @@ class _ItemState extends State<Item> {
                   ),
                   onPressed: quantity > 0
                       ? () {
-                          if (user.userId != null) {
+                          if (user.id != null) {
                             CartModel cartItem = CartModel(
                               productName: item.name,
                               productImageUrl: item.imageUrl,
@@ -336,7 +351,8 @@ class _ItemState extends State<Item> {
                               sKU: item.sKU,
                               hSN: item.hSN,
                             );
-                            Provider.of<CartProvider>(context, listen: false).addToCart(cartItem);
+                            Provider.of<CartProvider>(context, listen: false)
+                                .addToCart(cartItem);
                             Fluttertoast.showToast(msg: 'Added');
                           } else {
                             showModalBottomSheet(
@@ -347,13 +363,17 @@ class _ItemState extends State<Item> {
                                     vertical: 20,
                                     horizontal: 40,
                                   ),
-                                  height: MediaQuery.of(context).size.height * 0.25,
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.25,
                                   child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: <Widget>[
                                       Container(
-                                        width: MediaQuery.of(context).size.width,
+                                        width:
+                                            MediaQuery.of(context).size.width,
                                         child: Text(
                                           'Hey Guest!',
                                           textAlign: TextAlign.start,
@@ -365,7 +385,8 @@ class _ItemState extends State<Item> {
                                         ),
                                       ),
                                       Container(
-                                        width: MediaQuery.of(context).size.width,
+                                        width:
+                                            MediaQuery.of(context).size.width,
                                         child: Text(
                                           'Please sign up before adding items in '
                                           'the cart.',

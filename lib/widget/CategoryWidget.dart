@@ -188,9 +188,10 @@ class _CategoryWidgetState extends State<CategoryWidget> {
                             // Navigator.pushNamed(context, 'products');
                           },
                           child: ProductBox(
-                            imagePath: widget.category.subCategory[index].image,
+                            imagePath:
+                                widget.category.subCategory[index].smedia,
                             name: capitalize(
-                                widget.category.subCategory[index].name),
+                                widget.category.subCategory[index].data.name),
                           ),
                         ),
                       );

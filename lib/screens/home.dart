@@ -417,7 +417,6 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
 
     List<Widget> _buildCategoryWidgetList() {
       List<Widget> _widgetList = [];
-
       _con.categories.forEach((category) {
         _widgetList.add(CategoryWidget(
           category: category,
@@ -506,7 +505,7 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                         ),
                       ),
                     ),
-                    user.userId != null
+                    user.id != null
                         ? ListTile(
                             leading: Icon(
                               FontAwesomeIcons.userCircle,
@@ -520,7 +519,7 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                             },
                           )
                         : Container(),
-                    user.userId != null
+                    user.id != null
                         ? ListTile(
                             leading: Icon(
                               FontAwesomeIcons.addressBook,
@@ -534,21 +533,20 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                             },
                           )
                         : Container(),
-                    user.userId != null
+                    user.id != null
                         ? ListTile(
                             leading: Icon(
                               FontAwesomeIcons.wallet,
                               color: Colors.black,
                             ),
                             title: Text('Freshology Cash'),
-                            trailing:
-                                Text("₹ " + user.userBalance.toString() ?? ""),
+                            trailing: Text("₹ "),
                             onTap: () {
                               Navigator.pushNamed(context, 'wallet');
                             },
                           )
                         : Container(),
-                    user.userId != null
+                    user.id != null
                         ? ListTile(
                             leading: Icon(
                               FontAwesomeIcons.shoppingBasket,
@@ -560,7 +558,7 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                             },
                           )
                         : Container(),
-                    user.userId != null
+                    user.id != null
                         ? ListTile(
                             leading: Icon(
                               FontAwesomeIcons.moneyBillAlt,
@@ -572,7 +570,7 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                             },
                           )
                         : Container(),
-                    user.userId != null
+                    user.id != null
                         ? ListTile(
                             leading: Icon(
                               FontAwesomeIcons.addressCard,
@@ -607,7 +605,7 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                         Navigator.pushNamed(context, 'contact');
                       },
                     ),
-                    user.userId != null
+                    user.id != null
                         ? ListTile(
                             leading: Icon(
                               FontAwesomeIcons.shareSquare,
@@ -665,7 +663,7 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                     Divider(
                       color: Colors.black,
                     ),
-                    user.userId != null
+                    user.id != null
                         ? ListTile(
                             leading: Icon(
                               FontAwesomeIcons.signOutAlt,
@@ -1155,9 +1153,9 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                                 )
                               : Container(),
 
-                          HorizontalBannerWidget(
-                            bannerList: _con.adBanners,
-                          ),
+                          // HorizontalBannerWidget(
+                          //   bannerList: _con.adBanners,
+                          // ),
                           SizedBox(height: 20),
                         ],
                       ),

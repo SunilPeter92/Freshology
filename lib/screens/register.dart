@@ -352,20 +352,33 @@ class _RegisterState extends StateMVC<Register> {
                           name: 'PROCEED',
                           onPressFunc: () async {
                             if (_formKey.currentState.validate()) {
-                              print("PHONE NO ON SUBMIT $phone");
-
-                              _con.user = UserModel(
-                                userCountry: _con.selectedCountry['name'],
-                                userName: _nameController.value.text,
-                                userPhoneNumber: phone,
-                                userCity: _con.selectedCity['name'],
-                                userHouseNo: _houseNoController.value.text,
-                                userArea: _con.selectedArea['name'],
-                                userPinCode: _pinCodeController.value.text,
-                                userState: _con.selectedState['name'],
-                                userEmail: _emailController.value.text,
-                              );
-                              _con.user.userPhoneNumber = phone;
+                              print("PHONE NO ON  SUBMIT $phone");
+                              _con.user = User(
+                                  name: _nameController.text,
+                                  email: _emailController.text,
+                                  countryName: _con.selectedCountry['name'],
+                                  countryId:
+                                      _con.selectedCountry['id'].toString(),
+                                  stateName:
+                                      _con.selectedState['name'].toString(),
+                                  stateId: _con.selectedState['id'].toString(),
+                                  cityName: _con.selectedCity['name'],
+                                  cityId: _con.selectedCity['id'].toString(),
+                                  areaName: _con.selectedArea['name'],
+                                  areaId: _con.selectedArea['id'].toString(),
+                                  pinCode: _pinCodeController.text);
+                              // _con.user = UserModel(
+                              //   userCountry: _con.selectedCountry['name'],
+                              //   userName: _nameController.value.text,
+                              //   userPhoneNumber: phone,
+                              //   userCity: _con.selectedCity['name'],
+                              //   userHouseNo: _houseNoController.value.text,
+                              //   userArea: _con.selectedArea['name'],
+                              //   userPinCode: _pinCodeController.value.text,
+                              //   userState: _con.selectedState['name'],
+                              //   userEmail: _emailController.value.text,
+                              // );
+                              _con.user.phone = phone;
                               // Navigator.pushNamed(context, 'otp');
                               // _con.registerUser(context);
                               Navigator.push(

@@ -197,21 +197,20 @@ class _PaymentState extends State<Payment> {
     final user = Provider.of<UserProvider>(context, listen: false).userDetail;
     final userDocID =
         Provider.of<UserProvider>(context, listen: false).userDocID;
-    orderID =
-        user.userId.toString() + '-' + (1000 + user.userOrderNumber).toString();
+    orderID = "4534";
     // save user data in orders db
     final userProvider =
         Provider.of<UserProvider>(context, listen: false).userDetail;
     final promoProvider = Provider.of<PromoProvider>(context, listen: false);
     var _res = await _fireStore.collection('orders').add({
       'amount': cartProvider.grandTotal.toString(),
-      'c_name': userProvider.userName,
-      'c_house': userProvider.userHouseNo,
-      'c_state': userProvider.userState,
-      'c_phone': userProvider.userPhoneNumber,
-      'c_city': userProvider.userCity,
-      'c_area': userProvider.userArea,
-      'c_pincode': userProvider.userPinCode,
+      'c_name': userProvider.name,
+      'c_house': userProvider.houseNo,
+      'c_state': userProvider.stateName,
+      'c_phone': userProvider.phone,
+      'c_city': userProvider.cityName,
+      'c_area': userProvider.areaName,
+      'c_pincode': userProvider.pinCode,
       'order_id': orderID,
       'time': DateTime.now(),
       'is_completed': false,
@@ -268,7 +267,7 @@ class _PaymentState extends State<Payment> {
     await _fireStore
         .collection('user')
         .document(userDocId)
-        .updateData({'total_orders': userProvider.userOrderNumber + 1});
+        .updateData({'total_orders': FieldValue.increment(1)});
     await _fireStore
         .collection('general')
         .document('invoice_number')
@@ -372,8 +371,8 @@ class _PaymentState extends State<Payment> {
                               ),
                               Flexible(
                                 child: Text(
-                                  '${user.userHouseNo}, ${user.userArea}, '
-                                  '${user.userCity}',
+                                  '${user.houseNo}, ${user.areaName}, '
+                                  '${user.cityName}',
                                   style: kCartPaymentTextStyle,
                                   textAlign: TextAlign.right,
                                 ),
@@ -560,7 +559,7 @@ class _PaymentState extends State<Payment> {
                                     color: Colors.white, fontSize: 14),
                               ),
                               trailing: Text(
-                                '₹ ' + user.userBalance.toString(),
+                                '₹ user balance',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w700,
@@ -568,19 +567,19 @@ class _PaymentState extends State<Payment> {
                                 ),
                               ),
                               onTap: () {
-                                if (deliveryTime == null) {
-                                  _onTimePressed();
-                                } else {
-                                  if (cartProvider.grandTotal <
-                                      user.userBalance) {
-                                    int remBal = user.userBalance -
-                                        cartProvider.grandTotal;
-                                    _handleInternalWallet(remBal);
-                                  } else {
-                                    Fluttertoast.showToast(
-                                        msg: 'Not enough balance!');
-                                  }
-                                }
+                                // if (deliveryTime == null) {
+                                //   _onTimePressed();
+                                // } else {
+                                //   if (cartProvider.grandTotal <
+                                //       user.userBalance) {
+                                //     int remBal = user.userBalance -
+                                //         cartProvider.grandTotal;
+                                //     _handleInternalWallet(remBal);
+                                //   } else {
+                                //     Fluttertoast.showToast(
+                                //         msg: 'Not enough balance!');
+                                //   }
+                                // }
                               },
                             ),
                           ),

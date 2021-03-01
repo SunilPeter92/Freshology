@@ -51,7 +51,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => Login());
 
       case 'otp':
-        return MaterialPageRoute(builder: (_) => OtpVerify());
+        return MaterialPageRoute(
+            builder: (_) => OtpVerify(routeArgument: args as RouteArgument));
 
       case 'register':
         return MaterialPageRoute(builder: (_) => Register());

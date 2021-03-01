@@ -5,6 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:freshology/constants/styles.dart';
 import 'package:freshology/controllers/userController.dart';
+import 'package:freshology/models/route.dart';
+import 'package:freshology/repositories/user_repository.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:provider/provider.dart';
 import 'package:freshology/provider/userProvider.dart';
@@ -14,9 +16,8 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:http/http.dart' as http;
 
 class OtpVerify extends StatefulWidget {
-  String phoneNo;
-  bool isLogin;
-  OtpVerify({this.phoneNo, this.isLogin});
+  RouteArgument routeArgument;
+  OtpVerify({Key key, this.routeArgument}) : super(key: key);
   @override
   _OtpVerifyState createState() => _OtpVerifyState();
 }
@@ -125,7 +126,7 @@ class _OtpVerifyState extends StateMVC<OtpVerify> {
 
   @override
   void initState() {
-    _con.user.userPhoneNumber = widget.phoneNo;
+    _con.user = currentUser.value;
     _con.scaffoldKey = scaffoldKey;
     Future.delayed(Duration.zero, () {
       // loginUser(
@@ -180,12 +181,13 @@ class _OtpVerifyState extends StateMVC<OtpVerify> {
                 ),
                 SizedBox(height: 30),
                 PinCodeTextField(
-                  length: 6,
+                  length: 4,
                   obsecureText: false,
                   animationType: AnimationType.fade,
                   shape: PinCodeFieldShape.box,
                   animationDuration: Duration(milliseconds: 300),
                   inactiveColor: kDarkGreen,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   fieldHeight: 50,
                   fieldWidth: 40,
                   autoDismissKeyboard: true,
@@ -208,7 +210,7 @@ class _OtpVerifyState extends StateMVC<OtpVerify> {
                       ),
                     ),
                     Text(
-                      widget.phoneNo,
+                      _con.user.phone,
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
@@ -222,7 +224,7 @@ class _OtpVerifyState extends StateMVC<OtpVerify> {
                   child: StartButton(
                     name: 'Verify',
                     onPressFunc: () {
-                      _con.verifyLogin(code: _pin.text);
+                      _con.verifyRegister(code: _pin.text);
                       // otpVerification(widget.phoneNo, _pin.text, context);
                     },
                   ),

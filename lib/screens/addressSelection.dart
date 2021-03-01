@@ -1,18 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:freshology/constants/styles.dart';
+import 'package:freshology/controllers/userController.dart';
 import 'package:freshology/models/userModel.dart';
 import 'package:freshology/provider/userProvider.dart';
 import 'package:freshology/widget/startButton.dart';
+import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:provider/provider.dart';
 
 class AddressSelection extends StatefulWidget {
-  UserModel user;
+  User user;
   AddressSelection({@required this.user});
   @override
   _AddressSelectionState createState() => _AddressSelectionState();
 }
 
-class _AddressSelectionState extends State<AddressSelection> {
+class _AddressSelectionState extends StateMVC<AddressSelection> {
+  UserController _con;
+  _AddressSelectionState() : super(UserController()) {
+    _con = controller;
+  }
   final _formKey = GlobalKey<FormState>();
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -114,20 +120,37 @@ class _AddressSelectionState extends State<AddressSelection> {
                       //       msg: 'Already Registered');
                       //   Navigator.pushNamed(context, 'login');
                       // } else {
-                      userProvider.newUser = UserModel(
-                        userCountry: widget.user.userCountry,
-                        userName: widget.user.userName,
-                        userPhoneNumber: widget.user.userPhoneNumber,
-                        userCity: widget.user.userCity,
-                        userHouseNo: "${_addLine1.text} ${_addLine2.text}",
-                        userArea: widget.user.userArea,
-                        userPinCode: widget.user.userPinCode,
-                        userState: widget.user.userState,
-                        userEmail: widget.user.userState,
+
+                      _con.user = User(
+                        name: widget.user.name,
+                        email: widget.user.email,
+                        phone: widget.user.phone,
+                        address:
+                            "${widget.user.houseNo}, ${widget.user.areaName}, ${widget.user.cityName}, ${widget.user.stateName}, ${widget.user.countryName}F",
+                        countryId: widget.user.countryId,
+                        countryName: widget.user.countryName,
+                        stateId: widget.user.stateId,
+                        stateName: widget.user.stateName,
+                        cityId: widget.user.cityId,
+                        cityName: widget.user.cityName,
+                        areaId: widget.user.areaId,
+                        areaName: widget.user.areaName,
+                        houseNo: "${_addLine1.text}, ${_addLine2.text}",
+                        pinCode: widget.user.pinCode,
                       );
-                      userProvider.userPhoneNumber =
-                          widget.user.userPhoneNumber;
-                      userProvider.registerUser(context);
+                      // userProvider.newUser = UserModel(
+                      //   userCountry: widget.user.countryId,
+                      //   userName: widget.user.userName,
+                      //   userPhoneNumber: widget.user.userPhoneNumber,
+                      //   userCity: widget.user.userCity,
+                      //   userHouseNo: "${_addLine1.text} ${_addLine2.text}",
+                      //   userArea: widget.user.userArea,
+                      //   userPinCode: widget.user.userPinCode,
+                      //   userState: widget.user.userState,
+                      //   userEmail: widget.user.userState,
+                      // );
+
+                      _con.registerUser();
                     }
                     // }
                   },

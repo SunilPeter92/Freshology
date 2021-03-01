@@ -74,7 +74,7 @@ class _CartState extends State<Cart> {
       Provider.of<PromoProvider>(context, listen: false).getDeliveryCharge(
           Provider.of<UserProvider>(context, listen: false)
               .userDetail
-              .userArea);
+              .areaName);
     });
     if (Platform.isIOS) {
       iosSubscription = _fcm.onIosSettingsRegistered.listen((data) {

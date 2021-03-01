@@ -33,24 +33,20 @@ class _AddressEditState extends State<AddressEdit> {
     await Provider.of<UserProvider>(context, listen: false).getUserDetail();
     setState(() {
       _houseNoController.text =
-          Provider.of<UserProvider>(context, listen: false)
-              .userDetail
-              .userHouseNo;
+          Provider.of<UserProvider>(context, listen: false).userDetail.houseNo;
       dropArea =
-          Provider.of<UserProvider>(context, listen: false).userDetail.userArea;
+          Provider.of<UserProvider>(context, listen: false).userDetail.areaId;
       _pinCodeController.text =
-          Provider.of<UserProvider>(context, listen: false)
-              .userDetail
-              .userPinCode;
+          Provider.of<UserProvider>(context, listen: false).userDetail.pinCode;
     });
   }
 
   @override
   void initState() {
     final user = currentUser.value;
-    _houseNoController.text = user.userHouseNo;
-    _pinCodeController.text = user.userPinCode;
-    dropArea = user.userArea;
+    _houseNoController.text = user.houseNo;
+    _pinCodeController.text = user.pinCode;
+    dropArea = user.areaName;
     areaList.add(dropArea);
     Future.delayed(Duration.zero, () {
       getlocData();

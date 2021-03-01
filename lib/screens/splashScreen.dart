@@ -24,7 +24,7 @@ class SplashScreenState extends State<AnimatedSplashScreen>
   }
 
   void navigationPage() async {
-    UserModel user = await repo.getCurrentUser();
+    User user = await repo.getCurrentUser();
     print(user.toMap());
     // FirebaseUser user = await _auth.currentUser();
     if (user != null) {

@@ -17,7 +17,7 @@ class Addresses extends StatefulWidget {
 List<Address> addresses = [];
 
 class _AddressesState extends State<Addresses> {
-  UserModel user;
+  User user;
   @override
   void initState() {
     user = currentUser.value;

@@ -32,6 +32,7 @@ class HomeController extends ControllerMVC {
     if (categories != null) {
       // categories.add(Category(mainCategory: _categories));
       for (int i = 0; i < _mainCategory.length; i++) {
+        print("MAIN CATEGORY: ${_mainCategory[i].name}");
         try {
           var _subCategories =
               await getSubCategory(_mainCategory[i].id.toString());

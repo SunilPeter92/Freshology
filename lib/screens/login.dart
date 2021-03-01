@@ -136,7 +136,7 @@ class _LoginState extends StateMVC<Login> {
                           onPressFunc: () {
                             if (_form.currentState.validate()) {
                               setState(() {
-                                _con.user.userPhoneNumber = phoneNumber;
+                                _con.user.phone = phoneNumber;
                               });
                               print(
                                   "NEW USER PHONE: ${userProvider.userPhoneNumber}");

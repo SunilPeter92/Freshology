@@ -16,7 +16,7 @@ class TrendingProductsWidget extends StatelessWidget {
   ProductModel product;
   TrendingProductsWidget(
       {@required this.product, @required this.buttonPressed});
-  UserModel user;
+  User user;
 
   @override
   Widget build(BuildContext context) {
@@ -154,7 +154,7 @@ class TrendingProductsWidget extends StatelessWidget {
                 hSN: product.hSN,
               );
 
-              if (user.userId != null) {
+              if (user.id != null) {
                 product.quantity++;
                 cartProvider.addToCart(cartItem);
                 buttonPressed();

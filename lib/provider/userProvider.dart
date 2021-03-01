@@ -11,7 +11,7 @@ import 'package:http/http.dart' as http;
 
 class UserProvider extends ChangeNotifier {
   String userPhoneNumber;
-  UserModel user;
+  User user;
   List<Map<String, dynamic>> countryList = [];
   List<String> countryNameList = [];
   List<String> stateNameList = [];
@@ -28,29 +28,9 @@ class UserProvider extends ChangeNotifier {
   List<Map<String, dynamic>> cityList = [];
   List<Map<String, dynamic>> areaList = [];
   GlobalKey<ScaffoldState> scaffoldKey;
-  UserModel newUser = UserModel(
-    userPhoneNumber: "",
-    userName: "",
-    userHouseNo: "",
-    userEmail: '',
-    userPinCode: "",
-    userState: "",
-    userCity: "",
-    userArea: '',
-    userBalance: 0,
-  );
+  User newUser = User();
   String userDocID;
-  UserModel userDetail = UserModel(
-    userPhoneNumber: "",
-    userName: "",
-    userHouseNo: "",
-    userEmail: '',
-    userPinCode: "",
-    userState: "",
-    userCity: "",
-    userArea: '',
-    userBalance: 0,
-  );
+  User userDetail = User();
   Firestore _fireStore = Firestore.instance;
   int userID;
 
@@ -226,15 +206,15 @@ class UserProvider extends ChangeNotifier {
     final String url = 'http://a018.autosandtools.com/api/user_register';
 
     Map<String, dynamic> param = {
-      "name": newUser.userName,
-      "phone_no": newUser.userPhoneNumber,
-      "city": newUser.userCity,
-      "house_no": newUser.userHouseNo,
-      "state": newUser.userState,
-      "pinecode": newUser.userPinCode.toString(),
+      "name": newUser.name,
+      "phone_no": newUser.phone,
+      "city": newUser.cityName,
+      "house_no": newUser.houseNo,
+      "state": newUser.stateName,
+      "pinecode": newUser.pinCode.toString(),
       "balance": "0",
-      "area": newUser.userArea,
-      "email": newUser.userEmail,
+      "area": newUser.areaName,
+      "email": newUser.email,
       "total_orders": "0"
     };
 
@@ -279,14 +259,14 @@ class UserProvider extends ChangeNotifier {
           content: Text('Something went worng'),
         ));
       } else if (res == "success") {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => OtpVerify(
-                    phoneNo: newUser.userPhoneNumber,
-                    isLogin: false,
-                  )),
-        );
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //       builder: (context) => OtpVerify(
+        //             phoneNo: newUser.phone,
+        //             isLogin: false,
+        //           )),
+        // );
       } else {
         scaffoldKey.currentState.showSnackBar(SnackBar(
           content: Text(res),
@@ -307,9 +287,9 @@ class UserProvider extends ChangeNotifier {
 
   loginUser(BuildContext context) async {
     final String url = 'http://a018.autosandtools.com/api/user_login';
-    print("PHONE NO: ${newUser.userPhoneNumber}");
+    print("PHONE NO: ${newUser.phone}");
     Map<String, dynamic> param = {
-      "phone_no": newUser.userPhoneNumber,
+      "phone_no": newUser.phone,
     };
     try {
       // final response = await client.post(
@@ -320,21 +300,21 @@ class UserProvider extends ChangeNotifier {
       final response = await http.post(url, body: param);
       print("STATUS CODE uploaded ${response.statusCode}");
       if (response.statusCode == 201) {
-        var body = json.decode(response.body);
-        if (body['status'] == "Login code send on your phone number") {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => OtpVerify(
-                      phoneNo: newUser.userPhoneNumber,
-                      isLogin: true,
-                    )),
-          );
-        } else {
-          scaffoldKey.currentState.showSnackBar(SnackBar(
-            content: Text('Something went worng'),
-          ));
-        }
+        // var body = json.decode(response.body);
+        // if (body['status'] == "Login code send on your phone number") {
+        //   Navigator.push(
+        //     context,
+        //     MaterialPageRoute(
+        //         builder: (context) => OtpVerify(
+        //               phoneNo: newUser.phone,
+        //               isLogin: true,
+        //             )),
+        //   );
+        // } else {
+        //   scaffoldKey.currentState.showSnackBar(SnackBar(
+        //     content: Text('Something went worng'),
+        //   ));
+        // }
       } else {
         scaffoldKey.currentState.showSnackBar(SnackBar(
           content: Text('Something went worng'),
@@ -357,21 +337,21 @@ class UserProvider extends ChangeNotifier {
       var data = await _fireStore.collection('user').getDocuments();
       for (var d in data.documents) {
         if (d.data['phone'] == userNum) {
-          userDocID = d.documentID;
-          userDetail.userId = d.data['userID'];
-          userDetail.userOrderNumber = d.data['total_orders'];
-          userDetail.userEmail = d.data['email'];
-          userDetail.userName = d.data['name'];
-          userDetail.userPhoneNumber = d.data['phone'];
-          userDetail.userCity = d.data['city'];
-          userDetail.userHouseNo = d.data['house_no'];
-          userDetail.userArea = d.data['area'];
-          userDetail.userPinCode = d.data['pincode'];
-          userDetail.userState = d.data['state'];
-          userDetail.userBalance = d.data['balance'];
-          print(userDetail.userId);
-          print(userDetail.userOrderNumber);
-          break;
+          // userDocID = d.documentID;
+          // userDetail.userId = d.data['userID'];
+          // userDetail.userOrderNumber = d.data['total_orders'];
+          // userDetail.userEmail = d.data['email'];
+          // userDetail.userName = d.data['name'];
+          // userDetail.userPhoneNumber = d.data['phone'];
+          // userDetail.userCity = d.data['city'];
+          // userDetail.userHouseNo = d.data['house_no'];
+          // userDetail.userArea = d.data['area'];
+          // userDetail.userPinCode = d.data['pincode'];
+          // userDetail.userState = d.data['state'];
+          // userDetail.userBalance = d.data['balance'];
+          // print(userDetail.userId);
+          // print(userDetail.userOrderNumber);
+          // break;
         }
       }
     }

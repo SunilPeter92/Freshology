@@ -1,3 +1,7 @@
+// To parse this JSON data, do
+//
+//     final subCategory = subCategoryFromJson(jsonString);
+
 import 'dart:convert';
 
 SubCategory subCategoryFromJson(String str) =>
@@ -7,32 +11,56 @@ String subCategoryToJson(SubCategory data) => json.encode(data.toJson());
 
 class SubCategory {
   SubCategory({
+    this.data,
+    this.smedia,
+  });
+
+  Data data;
+  String smedia;
+
+  factory SubCategory.fromJson(Map<String, dynamic> json) => SubCategory(
+        data: Data.fromJson(json["data"]),
+        smedia: json["smedia"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "data": data.toJson(),
+        "media": smedia,
+      };
+}
+
+class Data {
+  Data({
     this.id,
-    this.cateId,
+    this.pId,
     this.name,
-    this.image,
-    this.status,
+    this.description,
+    this.createdAt,
+    this.updatedAt,
   });
 
   int id;
-  String cateId;
+  String pId;
   String name;
-  String image;
-  int status;
+  String description;
+  String createdAt;
+  String updatedAt;
 
-  factory SubCategory.fromJson(Map<String, dynamic> json) => SubCategory(
+  factory Data.fromJson(Map<String, dynamic> json) => Data(
         id: json["id"],
-        cateId: json["cate_id"],
+        pId: json["p_id"],
         name: json["name"],
-        image: json["image"],
-        status: json["status"],
+        description: json["description"],
+        createdAt: json["created_at"],
+        updatedAt: json["updated_at"],
       );
 
   Map<String, dynamic> toJson() => {
         "id": id,
-        "cate_id": cateId,
+        "p_id": pId,
         "name": name,
-        "image": image,
-        "status": status,
+        "description": description,
+        "created_at": createdAt,
+        "updated_at": updatedAt,
       };
 }

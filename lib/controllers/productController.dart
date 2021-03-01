@@ -10,13 +10,22 @@ class ProductController extends ControllerMVC {
   SubCategory subCategory;
   MainCategory mainCategory;
   fetchSubCategoryProducts() async {
-    var response = await getSubCategoryProducts(subCategory.id.toString());
-    if (response != null) {
-      products = response;
-      print("PRODUCTS LIST LENGTH: ${products.length}");
-      setState(() {});
-    } else {
-      products = [];
-    }
+    final Stream<Product> stream =
+        await getFoodsByCategory(subCategory.data.id.toString());
+    stream.listen(
+        (Product _product) {
+          setState(() {
+            products.add(_product);
+          });
+        },
+        onError: (a) {},
+        onDone: () {
+          setState(() {});
+          // if (message != null) {
+          //   scaffoldKey.currentState.showSnackBar(SnackBar(
+          //     content: Text(message),
+          //   ));
+          // }
+        });
   }
 }

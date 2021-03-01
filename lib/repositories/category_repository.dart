@@ -7,7 +7,7 @@ import 'dart:convert';
 
 Future<List<MainCategory>> getMainCategory() async {
   List<MainCategory> mainCategories = [];
-  final url = "${baseURL}get_cate";
+  final url = "${baseURL}main_category";
   try {
     var response = await http.get(url, headers: header);
     if (response.statusCode == 201 || response.statusCode == 200) {
@@ -20,6 +20,7 @@ Future<List<MainCategory>> getMainCategory() async {
         }
         return mainCategories;
       } catch (e) {
+        print("MAIN CATEGORY: ${e.toString()}");
         return null;
       }
     }
@@ -31,13 +32,13 @@ Future<List<MainCategory>> getMainCategory() async {
 
 Future<List<SubCategory>> getSubCategory(String id) async {
   List<SubCategory> subCategories = [];
-  final url = "${baseURL}get_sub_cate/${id}";
+  final url = "${baseURL}get_categories/${id}";
+  print("SUB CATEGORY URL: ${url}");
   try {
     var response = await http.get(url, headers: header);
-    if (response.statusCode == 201 || response.statusCode == 200) {
-      var data = Helper.getData(
-        json.decode(response.body),
-      );
+    if (response.statusCode == 202 || response.statusCode == 200) {
+      var data = json.decode(response.body);
+      print("SUB CATEGORY DATE: ${data}");
       try {
         for (var subCate in data) {
           subCategories.add(SubCategory.fromJson(subCate));

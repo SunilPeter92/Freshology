@@ -1,3 +1,7 @@
+// To parse this JSON data, do
+//
+//     final mainCategory = mainCategoryFromJson(jsonString);
+
 import 'dart:convert';
 
 MainCategory mainCategoryFromJson(String str) =>

@@ -43,7 +43,6 @@ dependencies:
   flutter_open_whatsapp: ^0.1.2
   firebase_messaging: ^6.0.15
   pdf: ^1.8.1
-  intl: 0.15.8
   #flutter_full_pdf_viewer: ^1.0.6
   path_provider: ^1.6.8
   flutter_launcher_icons: ^0.7.3
@@ -62,6 +61,10 @@ dependencies:
   mvc_pattern: ^6.3.0
   shared_preferences: ^0.5.12+4
   intl_phone_field: ^1.4.2
+  intl: 
+  html: ^0.14.0+2
+  flutter_html: ^0.11.1
+  
 
 
 flutter_icons:

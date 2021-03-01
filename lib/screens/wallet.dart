@@ -194,7 +194,7 @@ class _WalletState extends State<Wallet> {
                               ),
                             ),
                             Text(
-                              "₹ " + user.userBalance.toString(),
+                              "₹ balance",
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w700,
@@ -220,7 +220,7 @@ class _WalletState extends State<Wallet> {
                               ),
                             ),
                             Text(
-                              "₹ " + user.userBalance.toString(),
+                              "₹ balance",
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w700,
@@ -287,11 +287,11 @@ class _WalletState extends State<Wallet> {
                     ),
                   ),
                   onPressed: () {
-                    if (_formKey.currentState.validate()) {
-                      walletBalance = user.userBalance +
-                          int.parse(_controller.value.text.trim());
-                      openCheckOut();
-                    }
+                    // if (_formKey.currentState.validate()) {
+                    //   walletBalance = user.userBalance +
+                    //       int.parse(_controller.value.text.trim());
+                    //   openCheckOut();
+                    // }
                   },
                 ),
               ),

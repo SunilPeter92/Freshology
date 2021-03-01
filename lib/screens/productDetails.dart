@@ -63,21 +63,21 @@ class _ProductDetailsState extends State<ProductDetails> {
     );
   }
 
-  _buildVariations() {
-    List<Widget> variationsList = [];
-    widget.product.variations.forEach((variation) {
-      variationsList.add(
-        addMoneyPresetWidget(
-          variation.vName.toString(),
-          variation.vPrice.toString(),
-        ),
-      );
-    });
-    return variationsList;
-  }
+  // _buildVariations() {
+  //   List<Widget> variationsList = [];
+  //   widget.product.variations.forEach((variation) {
+  //     variationsList.add(
+  //       addMoneyPresetWidget(
+  //         variation.vName.toString(),
+  //         variation.vPrice.toString(),
+  //       ),
+  //     );
+  //   });
+  //   return variationsList;
+  // }
 
   //////// TODO: MAKE USER OBJECT MANAGED BY STATE ////////
-  UserModel user;
+  User user;
   @override
   void initState() {
     // TODO: implement initState
@@ -240,7 +240,7 @@ class _ProductDetailsState extends State<ProductDetails> {
               width: _size.width,
               child: Image(
                 fit: BoxFit.contain,
-                image: NetworkImage(widget.product.pImage),
+                image: NetworkImage(widget.product.media[0].url),
               ),
             ),
             Container(
@@ -254,7 +254,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                     width: _size.width * 0.65,
                     alignment: Alignment.topLeft,
                     child: AutoSizeText(
-                      "${widget.product.pName} ",
+                      "${widget.product.name} ",
                       maxFontSize: 20,
                       style: TextStyle(
                           fontSize: 20,
@@ -271,7 +271,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                         Container(
                           alignment: Alignment.topRight,
                           child: Text(
-                            "₹ ${widget.product.defaultPriceIndex}",
+                            "₹ ${widget.product.price}",
                             textAlign: TextAlign.right,
                             style: TextStyle(
                               color: Colors.grey,
@@ -283,7 +283,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                         Container(
                           alignment: Alignment.topRight,
                           child: Text(
-                            "${widget.product.variations[0].vName}",
+                            "${widget.product.price}",
                             textAlign: TextAlign.right,
                             style: TextStyle(
                               color: Colors.grey,
@@ -312,16 +312,16 @@ class _ProductDetailsState extends State<ProductDetails> {
                       ),
                     ),
                   ),
-                  Container(
-                    child: Text(
-                      "${widget.product.deliveryDate.day}/${widget.product.deliveryDate.month}/${widget.product.deliveryDate.year}",
-                      style: TextStyle(
-                        color: kDarkGreen,
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
+                  // Container(
+                  //   child: Text(
+                  //     "${widget.product.deliveryDate.day}/${widget.product.deliveryDate.month}/${widget.product.deliveryDate.year}",
+                  //     style: TextStyle(
+                  //       color: kDarkGreen,
+                  //       fontSize: 14,
+                  //       fontWeight: FontWeight.bold,
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
             ),
@@ -337,11 +337,11 @@ class _ProductDetailsState extends State<ProductDetails> {
               ),
             ),
             SizedBox(height: 10),
-            Container(
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: _buildVariations()),
-            ),
+            // Container(
+            //   child: Row(
+            //       mainAxisAlignment: MainAxisAlignment.spaceAround,
+            //       children: _buildVariations()),
+            // ),
           ],
         ),
       ),

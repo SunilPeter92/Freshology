@@ -1,15 +1,17 @@
 import 'dart:convert';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:freshology/constants/configurations.dart';
 import 'package:freshology/functions/otpVerify.dart';
+import 'package:freshology/models/route.dart';
 import 'package:freshology/models/userModel.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:freshology/repositories/user_repository.dart' as repo;
 import 'package:http/http.dart' as http;
 
 class UserController extends ControllerMVC {
-  UserModel user = UserModel();
+  User user = User();
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   String userPhoneNumber;
   List<Map<String, dynamic>> countryList = [];
@@ -27,6 +29,15 @@ class UserController extends ControllerMVC {
   List<Map<String, dynamic>> stateList = [];
   List<Map<String, dynamic>> cityList = [];
   List<Map<String, dynamic>> areaList = [];
+  FirebaseMessaging _firebaseMessaging;
+
+  UserController() {
+    _firebaseMessaging = FirebaseMessaging();
+    _firebaseMessaging.getToken().then((String _deviceToken) {
+      print("DEVICE TOKEN: ${_deviceToken}");
+      user.deviceToken = _deviceToken;
+    });
+  }
 
   loginUser() async {
     var res = await repo.login(user);
@@ -35,8 +46,7 @@ class UserController extends ControllerMVC {
         context,
         MaterialPageRoute(
             builder: (context) => OtpVerify(
-                  phoneNo: user.userPhoneNumber,
-                  isLogin: true,
+                  routeArgument: RouteArgument(param: user),
                 )),
       );
     } else {
@@ -45,12 +55,21 @@ class UserController extends ControllerMVC {
   }
 
   verifyLogin({String code}) async {
-    var res = await repo.verifyLoginOTP(code, user.userPhoneNumber);
-    if (res.runtimeType != UserModel) {
+    var res = await repo.verifyLoginOTP(code, user.phone);
+    if (res.runtimeType != User) {
       scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(res)));
     } else {
       user = res;
       Navigator.pushNamed(context, 'home');
+    }
+  }
+
+  verifyRegister({String code}) async {
+    var res = await repo.verifyRegisterOTP(code, user.phone, user.id);
+    if (res == "success") {
+      Navigator.pushNamed(context, 'home');
+    } else {
+      scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(res)));
     }
   }
 
@@ -143,7 +162,7 @@ class UserController extends ControllerMVC {
 
   getCity(String id) async {
     notifyListeners();
-    final url = "${baseURL}get_cities/$id";
+    final url = "${baseURL}get_city/$id";
     print("City URL: ${url}");
     final response = await http.get(url);
     if ((response.statusCode == 200) || (response.statusCode == 201)) {
@@ -190,5 +209,20 @@ class UserController extends ControllerMVC {
     }
   }
 
-  registerUser() {}
+  void registerUser() async {
+    print("USER: ${user.toMap()}");
+    repo.register(user).then((value) {
+      if (value != null && value.apiToken != null) {
+        // scaffoldKey.currentState.showSnackBar(SnackBar(
+        //   content: Text('Welcome ${value.name} !'),
+        // ));
+        Navigator.of(context)
+            .pushReplacementNamed('otp', arguments: RouteArgument(param: user));
+      } else {
+        scaffoldKey.currentState.showSnackBar(SnackBar(
+          content: Text('User already registered'),
+        ));
+      }
+    });
+  }
 }
