@@ -16,6 +16,7 @@ import 'package:freshology/screens/myAdresses.dart';
 import 'package:freshology/screens/productDetails.dart';
 import 'package:freshology/screens/start.dart';
 import 'package:freshology/widget/bottom_bar.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
@@ -104,7 +105,7 @@ class _MyAppState extends State<MyApp> {
           create: (_) => PromoProvider(),
         ),
       ],
-      child: MaterialApp(
+      child: GetMaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primaryColor: kDarkGreen,

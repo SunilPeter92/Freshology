@@ -2,11 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:freshology/constants/styles.dart';
 import 'package:freshology/provider/userProvider.dart';
-import 'package:freshology/repositories/user_repository.dart';
 import 'package:freshology/widget/startButton.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import 'package:freshology/models/Address.dart';
+import '../repositories/appListenables.dart';
 
 class AddressEdit extends StatefulWidget {
   Address address;

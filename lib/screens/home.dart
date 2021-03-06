@@ -1,6 +1,10 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:freshology/models/route.dart';
+import 'package:freshology/screens/products.dart';
+import 'package:get/get.dart';
 
+import '../repositories/appListenables.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:badges/badges.dart';
@@ -66,6 +70,7 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
     Container(),
     Container(),
   ];
+  double _total = 0;
 
   String offerImageUrl;
   bool _isOrders = true;
@@ -230,6 +235,7 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
       _con.fetchMainCategories();
       _con.fetchAnnouncement();
       _con.fetchBanners();
+      _con.listenForCarts();
       getGeneralData();
       Provider.of<ProductProvider>(context, listen: false).getFruitsAndVeg();
 
@@ -250,11 +256,13 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
       tabController2 = TabController(length: 6, vsync: this);
       tabController3 = TabController(length: 7, vsync: this);
     });
+    _prevIndex = _selectedIndex;
     super.initState();
   }
 
 ////BOTTOM NAVIGATION BAR LOGIG
   int _selectedIndex = 1;
+  int _prevIndex = 0;
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static List<Widget> _widgetOptions = <Widget>[
@@ -265,9 +273,17 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
   ];
 
   void _onItemTapped(int index) {
+    _prevIndex = _selectedIndex;
+    _total = _total + 2;
     setState(() {
       _selectedIndex = index;
     });
+    if (_prevIndex == 3) {
+      print("Listening for carts:");
+      _con.listenForCarts();
+      setState(() {});
+    }
+    print("PREVIOUS INDEX : $_prevIndex");
   }
 
   customNavigationBarItem(String label, IconData icon, int index) {
@@ -369,10 +385,10 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                   width: 10,
                 ),
                 Text(
-                  "₹ " +
-                      (cartProvider.totalValue == null
-                          ? "0"
-                          : cartProvider.totalValue.toString()),
+                  "₹ " + _total.toStringAsFixed(1),
+                  // (cartProvider.totalValue == null
+                  //     ? "${val}"
+                  //     : cartProvider.totalValue.toString()),
                   style: TextStyle(
                     fontSize: 11,
                     color: Colors.black,
@@ -388,9 +404,10 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
   }
 
   /////
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
+    _total = _con.total;
     final names = Provider.of<ProductProvider>(context).productNames;
     final searchRef = Provider.of<ProductProvider>(context);
     final cartProvider = Provider.of<CartProvider>(context);
@@ -420,6 +437,13 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
       _con.categories.forEach((category) {
         _widgetList.add(CategoryWidget(
           category: category,
+          onPressed: () async {
+            print("CATEGORY: ${category.mainCategory.name}");
+            _con.total = await Get.to(() => Products(
+                routeArgument: RouteArgument(
+                    param: category, id: category.mainCategory.id.toString())));
+            setState(() {});
+          },
         ));
         _widgetList.add(SizedBox(height: 10));
       });
@@ -429,7 +453,7 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
     return WillPopScope(
       onWillPop: _onBackPressed,
       child: SafeArea(
-        key: scaffoldKey,
+        key: _con.scaffoldKey,
         child: Scaffold(
           drawer: Container(
             width: size.width,

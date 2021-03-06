@@ -14,7 +14,8 @@ import 'package:provider/provider.dart';
 
 class CategoryWidget extends StatefulWidget {
   Category category;
-  CategoryWidget({this.category});
+  Function onPressed;
+  CategoryWidget({this.category, this.onPressed});
   @override
   _CategoryWidgetState createState() => _CategoryWidgetState();
 }
@@ -179,10 +180,11 @@ class _CategoryWidgetState extends State<CategoryWidget> {
                         margin: EdgeInsets.zero,
                         child: InkWell(
                           onTap: () {
-                            Navigator.of(context).pushNamed('products',
-                                arguments: RouteArgument(
-                                    id: index.toString(),
-                                    param: widget.category));
+                            widget.onPressed();
+                            // Navigator.of(context).pushNamed('products',
+                            //     arguments: RouteArgument(
+                            //         id: index.toString(),
+                            //         param: widget.category));
                             // productProvider.selectedCategoryName =
                             //     categoryList[index].name;
                             // Navigator.pushNamed(context, 'products');

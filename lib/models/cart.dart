@@ -5,7 +5,7 @@ import '../models/extra.dart';
 
 class Cart {
   String id;
-  Product food;
+  Product product;
   double quantity;
   List<Extra> extras;
   String userId;
@@ -17,19 +17,19 @@ class Cart {
       id = jsonMap['id'].toString();
       quantity =
           jsonMap['quantity'] != null ? jsonMap['quantity'].toDouble() : 0.0;
-      food = jsonMap['food'] != null
+      product = jsonMap['food'] != null
           ? Product.fromJson(jsonMap['food'])
           : Product.fromJson({});
-      extras = jsonMap['extras'] != null
-          ? List.from(jsonMap['extras'])
-              .map((element) => Extra.fromJSON(element))
-              .toList()
-          : [];
+      // extras = jsonMap['extras'] != null
+      // ? List.from(jsonMap['extras'])
+      //     .map((element) => Extra.fromJSON(element))
+      //     .toList()
+      // : [];
     } catch (e) {
       id = '';
       quantity = 0.0;
-      food = Product.fromJson({});
-      extras = [];
+      product = Product.fromJson({});
+      // extras = [];
       print(CustomTrace(StackTrace.current, message: e));
     }
   }
@@ -38,31 +38,31 @@ class Cart {
     var map = new Map<String, dynamic>();
     map["id"] = id;
     map["quantity"] = quantity;
-    map["food_id"] = food.id;
+    map["food_id"] = product.id;
     map["user_id"] = userId;
-    map["extras"] = extras.map((element) => element.id).toList();
+    // map["extras"] = extras.map((element) => element.id).toList();
     return map;
   }
 
   double getFoodPrice() {
-    double result = food.price;
-    if (extras.isNotEmpty) {
-      extras.forEach((Extra extra) {
-        result += extra.price != null ? extra.price : 0;
-      });
-    }
+    double result = product.price;
+    // if (extras.isNotEmpty) {
+    //   extras.forEach((Extra extra) {
+    //     result += extra.price != null ? extra.price : 0;
+    //   });
+    // }
     return result;
   }
 
   bool isSame(Cart cart) {
     bool _same = true;
-    _same &= this.food == cart.food;
-    _same &= this.extras.length == cart.extras.length;
-    if (_same) {
-      this.extras.forEach((Extra _extra) {
-        _same &= cart.extras.contains(_extra);
-      });
-    }
+    _same &= this.product == cart.product;
+    // _same &= this.extras.length == cart.extras.length;
+    // if (_same) {
+    //   this.extras.forEach((Extra _extra) {
+    //     _same &= cart.extras.contains(_extra);
+    //   });
+    // }
     return _same;
   }
 

@@ -1,120 +1,146 @@
-// import 'package:flutter/material.dart';
-// import 'package:freshology/models/cart.dart';
-// import 'package:freshology/repositories/cart_repository.dart';
-// import 'package:mvc_pattern/mvc_pattern.dart';
+import 'package:flutter/material.dart';
+import 'package:freshology/models/cart.dart';
+import 'package:freshology/models/product.dart';
+import 'package:freshology/repositories/appListenables.dart';
+import 'package:freshology/repositories/cart_repository.dart';
+import 'package:mvc_pattern/mvc_pattern.dart';
 
-// class CartController extends ControllerMVC {
-//   List<Cart> carts = <Cart>[];
-//   double taxAmount = 0.0;
-//   int cartCount = 0;
-//   double subTotal = 0.0;
-//   double total = 0.0;
-//   GlobalKey<ScaffoldState> scaffoldKey;
+class CartController extends ControllerMVC {
+  List<Cart> carts = <Cart>[];
+  double taxAmount = 0.0;
+  int cartCount = 0;
+  double subTotal = 0.0;
+  // double total = 0.0;
+  GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
+  double quantity = 1;
+  double total = 0;
+  Cart cart;
+  // Favorite favorite;
+  bool loadCart = false;
 
-//   CartController() {
-//     this.scaffoldKey = new GlobalKey<ScaffoldState>();
-//   }
+  CartController() {
+    listenForCarts();
+  }
 
-//   void listenForCarts2({isGrocery = false, message}) async {
-//     final Stream<Cart> stream = await getCart();
-//     stream.listen((Cart _cart) {
-//       if (!carts.contains(_cart)) {
-//         setState(() {
-//           carts.add(_cart);
-//         });
-//       }
-//     }, onError: (a) {
-//       print(a);
-//       scaffoldKey?.currentState?.showSnackBar(SnackBar(
-//         content: Text('Verify your internet connection'),
-//       ));
-//     }, onDone: () {
-//       calculateSubtotal();
-//       if (message != null) {
-//         scaffoldKey.currentState.showSnackBar(SnackBar(
-//           content: Text(message),
-//         ));
-//       }
-//     });
-//   }
+  void listenForCarts2({isGrocery = false, message}) async {
+    final Stream<Cart> stream = await getCart();
+    stream.listen((Cart _cart) {
+      if (!carts.contains(_cart)) {
+        setState(() {
+          carts.add(_cart);
+        });
+      }
+    }, onError: (a) {
+      print(a);
+      scaffoldKey?.currentState?.showSnackBar(SnackBar(
+        content: Text('Verify your internet connection'),
+      ));
+    }, onDone: () {
+      if (message != null) {
+        scaffoldKey.currentState.showSnackBar(SnackBar(
+          content: Text(message),
+        ));
+      }
+    });
+  }
 
-//   void addmultiplecart(Cart cart) {}
+  void addmultiplecart(Cart cart) {}
 
-//   void listenForCarts({String message, isGrocery = false}) async {
-//     final Stream<Cart> stream = await getCart();
-//     stream.listen((Cart _cart) {
-//       if (!carts.contains(_cart)) {
-//         setState(() {
-//           carts.add(_cart);
-//         });
-//       }
-//     }, onError: (a) {
-//       print(a);
-//       scaffoldKey?.currentState?.showSnackBar(SnackBar(
-//         content: Text('Verify your internet connection'),
-//       ));
-//     }, onDone: () {
-//       calculateSubtotal();
-//       if (message != null) {
-//         scaffoldKey.currentState.showSnackBar(SnackBar(
-//           content: Text(message),
-//         ));
-//       }
-//     });
-//   }
+  void listenForCarts({String message, isGrocery = false}) async {
+    final Stream<Cart> stream = await getCart();
+    stream.listen((Cart _cart) {
+      if (!carts.contains(_cart)) {
+        setState(() {
+          carts.add(_cart);
+        });
+      }
+    }, onError: (a) {
+      print(a);
+      scaffoldKey?.currentState?.showSnackBar(SnackBar(
+        content: Text('Verify your internet connection'),
+      ));
+    }, onDone: () {
+      calculateSubtotal();
+      print("RECALCULATED TOTAL: $total");
+      setState(() {});
+      if (message != null) {
+        scaffoldKey.currentState.showSnackBar(SnackBar(
+          content: Text(message),
+        ));
+      }
+    });
+  }
 
-//   void listenForCartsCount({String message}) async {
-//     final Stream<int> stream = await getCartCount();
-//     stream.listen((int _count) {
-//       setState(() {
-//         this.cartCount = _count;
-//       });
-//     }, onError: (a) {
-//       print(a);
-//       scaffoldKey?.currentState?.showSnackBar(SnackBar(
-//         content: Text('Verify your internet connection'),
-//       ));
-//     });
-//   }
+  void listenForCartsCount({String message}) async {
+    final Stream<int> stream = await getCartCount();
+    stream.listen((int _count) {
+      setState(() {
+        this.cartCount = _count;
+      });
+    }, onError: (a) {
+      print(a);
+      scaffoldKey?.currentState?.showSnackBar(SnackBar(
+        content: Text('Verify your internet connection'),
+      ));
+    });
+  }
 
-//   Future<void> refreshCarts() async {
-//     listenForCarts(message: 'Carts refreshed successfuly');
-//   }
+  Future<void> refreshCarts() async {
+    listenForCarts(message: 'Carts refreshed successfuly');
+  }
 
-//   void removeFromCart(Cart _cart) async {
-//     removeCart(_cart).then((value) {
-//       setState(() {
-//         this.carts.remove(_cart);
-//       });
-//       scaffoldKey.currentState.showSnackBar(SnackBar(
-//         content: Text("The ${_cart.food.name} was removed from your cart"),
-//       ));
-//     });
-//   }
+  void addToCart(Product food, {bool reset = false}) async {
+    var _cart = new Cart();
+    _cart.product = food;
+    // _cart.extras = food.extras.where((element) => element.checked).toList();
+    _cart.quantity = this.quantity;
+    addCart(_cart, reset).then((value) {
+      setState(() {
+        this.loadCart = false;
+      });
+      // calculateSubtotal();
+      refreshCarts();
+      scaffoldKey.currentState.showSnackBar(SnackBar(
+        content: Text('This food was added to cart'),
+      ));
+    });
+  }
 
-//   void calculateSubtotal() async {
-//     subTotal = 0;
-//     carts.forEach((cart) {
-//       subTotal += cart.quantity * cart.food.price;
-//     });
-// //    taxAmount = subTotal * settingRepo.setting.defaultTax / 100;
-//     total = subTotal + taxAmount;
-//     setState(() {});
-//   }
+  void removeFromCart(Cart _cart) async {
+    removeCart(_cart).then((value) {
+      setState(() {
+        this.carts.remove(_cart);
+      });
+      scaffoldKey.currentState.showSnackBar(SnackBar(
+        content: Text("The ${_cart.product.name} was removed from your cart"),
+      ));
+    });
+  }
 
-//   incrementQuantity(Cart cart) {
-//     if (cart.quantity <= 99) {
-//       ++cart.quantity;
-//       updateCart(cart);
-//       calculateSubtotal();
-//     }
-//   }
+  void calculateSubtotal() {
+    subTotal = 0;
+    carts.forEach((cart) {
+      subTotal += cart.quantity * cart.product.price;
+    });
+//    taxAmount = subTotal * settingRepo.setting.defaultTax / 100;
+    total = subTotal + taxAmount;
+    setState(() {});
+    // cartValue.value = total;
+  }
 
-//   decrementQuantity(Cart cart) {
-//     if (cart.quantity > 1) {
-//       --cart.quantity;
-//       updateCart(cart);
-//       calculateSubtotal();
-//     }
-//   }
-// }
+  incrementQuantity(Cart cart) {
+    if (cart.quantity <= 99) {
+      ++cart.quantity;
+      updateCart(cart);
+      calculateSubtotal();
+    }
+  }
+
+  decrementQuantity(Cart cart) {
+    if (cart.quantity > 1) {
+      --cart.quantity;
+      updateCart(cart);
+      calculateSubtotal();
+    }
+  }
+}

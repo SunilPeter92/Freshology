@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:freshology/constants/styles.dart';
 import 'package:badges/badges.dart';
 import 'package:freshology/provider/cartProvider.dart';
+import 'package:freshology/repositories/appListenables.dart';
 import 'package:provider/provider.dart';
 
 class CartButton extends StatefulWidget {
+  double cartTotal;
+  CartButton({@required this.cartTotal});
   @override
   _CartButtonState createState() => _CartButtonState();
 }
@@ -12,6 +15,7 @@ class CartButton extends StatefulWidget {
 class _CartButtonState extends State<CartButton> {
   @override
   Widget build(BuildContext context) {
+    widget.cartTotal == null ? widget.cartTotal = 0.0 : null;
     final cartProvider = Provider.of<CartProvider>(context);
 
     return InkWell(
@@ -19,7 +23,7 @@ class _CartButtonState extends State<CartButton> {
         Navigator.pushNamed(context, 'cart');
       },
       child: Container(
-        width: 80,
+        width: 85,
         margin: EdgeInsets.only(right: 10, top: 10),
         decoration: BoxDecoration(
             border: Border.all(
@@ -47,15 +51,30 @@ class _CartButtonState extends State<CartButton> {
               width: 10,
             ),
             Text(
-              "₹ " +
-                  (cartProvider.totalValue == null
-                      ? "0"
-                      : cartProvider.totalValue.toString()),
+              "₹ " + widget.cartTotal.toStringAsFixed(1),
+              // (cartProvider.totalValue == null
+              //     ? "${val}"
+              //     : cartProvider.totalValue.toString()),
               style: TextStyle(
                 fontSize: 11,
                 color: Colors.black,
               ),
             ),
+            // ValueListenableBuilder(
+            //   builder: (context, val, child) {
+            //     return Text(
+            //       "₹ " + val.toStringAsFixed(1),
+            //       // (cartProvider.totalValue == null
+            //       //     ? "${val}"
+            //       //     : cartProvider.totalValue.toString()),
+            //       style: TextStyle(
+            //         fontSize: 11,
+            //         color: Colors.black,
+            //       ),
+            //     );
+            //   },
+            //   valueListenable: cartValue,
+            // ),
           ],
         ),
       ),

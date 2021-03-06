@@ -39,28 +39,59 @@ class UserController extends ControllerMVC {
     });
   }
 
-  loginUser() async {
-    var res = await repo.login(user);
-    if (res == "code sent") {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => OtpVerify(
-                  routeArgument: RouteArgument(param: user),
-                )),
-      );
-    } else {
-      scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(res)));
-    }
+  void loginUser() async {
+    print("USER: ${user.toMap()}");
+    repo.login(user.phone).then((value) {
+      if (value != null && value.apiToken != null) {
+        // scaffoldKey.currentState.showSnackBar(SnackBar(
+        //   content: Text('Welcome ${value.name} !'),
+        // ));
+        Navigator.of(context).pushReplacementNamed('otp',
+            arguments: RouteArgument(param: user, id: "1"));
+      } else {
+        scaffoldKey.currentState.showSnackBar(SnackBar(
+          content: Text('User already registered'),
+        ));
+      }
+    });
   }
+  // loginUser() async {
+  //   var res = await repo.login(user);
+  //   if (res == "code sent") {
+  //     Navigator.push(
+  //       context,
+  //       MaterialPageRoute(
+  //         builder: (context) => OtpVerify(
+  //           routeArgument: RouteArgument(
+  //             param: user,
+  //             id: "0",
+  //           ),
+  //         ),
+  //       ),
+  //     );
+  //   } else {
+  //     scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(res)));
+  //   }
+  // }
 
-  verifyLogin({String code}) async {
-    var res = await repo.verifyLoginOTP(code, user.phone);
-    if (res.runtimeType != User) {
-      scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(res)));
-    } else {
-      user = res;
+  // verifyLogin({String code}) async {
+  //   var res = await repo.verifyLoginOTP(code, user.phone);
+  //   if (res.runtimeType != User) {
+  //     scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(res)));
+  //   } else {
+  //     user = res;
+  //     Navigator.pushNamed(context, 'home');
+  //   }
+  // }
+
+  verifyLogin({
+    String code,
+  }) async {
+    var res = await repo.verifyLoginOTP(code, user.phone, user.id);
+    if (res == "success") {
       Navigator.pushNamed(context, 'home');
+    } else {
+      scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(res)));
     }
   }
 
@@ -216,8 +247,8 @@ class UserController extends ControllerMVC {
         // scaffoldKey.currentState.showSnackBar(SnackBar(
         //   content: Text('Welcome ${value.name} !'),
         // ));
-        Navigator.of(context)
-            .pushReplacementNamed('otp', arguments: RouteArgument(param: user));
+        Navigator.of(context).pushReplacementNamed('otp',
+            arguments: RouteArgument(param: user, id: "0"));
       } else {
         scaffoldKey.currentState.showSnackBar(SnackBar(
           content: Text('User already registered'),

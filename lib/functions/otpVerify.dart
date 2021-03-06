@@ -14,6 +14,7 @@ import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:freshology/widget/startButton.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:http/http.dart' as http;
+import '../repositories/appListenables.dart';
 
 class OtpVerify extends StatefulWidget {
   RouteArgument routeArgument;
@@ -224,8 +225,9 @@ class _OtpVerifyState extends StateMVC<OtpVerify> {
                   child: StartButton(
                     name: 'Verify',
                     onPressFunc: () {
-                      _con.verifyRegister(code: _pin.text);
-                      // otpVerification(widget.phoneNo, _pin.text, context);
+                      if (widget.routeArgument.id == "0")
+                        _con.verifyRegister(code: _pin.text);
+                      _con.verifyLogin(code: _pin.text);
                     },
                   ),
                 ),

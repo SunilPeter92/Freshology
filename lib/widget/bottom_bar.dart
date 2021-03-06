@@ -144,7 +144,7 @@ class _HomeParentState extends State<HomeParent> {
                   "₹ 6786",
                   style: TextStyle(
                     fontSize: 11,
-                    color: Colors.black,
+                    color: Colors.green,
                   ),
                 ),
               ],

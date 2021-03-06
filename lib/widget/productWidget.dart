@@ -12,7 +12,11 @@ import 'package:provider/provider.dart';
 
 class ProductWidget extends StatefulWidget {
   Product product;
-  ProductWidget({@required this.product});
+  Function onPressed;
+  ProductWidget({
+    @required this.product,
+    @required this.onPressed,
+  });
 
   @override
   _ProductWidgetState createState() => _ProductWidgetState();
@@ -194,18 +198,17 @@ class _ProductWidgetState extends State<ProductWidget> {
           // ),
           SizedBox(height: 8),
           FlatButton(
-            minWidth: width,
-            padding: EdgeInsets.all(0),
-            color: kLightGreen,
-            child: Text(
-              "ADD TO CART",
-              style: TextStyle(
-                fontSize: 10,
-                fontWeight: FontWeight.bold,
+              minWidth: width,
+              padding: EdgeInsets.all(0),
+              color: kLightGreen,
+              child: Text(
+                "ADD TO CART",
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            onPressed: () {},
-          ),
+              onPressed: widget.onPressed),
           SizedBox(
             height: 5,
           ),

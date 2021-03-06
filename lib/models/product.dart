@@ -4,6 +4,9 @@
 
 import 'dart:convert';
 
+import 'package:freshology/models/extra.dart';
+import 'package:freshology/models/extra_group.dart';
+
 Product productFromJson(String str) => Product.fromJson(json.decode(str));
 
 String productToJson(Product data) => json.encode(data.toJson());
@@ -46,6 +49,8 @@ class Product {
   int categoryId;
   String createdAt;
   String updatedAt;
+  //  List<Extra> extras;
+  // List<ExtraGroup> extraGroups;
   List<dynamic> customFields;
   bool hasMedia;
   Restaurant restaurant;

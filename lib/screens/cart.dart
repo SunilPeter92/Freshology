@@ -6,6 +6,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:freshology/constants/styles.dart';
+import 'package:freshology/controllers/cart_controller.dart';
+import 'package:freshology/controllers/home_controller.dart';
 import 'package:freshology/provider/cartProvider.dart';
 import 'package:freshology/provider/productProvider.dart';
 import 'package:freshology/provider/promoProvider.dart';
@@ -13,6 +15,7 @@ import 'package:freshology/provider/userProvider.dart';
 import 'package:freshology/widget/EmptyCartWidget.dart';
 import 'package:freshology/widget/startButton.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:provider/provider.dart';
 
 class Cart extends StatefulWidget {
@@ -20,7 +23,11 @@ class Cart extends StatefulWidget {
   _CartState createState() => _CartState();
 }
 
-class _CartState extends State<Cart> {
+class _CartState extends StateMVC<Cart> {
+  CartController _con;
+  _CartState() : super(CartController()) {
+    _con = controller;
+  }
   int amount = 0;
   int discountGiven = 0;
   int deliveryCharge = 0;
@@ -69,6 +76,7 @@ class _CartState extends State<Cart> {
 
   @override
   void initState() {
+    _con.listenForCarts();
     Future.delayed(Duration.zero, () {
       Provider.of<CartProvider>(context, listen: false).calculateTotalPrice();
       Provider.of<PromoProvider>(context, listen: false).getDeliveryCharge(
@@ -88,7 +96,8 @@ class _CartState extends State<Cart> {
 
   @override
   Widget build(BuildContext context) {
-    final cartList = Provider.of<CartProvider>(context).cartProducts;
+    // final cartList = Provider.of<CartProvider>(context).cartProducts;
+    final cartList = _con.carts;
     final cartProvider = Provider.of<CartProvider>(context);
     final productProvider = Provider.of<ProductProvider>(context);
     final promoProvider = Provider.of<PromoProvider>(context);
@@ -114,7 +123,7 @@ class _CartState extends State<Cart> {
         backgroundColor: Colors.white,
         iconTheme: IconThemeData(color: kDarkGreen),
       ),
-      body: cartProvider.itemCount == 0
+      body: cartList.length == 0
           ? EmptyCartWidget()
           : ModalProgressHUD(
               inAsyncCall: promoProvider.isLoading,
@@ -129,10 +138,6 @@ class _CartState extends State<Cart> {
                           return Container(
                             margin: EdgeInsets.all(10),
                             child: Card(
-                              // contentpadding: EdgeInsets.symmetric(
-                              //   vertical: 10,
-                              //   horizontal: 20,
-                              // ),
                               child: Container(
                                 padding: EdgeInsets.all(10),
                                 child: Row(
@@ -144,15 +149,17 @@ class _CartState extends State<Cart> {
                                           CrossAxisAlignment.start,
                                       children: <Widget>[
                                         Text(
-                                          product.productName,
+                                          product.product.name,
                                           style: kProductNameTextStyle,
                                         ),
                                         Text(
-                                          product.productWeight,
+                                          product.product.weight.toString(),
                                           style: kProductWeightTextStyle,
                                         ),
                                         Text(
-                                          "₹ " + product.productPrice,
+                                          "₹ " +
+                                              product.product.price
+                                                  .toStringAsFixed(1),
                                           style: kProductPriceTextStyle,
                                         ),
                                       ],
@@ -180,31 +187,34 @@ class _CartState extends State<Cart> {
                                             width: 35,
                                             child: GestureDetector(
                                               onTap: () {
-                                                if (product.productQuantity >
-                                                    1) {
-                                                  setState(() {
-                                                    product.productQuantity =
-                                                        product.productQuantity -
-                                                            1;
-                                                    product.productTotalPrice =
-                                                        product.productTotalPrice -
-                                                            int.parse(product
-                                                                .productPrice);
-                                                    promoText = '';
-                                                    _promo.clear();
-                                                  });
-                                                } else {
-                                                  cartProvider.cartProducts
-                                                      .remove(product);
-                                                  cartProvider.productNames
-                                                      .remove(
-                                                          product.productName);
-                                                  cartProvider.itemCount--;
-                                                  promoText = '';
-                                                  _promo.clear();
-                                                }
-                                                cartProvider
-                                                    .calculateTotalPrice();
+                                                _con.decrementQuantity(_con
+                                                    .carts
+                                                    .elementAt(index));
+                                                // if (product.productQuantity >
+                                                //     1) {
+                                                //   setState(() {
+                                                //     product.productQuantity =
+                                                //         product.productQuantity -
+                                                //             1;
+                                                //     product.productTotalPrice =
+                                                //         product.productTotalPrice -
+                                                //             int.parse(product
+                                                //                 .productPrice);
+                                                //     promoText = '';
+                                                //     _promo.clear();
+                                                //   });
+                                                // } else {
+                                                //   cartProvider.cartProducts
+                                                //       .remove(product);
+                                                //   cartProvider.productNames
+                                                //       .remove(
+                                                //           product.productName);
+                                                //   cartProvider.itemCount--;
+                                                //   promoText = '';
+                                                //   _promo.clear();
+                                                // }
+                                                // cartProvider
+                                                //     .calculateTotalPrice();
                                               },
                                               child: Icon(
                                                 Icons.remove,
@@ -215,8 +225,7 @@ class _CartState extends State<Cart> {
                                           ),
                                           Container(
                                             child: Text(
-                                              product.productQuantity
-                                                  .toString(),
+                                              product.quantity.toString(),
                                               textAlign: TextAlign.center,
                                               style: kProductNameTextStyle,
                                             ),
@@ -241,19 +250,22 @@ class _CartState extends State<Cart> {
                                             ),
                                             child: GestureDetector(
                                               onTap: () {
-                                                setState(() {
-                                                  product.productQuantity =
-                                                      product.productQuantity +
-                                                          1;
-                                                  product.productTotalPrice =
-                                                      product.productTotalPrice +
-                                                          int.parse(product
-                                                              .productPrice);
-                                                  promoText = '';
-                                                  _promo.clear();
-                                                });
-                                                cartProvider
-                                                    .calculateTotalPrice();
+                                                _con.incrementQuantity(_con
+                                                    .carts
+                                                    .elementAt(index));
+                                                // setState(() {
+                                                //   product.productQuantity =
+                                                //       product.productQuantity +
+                                                //           1;
+                                                //   product.productTotalPrice =
+                                                //       product.productTotalPrice +
+                                                //           int.parse(product
+                                                //               .productPrice);
+                                                //   promoText = '';
+                                                //   _promo.clear();
+                                                // });
+                                                // cartProvider
+                                                //     .calculateTotalPrice();
                                               },
                                               child: Icon(Icons.add,
                                                   size: 16, color: kDarkGreen),
@@ -271,135 +283,6 @@ class _CartState extends State<Cart> {
                         itemCount: cartList == null ? 0 : cartList.length,
                       ),
                     ),
-                    // Expanded(
-                    //   flex: 5,
-                    //   child: Container(
-                    //     padding: EdgeInsets.symmetric(
-                    //       vertical: 0,
-                    //       horizontal: 20,
-                    //     ),
-                    //     width: MediaQuery.of(context).size.width,
-                    //     color: kLightGreen.withAlpha(50),
-                    //     child: Column(
-                    //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    //       crossAxisAlignment: CrossAxisAlignment.start,
-                    //       children: <Widget>[
-                    //         GestureDetector(
-                    //           onTap: () {
-                    //             showModalBottomSheet(
-                    //               context: context,
-                    //               isScrollControlled: true,
-                    //               builder: (context) {
-                    //                 return SingleChildScrollView(
-                    //                   child: Container(
-                    //                     padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-                    //                     child: Container(
-                    //                       height: MediaQuery.of(context).size.height * 0.25,
-                    //                       padding: EdgeInsets.symmetric(
-                    //                         vertical: 0,
-                    //                         horizontal: 40,
-                    //                       ),
-                    //                       child: Column(
-                    //                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    //                         children: <Widget>[
-                    //                           TextFormField(
-                    //                             controller: _promo,
-                    //                           ),
-                    //                           StartButton(
-                    //                             onPressFunc: () async {
-                    //                               promoProvider.enteredPromo = _promo.value.text;
-                    //                               promoProvider.cartValue = amount;
-                    //                               String msg = await promoProvider.applyPromo();
-                    //                               Fluttertoast.showToast(msg: msg);
-                    //                               print(promoProvider.isApplied);
-                    //                               if (promoProvider.isApplied) {
-                    //                                 applyPromo();
-                    //                               }
-                    //                               Navigator.pop(context);
-                    //                             },
-                    //                             name: 'Apply',
-                    //                           )
-                    //                         ],
-                    //                       ),
-                    //                     ),
-                    //                   ),
-                    //                 );
-                    //               },
-                    //             );
-                    //           },
-                    //           child: Row(
-                    //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //             children: <Widget>[
-                    //               Text(
-                    //                 'Apply promocode',
-                    //                 style: kCartPromoTextStyle,
-                    //               ),
-                    //               Text(
-                    //                 promoText,
-                    //                 style: kCartPromoTextStyle,
-                    //               ),
-                    //             ],
-                    //           ),
-                    //         ),
-                    //         SizedBox(
-                    //           height: 5,
-                    //         ),
-                    //         Row(
-                    //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //           children: <Widget>[
-                    //             Text(
-                    //               'Item Total ',
-                    //               style: kCartItemTotalTextStyle,
-                    //             ),
-                    //             Text(
-                    //               '₹ ' + amount.toString(),
-                    //               style: kCartItemTotalTextStyle,
-                    //             ),
-                    //           ],
-                    //         ),
-                    //         Row(
-                    //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //           children: <Widget>[
-                    //             Text(
-                    //               'Delivery Charges',
-                    //               style: kCartTaxesTextStyle,
-                    //             ),
-                    //             Text(
-                    //               amount < 1000 ? '₹ ${deliveryCharge.toString()}' : 'Free',
-                    //               style: kCartTaxesTextStyle,
-                    //             ),
-                    //           ],
-                    //         ),
-                    //         Row(
-                    //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //           children: <Widget>[
-                    //             Column(
-                    //               crossAxisAlignment: CrossAxisAlignment.start,
-                    //               children: <Widget>[
-                    //                 Text(
-                    //                   'Grand Total ',
-                    //                   style: kCartGrandTotalTextStyle,
-                    //                 ),
-                    //                 Text(
-                    //                   'Incl. of all taxes',
-                    //                   style: TextStyle(
-                    //                     fontSize: 10,
-                    //                     fontWeight: FontWeight.w400,
-                    //                     color: Colors.black45,
-                    //                   ),
-                    //                 ),
-                    //               ],
-                    //             ),
-                    //             Text(
-                    //               '₹ ' + (amount + deliveryCharge - discountGiven).toString(),
-                    //               style: kCartGrandTotalTextStyle,
-                    //             ),
-                    //           ],
-                    //         ),
-                    //       ],
-                    //     ),
-                    //   ),
-                    // ),
                     Expanded(
                       flex: 2,
                       child: Container(
@@ -422,9 +305,7 @@ class _CartState extends State<Cart> {
                                     fontWeight: FontWeight.bold),
                               ),
                               Text(
-                                '₹ ' +
-                                    (amount + deliveryCharge - discountGiven)
-                                        .toString(),
+                                '₹ ' + _con.total.toStringAsFixed(1),
                                 style: kCartOrderButtonTextStyle,
                               ),
                             ],

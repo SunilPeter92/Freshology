@@ -28,23 +28,23 @@
 //       this.userOrderNumber,
 //       this.auth});
 
-//   UserModel.fromJSON(Map<String, dynamic> jsonMap) {
+//   UserModel.fromJSON(Map<String, dynamic> jsonMap['user_data']) {
 //     try {
-//       userCountry = jsonMap['country'].toString();
-//       userPhoneNumber = jsonMap['phone_no'].toString();
-//       userCity = jsonMap['city'].toString();
-//       userHouseNo = jsonMap['address'].toString();
-//       userId = jsonMap['id'];
-//       userState = jsonMap['state'].toString();
-//       userEmail = (jsonMap['email'] == null || jsonMap['email'] == '')
+//       userCountry = jsonMap['user_data']['country'].toString();
+//       userPhoneNumber = jsonMap['user_data']['phone_no'].toString();
+//       userCity = jsonMap['user_data']['city'].toString();
+//       userHouseNo = jsonMap['user_data']['address'].toString();
+//       userId = jsonMap['user_data']['id'];
+//       userState = jsonMap['user_data']['state'].toString();
+//       userEmail = (jsonMap['user_data']['email'] == null || jsonMap['user_data']['email'] == '')
 //           ? null
-//           : jsonMap['email'];
-//       userName = jsonMap['name'].toString();
-//       userPinCode = jsonMap['pinecode'].toString();
-//       userArea = jsonMap['area'].toString();
-//       userBalance = (jsonMap['balance'] == null || jsonMap['balance'] == '')
+//           : jsonMap['user_data']['email'];
+//       userName = jsonMap['user_data']['name'].toString();
+//       userPinCode = jsonMap['user_data']['pinecode'].toString();
+//       userArea = jsonMap['user_data']['area'].toString();
+//       userBalance = (jsonMap['user_data']['balance'] == null || jsonMap['user_data']['balance'] == '')
 //           ? null
-//           : int.parse(jsonMap['balance']);
+//           : int.parse(jsonMap['user_data']['balance']);
 //     } catch (e) {
 //       print(e.toString());
 //     }
@@ -65,6 +65,9 @@
 //     return userMap;
 //   }
 // }
+import 'package:freshology/models/Address.dart';
+import 'package:freshology/screens/myAdresses.dart';
+
 import '../helpers/custom_trace.dart';
 import '../models/media.dart';
 
@@ -90,63 +93,82 @@ class User {
   String pinCode;
   String status;
   // used for indicate if client logged in or not
+  List<Address> addresses;
   bool auth;
 
 //  String role;
 
-  User({
-    this.id,
-    this.name,
-    this.email,
-    this.apiToken,
-    this.deviceToken,
-    this.phone,
-    this.address,
-    this.bio,
-    this.image,
-    this.countryId,
-    this.countryName,
-    this.stateId,
-    this.stateName,
-    this.cityId,
-    this.cityName,
-    this.areaId,
-    this.areaName,
-    this.houseNo,
-    this.pinCode,
-    this.status,
-  });
+  User(
+      {this.id,
+      this.name,
+      this.email,
+      this.apiToken,
+      this.deviceToken,
+      this.phone,
+      this.address,
+      this.bio,
+      this.image,
+      this.countryId,
+      this.countryName,
+      this.stateId,
+      this.stateName,
+      this.cityId,
+      this.cityName,
+      this.areaId,
+      this.areaName,
+      this.houseNo,
+      this.pinCode,
+      this.status,
+      this.addresses});
 
   User.fromJSON(Map<String, dynamic> jsonMap) {
+    print(jsonMap.toString());
     try {
-      id = jsonMap['id'].toString();
-      name = jsonMap['name'] != null ? jsonMap['name'] : '';
-      email = jsonMap['email'] != null ? jsonMap['email'] : '';
-      apiToken = jsonMap['api_token'];
-      deviceToken = jsonMap['device_token'];
-      // countryName = jsonMap['country'];
-      // countryId = jsonMap['country_id'];
-      // stateId = jsonMap['state_id'];
-      // stateName = jsonMap['state'];
-      // cityId = jsonMap['city_id'];
-      // cityName = jsonMap['city'];
-      // areaId = jsonMap['area_id'];
-      // areaName = jsonMap['area'];
-      // houseNo = jsonMap['house_no'];
-      // pinCode = jsonMap['pinecode'];
-      status = jsonMap['status'];
+      id = jsonMap['user_data']['id'].toString();
+      name = jsonMap['user_data']['name'] != null
+          ? jsonMap['user_data']['name']
+          : '';
+      email = jsonMap['user_data']['email'] != null
+          ? jsonMap['user_data']['email']
+          : '';
+      apiToken = jsonMap['user_data']['api_token'];
+      deviceToken = jsonMap['user_data']['device_token'];
+      countryName = jsonMap['user_data']['country'];
+      countryId = jsonMap['user_data']['country_id'];
+      stateId = jsonMap['user_data']['state_id'];
+      stateName = jsonMap['user_data']['state'];
+      cityId = jsonMap['user_data']['city_id'];
+      cityName = jsonMap['user_data']['city'];
+      areaId = jsonMap['user_data']['area_id'];
+      areaName = jsonMap['user_data']['area'];
+      houseNo = jsonMap['user_data']['house_no'];
+      pinCode = jsonMap['user_data']['pinecode'];
+      status = jsonMap['user_data']['status'];
+      addresses = setAddress(jsonMap);
       try {
-        phone = jsonMap['phone_no'];
+        phone = jsonMap['user_data']['phone_no'];
       } catch (e) {
         phone = "";
       }
 
-      // image = jsonMap['media'] != null && (jsonMap['media'] as List).length > 0
-      //     ? Media.fromJSON(jsonMap['media'][0])
+      // image = jsonMap['user_data']['media'] != null && (jsonMap['user_data']['media'] as List).length > 0
+      //     ? Media.fromJSON(jsonMap['user_data']['media'][0])
       //     : new Media();
     } catch (e) {
       print(CustomTrace(StackTrace.current, message: e));
     }
+  }
+
+  List<Address> setAddress(jsonMap) {
+    List<Address> _addresses = [];
+    for (int i = 0; i < jsonMap['user_address'].length; i++) {
+      _addresses.add(
+        Address.fromJson(
+          jsonMap['user_address'][i],
+        ),
+      );
+    }
+    return _addresses;
   }
 
   Map toMap() {

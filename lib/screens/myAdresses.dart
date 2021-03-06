@@ -8,6 +8,7 @@ import 'package:freshology/repositories/user_repository.dart';
 import 'package:freshology/widget/startButton.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
+import '../repositories/appListenables.dart';
 
 class Addresses extends StatefulWidget {
   @override
@@ -27,24 +28,24 @@ class _AddressesState extends State<Addresses> {
 
   initializeData() {
     addresses.add(Address(
-      countryName: "India",
+      country: "India",
       countryId: "1",
-      stateName: "Haryana",
+      state: "Haryana",
       stateId: "23",
-      cityName: "Faridabad",
+      city: "Faridabad",
       cityId: "3",
-      areaName: "charmwood",
+      area: "charmwood",
       areaId: "32",
       houseNo: "abc xyz 123, abc 123, xyz",
     ));
     addresses.add(Address(
-      countryName: "India",
+      country: "India",
       countryId: "1",
-      stateName: "Haryana",
+      state: "Haryana",
       stateId: "23",
-      cityName: "Faridabad",
+      city: "Faridabad",
       cityId: "3",
-      areaName: "charmwood",
+      area: "charmwood",
       areaId: "32",
       houseNo: "abc xyz 123, abc 123, xyz",
     ));
@@ -106,13 +107,13 @@ class _AddressesState extends State<Addresses> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  addresses[index].countryName,
+                                  addresses[index].country,
                                   style: TextStyle(
                                     color: kDarkGreen,
                                   ),
                                 ),
                                 Text(
-                                  addresses[index].stateName,
+                                  addresses[index].state,
                                   style: TextStyle(
                                     color: kDarkGreen,
                                     fontWeight: FontWeight.bold,
@@ -124,13 +125,13 @@ class _AddressesState extends State<Addresses> {
                           SizedBox(height: 10),
                           Container(
                             child: Text(
-                              "${addresses[index].houseNo}+${addresses[index].areaName}",
+                              "${addresses[index].houseNo}+${addresses[index].area}",
                             ),
                           ),
                           SizedBox(height: 5),
                           Container(
                             child: Text(
-                              "${addresses[index].cityName}",
+                              "${addresses[index].city}",
                             ),
                           ),
                           SizedBox(height: 5),

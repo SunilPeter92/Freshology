@@ -9,6 +9,7 @@ import 'package:freshology/repositories/user_repository.dart';
 import 'package:freshology/screens/productDetails.dart';
 import 'package:freshology/widget/startButton.dart';
 import 'package:provider/provider.dart';
+import '../repositories/appListenables.dart';
 
 class TrendingProductsWidget extends StatelessWidget {
   Function buttonPressed;

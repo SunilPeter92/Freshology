@@ -13,11 +13,15 @@ import 'package:freshology/provider/categoryProvider.dart';
 import 'package:freshology/provider/productProvider.dart';
 import 'package:freshology/provider/userProvider.dart';
 import 'package:freshology/repositories/user_repository.dart';
+import 'package:freshology/screens/home.dart';
+import 'package:freshology/screens/productDetails.dart';
 import 'package:freshology/widget/CartButton.dart';
 import 'package:freshology/widget/productWidget.dart';
 import 'package:freshology/widget/startButton.dart';
+import 'package:get/get.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:provider/provider.dart';
+import '../repositories/appListenables.dart';
 
 class Products extends StatefulWidget {
   RouteArgument routeArgument;
@@ -40,6 +44,7 @@ class _ProductsState extends StateMVC<Products>
     _con.subCategory = widget
         .routeArgument.param.subCategory[int.parse(widget.routeArgument.id)];
     _con.fetchSubCategoryProducts();
+    _con.listenForCarts();
     final category =
         Provider.of<CategoryProvider>(context, listen: false).categories;
     _tabController = TabController(length: category.length, vsync: this);
@@ -72,6 +77,7 @@ class _ProductsState extends StateMVC<Products>
   @override
   void dispose() {
     _tabController.dispose();
+    _con.listenForCarts();
     super.dispose();
   }
 
@@ -114,54 +120,67 @@ class _ProductsState extends StateMVC<Products>
       );
     }
 
-    return Scaffold(
-        extendBodyBehindAppBar: false,
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          elevation: 0,
-          backgroundColor: Colors.transparent,
-          iconTheme: IconThemeData(color: kDarkGreen),
-          title: Text(
-            "Category",
-            style: TextStyle(
-              color: kDarkGreen,
-              fontWeight: FontWeight.bold,
+    return WillPopScope(
+      onWillPop: () async {
+        Get.back(result: _con.total);
+        print("CON TOTAL PRODUCTS: ${_con.total}");
+        await Future.delayed(Duration(milliseconds: 200), () {});
+        return true;
+      },
+      child: Scaffold(
+          extendBodyBehindAppBar: false,
+          backgroundColor: Colors.white,
+          appBar: AppBar(
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            iconTheme: IconThemeData(color: kDarkGreen),
+            title: Text(
+              "Category",
+              style: TextStyle(
+                color: kDarkGreen,
+                fontWeight: FontWeight.bold,
+              ),
             ),
+            actions: [
+              CartButton(cartTotal: _con.total),
+            ],
           ),
-          actions: [
-            CartButton(),
-          ],
-        ),
-        body: Column(
-          children: [
-            pageCategoryTitle(),
-            SizedBox(height: 20),
-            _con.products.length < 1
-                ? Container()
-                : Flexible(
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: GridView.builder(
-                            shrinkWrap: true,
-                            itemCount: _con.products.length,
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2,
-                                    childAspectRatio: 2 / 3.3),
-                            itemBuilder: (BuildContext context, int index) {
-                              print(
-                                  "CON PRODUCTS : ${_con.products[index].name}");
-                              return ProductWidget(
-                                product: _con.products[index],
-                              );
-                            },
+          body: Column(
+            children: [
+              pageCategoryTitle(),
+              SizedBox(height: 20),
+              _con.products.length < 1
+                  ? Container()
+                  : Flexible(
+                      child: Column(
+                        children: [
+                          Expanded(
+                            child: GridView.builder(
+                              shrinkWrap: true,
+                              itemCount: _con.products.length,
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 2,
+                                      childAspectRatio: 2 / 3.3),
+                              itemBuilder: (BuildContext context, int index) {
+                                print(
+                                    "CON PRODUCTS : ${_con.products[index].name}");
+                                return ProductWidget(
+                                  product: _con.products[index],
+                                  onPressed: () async {
+                                    _con.total = await Get.to(() =>
+                                        (ProductDetails(_con.products[index])));
+                                    setState(() {});
+                                  },
+                                );
+                              },
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-          ],
-        ));
+            ],
+          )),
+    );
   }
 }
