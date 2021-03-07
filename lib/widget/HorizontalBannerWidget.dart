@@ -13,9 +13,11 @@ class HorizontalBannerWidget extends StatelessWidget {
           margin: EdgeInsets.all(5),
           height: 180,
           decoration: BoxDecoration(
-            color: Colors.blue,
             image: DecorationImage(
-              image: Image.network(item.bData).image,
+              image: Image.network(item.bData == null
+                      ? "https://static.wikia.nocookie.net/avatar/images/3/3d/Meal.png/revision/latest?cb=20140421100424"
+                      : item.bData)
+                  .image,
               fit: BoxFit.fill,
             ),
           ),

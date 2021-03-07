@@ -168,8 +168,14 @@ class _ProductsState extends StateMVC<Products>
                                 return ProductWidget(
                                   product: _con.products[index],
                                   onPressed: () async {
-                                    _con.total = await Get.to(() =>
-                                        (ProductDetails(_con.products[index])));
+                                    _con.total = await Get.to(
+                                      () => (ProductDetails(
+                                        routeArgument: RouteArgument(
+                                          id: _con.products[index].id
+                                              .toString(),
+                                        ),
+                                      )),
+                                    );
                                     setState(() {});
                                   },
                                 );

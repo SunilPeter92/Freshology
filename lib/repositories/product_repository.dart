@@ -1,7 +1,9 @@
 import 'package:freshology/constants/Helper.dart';
 import 'package:freshology/constants/configurations.dart';
 import 'package:freshology/models/product.dart';
+import 'package:freshology/models/userModel.dart';
 import 'package:freshology/repositories/category_repository.dart';
+import 'package:freshology/repositories/user_repository.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -22,7 +24,7 @@ Future<Product> getSingleProductId(String id) async {
 
 Future<Stream<Product>> getFoodsByCategory(categoryId) async {
   final String url =
-      '${baseURL}foods?with=restaurant&search=category_id:$categoryId&searchFields=category_id:=';
+      '${baseURL}foods?with=restaurant;extras&search=category_id:$categoryId&searchFields=category_id:=';
   print("PRODUCTS BY CATEGORY: ${url}");
   final client = new http.Client();
   final streamedRest = await client.send(http.Request('get', Uri.parse(url)));
@@ -37,6 +39,40 @@ Future<Stream<Product>> getFoodsByCategory(categoryId) async {
   });
 }
 
+Future<Stream<Product>> getProductById(String productId) async {
+  User _user = await getCurrentUser();
+  final String _apiToken = 'api_token=${_user.apiToken}&';
+  final String url =
+      '${baseURL}foods/$productId?${_apiToken}with=nutrition;restaurant;category;extras;foodReviews;foodReviews.user';
+  print("GET FOOD BY: ${url}");
+  final client = new http.Client();
+  final streamedRest = await client.send(http.Request('get', Uri.parse(url)));
+
+  return streamedRest.stream
+      .transform(utf8.decoder)
+      .transform(json.decoder)
+      .map((data) => Helper.getData(data))
+      .map((data) => Product.fromJson(data));
+}
+
+Future<Stream<Product>> getTrendingProducts() async {
+  User _user = await getCurrentUser();
+  final String _apiToken = 'api_token=${_user.apiToken}&';
+  final String url =
+      '${baseURL}foods?${_apiToken}with=restaurant;category;extras;foodReviews;foodReviews.user&limit=6';
+
+  final client = new http.Client();
+  final streamedRest = await client.send(http.Request('get', Uri.parse(url)));
+
+  return streamedRest.stream
+      .transform(utf8.decoder)
+      .transform(json.decoder)
+      .map((data) => Helper.getData(data))
+      .expand((data) => (data as List))
+      .map((data) {
+    return Product.fromJson(data);
+  });
+}
 // Future<List<Product>> getSubCategoryProducts(String id) async {
 //   List<Product> products = [];
 //   final url = "${baseURL}get_product_by_cate/${id}";

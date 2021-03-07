@@ -19,7 +19,7 @@ class Extra {
           ? jsonMap['extra_group_id'].toString()
           : '0';
       name = jsonMap['name'].toString();
-      price = jsonMap['price'] != null ? jsonMap['price'].toDouble() : 0;
+      price = jsonMap['price'] != null ? double.parse(jsonMap['price']) : 0;
       description = jsonMap['description'];
       checked = false;
       image = jsonMap['media'] != null && (jsonMap['media'] as List).length > 0

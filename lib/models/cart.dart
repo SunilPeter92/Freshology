@@ -1,7 +1,6 @@
 import 'package:freshology/models/product.dart';
 
 import '../helpers/custom_trace.dart';
-import '../models/extra.dart';
 
 class Cart {
   String id;
@@ -45,7 +44,7 @@ class Cart {
   }
 
   double getFoodPrice() {
-    double result = product.price;
+    double result = product.price.toDouble();
     // if (extras.isNotEmpty) {
     //   extras.forEach((Extra extra) {
     //     result += extra.price != null ? extra.price : 0;

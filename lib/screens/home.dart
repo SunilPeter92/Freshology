@@ -236,6 +236,9 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
       _con.fetchAnnouncement();
       _con.fetchBanners();
       _con.listenForCarts();
+      _con.listenForSlider();
+
+      _con.listenForTrendingFoods();
       getGeneralData();
       Provider.of<ProductProvider>(context, listen: false).getFruitsAndVeg();
 
@@ -437,11 +440,11 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
       _con.categories.forEach((category) {
         _widgetList.add(CategoryWidget(
           category: category,
-          onPressed: () async {
-            print("CATEGORY: ${category.mainCategory.name}");
+          onPressed: (id) async {
+            print("SUB CATEGORY ID: ${id}");
             _con.total = await Get.to(() => Products(
-                routeArgument: RouteArgument(
-                    param: category, id: category.mainCategory.id.toString())));
+                routeArgument:
+                    RouteArgument(param: category, id: id.toString())));
             setState(() {});
           },
         ));
@@ -852,11 +855,20 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                     content: Center(
                       child: Column(
                         children: <Widget>[
-                          offersList.length < 1
+                          (_con.slides1.length < 1 && !_con.showSlider)
                               ? Container()
                               : BannerScrollable(
-                                  offersList: offersList,
-                                  length: offersList.length,
+                                  slidesList: _con.slides1,
+                                  length: _con.slides1.length,
+                                  onPressed: (i) async {
+                                    _con.total = await Get.to(
+                                      ProductDetails(
+                                        routeArgument: RouteArgument(
+                                          id: i.foodId.toString(),
+                                        ),
+                                      ),
+                                    );
+                                  },
                                 ),
                           // SizedBox(height: 20),
                           // (offersProvider.offers.length > 0)
@@ -1023,7 +1035,7 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                           SizedBox(height: 20),
                           Container(
                             margin: EdgeInsets.only(left: 5),
-                            child: fruitsAndVegList.length < 1
+                            child: _con.trendingProducts.length < 1
                                 ? Center(
                                     child: CircularProgressIndicator(),
                                   )
@@ -1042,16 +1054,29 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                                             childAspectRatio: 3.55 / 1.78,
                                             crossAxisCount: 1,
                                           ),
-                                          itemCount: fruitsAndVegList.length,
+                                          itemCount:
+                                              _con.trendingProducts.length,
                                           scrollDirection: Axis.horizontal,
                                           itemBuilder: (context, index) {
                                             return Container(
                                               margin: EdgeInsets.symmetric(
                                                   horizontal: 5),
                                               child: TrendingProductsWidget(
-                                                product: fruitsAndVegList[4],
-                                                buttonPressed: () {
-                                                  setState(() {});
+                                                product: _con
+                                                    .trendingProducts[index],
+                                                buttonPressed: () async {
+                                                  _con.total = await Get.to(
+                                                    ProductDetails(
+                                                      routeArgument:
+                                                          RouteArgument(
+                                                        id: _con
+                                                            .trendingProducts[
+                                                                index]
+                                                            .id
+                                                            .toString(),
+                                                      ),
+                                                    ),
+                                                  );
                                                 },
                                               ),
                                             );
@@ -1077,11 +1102,20 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                             children: _buildCategoryWidgetList(),
                           ),
                           SizedBox(height: 20),
-                          (categoryOfferList.length < 1)
+                          (_con.slides2.length < 1 && !_con.showSlider)
                               ? Container()
-                              : BannerScrollableCategory(
-                                  offersList: categoryOfferList,
-                                  length: categoryOfferList.length,
+                              : BannerScrollable(
+                                  slidesList: _con.slides2,
+                                  length: _con.slides2.length,
+                                  onPressed: (i) async {
+                                    _con.total = await Get.to(
+                                      ProductDetails(
+                                        routeArgument: RouteArgument(
+                                          id: i.foodId.toString(),
+                                        ),
+                                      ),
+                                    );
+                                  },
                                 ),
                           SizedBox(height: 20),
                           Container(
@@ -1129,7 +1163,7 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                           SizedBox(height: 20),
                           Container(
                             margin: EdgeInsets.only(left: 5),
-                            child: fruitsAndVegList.length < 1
+                            child: _con.trendingProducts.length < 1
                                 ? Center(
                                     child: CircularProgressIndicator(),
                                   )
@@ -1148,16 +1182,29 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                                             childAspectRatio: 3.55 / 1.78,
                                             crossAxisCount: 1,
                                           ),
-                                          itemCount: fruitsAndVegList.length,
+                                          itemCount:
+                                              _con.trendingProducts.length,
                                           scrollDirection: Axis.horizontal,
                                           itemBuilder: (context, index) {
                                             return Container(
                                               margin: EdgeInsets.symmetric(
                                                   horizontal: 5),
                                               child: TrendingProductsWidget(
-                                                product: fruitsAndVegList[4],
-                                                buttonPressed: () {
-                                                  setState(() {});
+                                                product: _con
+                                                    .trendingProducts[index],
+                                                buttonPressed: () async {
+                                                  _con.total = await Get.to(
+                                                    ProductDetails(
+                                                      routeArgument:
+                                                          RouteArgument(
+                                                        id: _con
+                                                            .trendingProducts[
+                                                                index]
+                                                            .id
+                                                            .toString(),
+                                                      ),
+                                                    ),
+                                                  );
                                                 },
                                               ),
                                             );
@@ -1177,9 +1224,9 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                                 )
                               : Container(),
 
-                          // HorizontalBannerWidget(
-                          //   bannerList: _con.adBanners,
-                          // ),
+                          HorizontalBannerWidget(
+                            bannerList: _con.adBanners,
+                          ),
                           SizedBox(height: 20),
                         ],
                       ),

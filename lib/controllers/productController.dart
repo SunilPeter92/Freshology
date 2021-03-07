@@ -1,3 +1,4 @@
+import 'package:freshology/helpers/helper.dart';
 import 'package:freshology/models/cart.dart';
 import 'package:freshology/models/category.dart';
 import 'package:freshology/models/mainCategory.dart';
@@ -59,8 +60,10 @@ class ProductController extends ControllerMVC {
   fetchSubCategoryProducts() async {
     final Stream<Product> stream =
         await getFoodsByCategory(subCategory.data.id.toString());
+
     stream.listen(
         (Product _product) {
+          _product.media[0].url = Helper.imageURLFixer(_product.media[0].url);
           setState(() {
             products.add(_product);
           });

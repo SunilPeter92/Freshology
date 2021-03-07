@@ -14,6 +14,7 @@ import 'package:freshology/screens/orderDetails.dart';
 import 'package:freshology/screens/orders.dart';
 import 'package:freshology/screens/payment.dart';
 import 'package:freshology/screens/privacyPolicy.dart';
+import 'package:freshology/screens/productDetails.dart';
 import 'package:freshology/screens/products.dart';
 import 'package:freshology/screens/refundPolicy.dart';
 import 'package:freshology/screens/register.dart';
@@ -43,6 +44,10 @@ class RouteGenerator {
       case 'products':
         return MaterialPageRoute(
             builder: (_) => Products(routeArgument: args as RouteArgument));
+      
+      case 'productDetails':
+        return MaterialPageRoute(
+            builder: (_) => ProductDetails(routeArgument: args as RouteArgument));      
 
       case 'cart':
         return MaterialPageRoute(builder: (_) => Cart());

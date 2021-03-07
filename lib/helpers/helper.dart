@@ -52,6 +52,11 @@ class Helper {
 
 //     return marker;
 //   }
+  static String imageURLFixer(String badUrl) {
+    String url;
+    url = badUrl.replaceFirst("publicstorage", "public/storage");
+    return url;
+  }
 
   static Icon getBackIcon(
       {bool isAppBar = false,

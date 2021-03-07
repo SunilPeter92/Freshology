@@ -180,7 +180,7 @@ class _CategoryWidgetState extends State<CategoryWidget> {
                         margin: EdgeInsets.zero,
                         child: InkWell(
                           onTap: () {
-                            widget.onPressed();
+                            widget.onPressed(index);
                             // Navigator.of(context).pushNamed('products',
                             //     arguments: RouteArgument(
                             //         id: index.toString(),

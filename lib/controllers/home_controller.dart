@@ -1,11 +1,13 @@
 // import 'package:freshology/functions/invoice.dart';
 import 'package:flutter/material.dart';
+import 'package:freshology/helpers/helper.dart';
 import 'package:freshology/models/AdBanner.dart';
 import 'package:freshology/models/Announcement.dart';
 import 'package:freshology/models/cart.dart';
 import 'package:freshology/models/category.dart';
 import 'package:freshology/models/mainCategory.dart';
 import 'package:freshology/models/product.dart';
+import 'package:freshology/models/slides.dart';
 import 'package:freshology/models/subCategory.dart';
 import 'package:freshology/repositories/appListenables.dart';
 import 'package:freshology/repositories/banner_repository.dart';
@@ -17,9 +19,13 @@ import 'package:mvc_pattern/mvc_pattern.dart';
 class HomeController extends ControllerMVC with ChangeNotifier {
   Product product = Product();
   List<Category> categories = [];
+  List<Product> trendingProducts = [];
   Announcement announcement = Announcement();
   bool showAnnouncement = false;
   List<AdBanner> adBanners = [];
+  List<Slide> slides1 = [];
+  List<Slide> slides2 = [];
+  bool showSlider = false;
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   List<Cart> carts = <Cart>[];
   double taxAmount = 0.0;
@@ -134,6 +140,47 @@ class HomeController extends ControllerMVC with ChangeNotifier {
     // cartValue.notifyListeners();
     setState(() {
       total = subTotal + taxAmount;
+    });
+  }
+
+  void listenForTrendingFoods() async {
+    final Stream<Product> stream = await getTrendingProducts();
+    stream.listen((Product _product) {
+      _product.media[0].url = Helper.imageURLFixer(_product.media[0].url);
+      setState(() => trendingProducts.add(_product));
+    }, onError: (a) {
+      print(a);
+    }, onDone: () {
+      print("TRENDING PRODUCTS: ${trendingProducts.length}");
+    });
+  }
+
+  void listenForSlider() async {
+    showSlider = false;
+    final Stream<Slide> stream = await getSlides();
+    stream.listen((Slide _slide) {
+      String _unFormattedUrl = _slide.media[0].url;
+      _slide.media[0].url =
+          _unFormattedUrl.replaceFirst("publicstorage", "public/storage");
+      if (_slide.order == 1) {
+        setState(() {
+          slides1.add(_slide);
+        });
+      } else if (_slide.order == 2) {
+        setState(() {
+          slides2.add(_slide);
+        });
+      }
+    }, onError: (a) {
+      showSlider = false;
+      setState(() {});
+      print("SLIDER ERROR !!! ${a}");
+      scaffoldKey.currentState?.showSnackBar(SnackBar(
+        content: Text('Verify your internet connection'),
+      ));
+    }, onDone: () {
+      showSlider = true;
+      setState(() {});
     });
   }
 }

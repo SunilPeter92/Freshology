@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:freshology/constants/styles.dart';
 import 'package:freshology/models/cartModel.dart';
+import 'package:freshology/models/product.dart';
 import 'package:freshology/models/productModel.dart';
 import 'package:freshology/models/userModel.dart';
 import 'package:freshology/provider/cartProvider.dart';
@@ -14,7 +15,7 @@ import '../repositories/appListenables.dart';
 class TrendingProductsWidget extends StatelessWidget {
   Function buttonPressed;
 
-  ProductModel product;
+  Product product;
   TrendingProductsWidget(
       {@required this.product, @required this.buttonPressed});
   User user;
@@ -55,30 +56,36 @@ class TrendingProductsWidget extends StatelessWidget {
                     width: width,
                     child: Image(
                       fit: BoxFit.cover,
-                      image: NetworkImage(product.imageUrl),
+                      image: NetworkImage(product.media[0].url),
                     ),
                   ),
                 ),
               ),
-              Positioned(
-                right: 5,
-                top: 5,
-                child: Container(
-                  height: 35,
-                  width: 35,
-                  alignment: Alignment.center,
-                  decoration:
-                      BoxDecoration(shape: BoxShape.circle, color: kDarkGreen),
-                  child: Text(
-                    "13%\nOFF",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 11,
-                      fontWeight: FontWeight.w700,
+              (product.discountPrice / product.price) == 0
+                  ? Positioned(
+                      right: 5,
+                      top: 5,
+                      child: Container(),
+                    )
+                  : Positioned(
+                      right: 5,
+                      top: 5,
+                      child: Container(
+                        height: 35,
+                        width: 35,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle, color: kDarkGreen),
+                        child: Text(
+                          "13%\nOFF",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              ),
             ],
           ),
           SizedBox(height: 10),
@@ -87,31 +94,46 @@ class TrendingProductsWidget extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Container(
-                  height: 25,
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "₹ ${product.price}",
-                    style: TextStyle(
-                      color: kDarkGreen,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
+                (product.discountPrice == 0 || product.discountPrice == null)
+                    ? Container(
+                        height: 25,
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          "₹ ${product.price}",
+                          style: TextStyle(
+                            color: kDarkGreen,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      )
+                    : Container(
+                        height: 25,
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          "₹ ${product.discountPrice}",
+                          style: TextStyle(
+                            color: kDarkGreen,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
                 SizedBox(width: 10),
-                Container(
-                  height: 25,
-                  alignment: Alignment.topLeft,
-                  child: Text(
-                    "₹ ${product.price}",
-                    style: TextStyle(
-                      decoration: TextDecoration.lineThrough,
-                      color: Colors.grey,
-                      fontSize: 14,
-                    ),
-                  ),
-                ),
+                (product.discountPrice == 0 || product.discountPrice == null)
+                    ? Container()
+                    : Container(
+                        height: 25,
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          "₹ ${product.price}",
+                          style: TextStyle(
+                            decoration: TextDecoration.lineThrough,
+                            color: Colors.grey,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
               ],
             ),
           ),
@@ -141,75 +163,76 @@ class TrendingProductsWidget extends StatelessWidget {
               ),
             ),
             onPressed: () {
-              CartModel cartItem = CartModel(
-                productName: product.name,
-                productImageUrl: product.imageUrl,
-                productPrice: product.price,
-                productQuantity: 1,
-                productTotalPrice: int.parse(product.price),
-                productWeight: product.weight,
-                sGST: product.sGST,
-                sKU: product.sKU,
-                iGST: product.iGST,
-                cGST: product.cGST,
-                hSN: product.hSN,
-              );
+              buttonPressed();
+              // CartModel cartItem = CartModel(
+              //   productName: product.name,
+              //   productImageUrl: product.imageUrl,
+              //   productPrice: product.price,
+              //   productQuantity: 1,
+              //   productTotalPrice: int.parse(product.price),
+              //   productWeight: product.weight,
+              //   sGST: product.sGST,
+              //   sKU: product.sKU,
+              //   iGST: product.iGST,
+              //   cGST: product.cGST,
+              //   hSN: product.hSN,
+              // );
 
-              if (user.id != null) {
-                product.quantity++;
-                cartProvider.addToCart(cartItem);
-                buttonPressed();
-                // setState(() {
-                //   widget.product.quantity++;
-                //   cartProvider.addToCart(cartItem);
-                // });
-              } else {
-                showModalBottomSheet(
-                  context: context,
-                  builder: (context) {
-                    return Container(
-                      padding: EdgeInsets.symmetric(
-                        vertical: 20,
-                        horizontal: 40,
-                      ),
-                      height: MediaQuery.of(context).size.height * 0.25,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Container(
-                            width: MediaQuery.of(context).size.width,
-                            child: Text(
-                              'Hey Guest!',
-                              textAlign: TextAlign.start,
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w700,
-                                color: kDarkGreen,
-                              ),
-                            ),
-                          ),
-                          Container(
-                            width: MediaQuery.of(context).size.width,
-                            child: Text(
-                              'Please sign up '
-                              'before adding items in the '
-                              'cart.',
-                              textAlign: TextAlign.start,
-                            ),
-                          ),
-                          StartButton(
-                            name: 'Sign Up',
-                            onPressFunc: () {
-                              Navigator.pushNamed(context, 'start');
-                            },
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                );
-              }
+              // if (user.id != null) {
+              //   product.quantity++;
+              //   cartProvider.addToCart(cartItem);
+              //   buttonPressed();
+              //   // setState(() {
+              //   //   widget.product.quantity++;
+              //   //   cartProvider.addToCart(cartItem);
+              //   // });
+              // } else {
+              //   showModalBottomSheet(
+              //     context: context,
+              //     builder: (context) {
+              //       return Container(
+              //         padding: EdgeInsets.symmetric(
+              //           vertical: 20,
+              //           horizontal: 40,
+              //         ),
+              //         height: MediaQuery.of(context).size.height * 0.25,
+              //         child: Column(
+              //           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              //           crossAxisAlignment: CrossAxisAlignment.center,
+              //           children: <Widget>[
+              //             Container(
+              //               width: MediaQuery.of(context).size.width,
+              //               child: Text(
+              //                 'Hey Guest!',
+              //                 textAlign: TextAlign.start,
+              //                 style: TextStyle(
+              //                   fontSize: 20,
+              //                   fontWeight: FontWeight.w700,
+              //                   color: kDarkGreen,
+              //                 ),
+              //               ),
+              //             ),
+              //             Container(
+              //               width: MediaQuery.of(context).size.width,
+              //               child: Text(
+              //                 'Please sign up '
+              //                 'before adding items in the '
+              //                 'cart.',
+              //                 textAlign: TextAlign.start,
+              //               ),
+              //             ),
+              //             StartButton(
+              //               name: 'Sign Up',
+              //               onPressFunc: () {
+              //                 Navigator.pushNamed(context, 'start');
+              //               },
+              //             ),
+              //           ],
+              //         ),
+              //       );
+              //     },
+              //   );
+              // }
             },
           )
         ],

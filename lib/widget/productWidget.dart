@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:freshology/constants/styles.dart';
 import 'package:freshology/models/product.dart';
 import 'package:freshology/models/productModel.dart';
+import 'package:freshology/models/route.dart';
 import 'package:freshology/provider/cartProvider.dart';
 import 'package:freshology/provider/categoryProvider.dart';
 import 'package:freshology/provider/userProvider.dart';
@@ -71,10 +72,10 @@ class _ProductWidgetState extends State<ProductWidget> {
                 child: GestureDetector(
                   onTap: () {
                     print("TASPPKED");
-                    Navigator.push(
+                    Navigator.pushNamed(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => ProductDetails(widget.product)),
+                      'productDetails',
+                      arguments: RouteArgument(param: widget.product, id: null),
                     );
                   },
                   child: Container(

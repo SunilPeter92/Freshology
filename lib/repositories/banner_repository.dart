@@ -4,6 +4,7 @@ import 'package:freshology/constants/Helper.dart';
 import 'package:freshology/constants/configurations.dart';
 import 'package:freshology/models/Announcement.dart';
 import 'package:freshology/models/AdBanner.dart';
+import 'package:freshology/models/slides.dart';
 import 'package:http/http.dart' as http;
 
 Future<Announcement> getAnnouncement() async {
@@ -36,4 +37,18 @@ Future<List<AdBanner>> getAdBanners() async {
     print("ERROR! ${e}");
     return [];
   }
+}
+
+Future<Stream<Slide>> getSlides() async {
+  final String url = '${baseURL}slides';
+
+  final client = new http.Client();
+  final streamedRest = await client.send(http.Request('get', Uri.parse(url)));
+
+  return streamedRest.stream
+      .transform(utf8.decoder)
+      .transform(json.decoder)
+      .map((data) => Helper.getData(data))
+      .expand((data) => (data as List))
+      .map((data) => Slide.fromJson(data));
 }

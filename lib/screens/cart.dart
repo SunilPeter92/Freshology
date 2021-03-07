@@ -166,6 +166,8 @@ class _CartState extends StateMVC<Cart> {
                                     ),
                                     Container(
                                       height: 25,
+                                      // color: Colors.blue,
+
                                       child: Row(
                                         children: <Widget>[
                                           Container(

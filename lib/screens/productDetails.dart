@@ -5,6 +5,7 @@ import 'package:freshology/controllers/cart_controller.dart';
 import 'package:freshology/models/cartModel.dart';
 import 'package:freshology/models/product.dart';
 import 'package:freshology/models/productModel.dart';
+import 'package:freshology/models/route.dart';
 import 'package:freshology/models/userModel.dart';
 import 'package:freshology/provider/cartProvider.dart';
 import 'package:freshology/provider/productProvider.dart';
@@ -18,8 +19,8 @@ import 'package:provider/provider.dart';
 import '../repositories/appListenables.dart';
 
 class ProductDetails extends StatefulWidget {
-  Product product;
-  ProductDetails(this.product);
+  RouteArgument routeArgument;
+  ProductDetails({Key key, this.routeArgument}) : super(key: key);
   @override
   _ProductDetailsState createState() => _ProductDetailsState();
 }
@@ -72,24 +73,30 @@ class _ProductDetailsState extends StateMVC<ProductDetails> {
     );
   }
 
-  // _buildVariations() {
-  //   List<Widget> variationsList = [];
-  //   widget.product.variations.forEach((variation) {
-  //     variationsList.add(
-  //       addMoneyPresetWidget(
-  //         variation.vName.toString(),
-  //         variation.vPrice.toString(),
-  //       ),
-  //     );
-  //   });
-  //   return variationsList;
-  // }
+  _buildVariations() {
+    List<Widget> variationsList = [];
+    _con.product.extras.forEach((variation) {
+      print("EXTRASSSS: ${variation.name}");
+      variationsList.add(
+        addMoneyPresetWidget(
+          variation.name.toString(),
+          variation.price.toString(),
+        ),
+      );
+    });
+    return variationsList;
+  }
 
   //////// TODO: MAKE USER OBJECT MANAGED BY STATE ////////
   User user;
   @override
   void initState() {
     // TODO: implement initState
+    if (widget.routeArgument.id == null) {
+      _con.product = widget.routeArgument.param;
+    } else {
+      _con.listenForProduct(productId: widget.routeArgument.id);
+    }
     user = currentUser.value;
     super.initState();
     _controller = TextEditingController();
@@ -98,7 +105,6 @@ class _ProductDetailsState extends StateMVC<ProductDetails> {
   @override
   Widget build(BuildContext context) {
     _size = MediaQuery.of(context).size;
-
     final cartProvider = Provider.of<CartProvider>(context);
     return WillPopScope(
       onWillPop: () async {
@@ -126,74 +132,7 @@ class _ProductDetailsState extends StateMVC<ProductDetails> {
               ),
               GestureDetector(
                 onTap: () {
-                  _con.addToCart(widget.product);
-                  // _con.
-                  // CartModel cartItem = CartModel(
-                  //   productName: widget.product.pName,
-                  //   productImageUrl: widget.product.pImage,
-                  //   productPrice: widget.product.defaultPriceIndex,
-                  //   productQuantity: 1,
-                  //   productTotalPrice: int.parse(widget.product.defaultPriceIndex),
-                  //   productWeight: widget.product.weight,
-                  //   sGST: widget.product.sGST,
-                  //   sKU: widget.product.sKU,
-                  //   iGST: widget.product.iGST,
-                  //   cGST: widget.product.cGST,
-                  //   hSN: widget.product.hSN,
-                  // );
-
-                  // if (user.userId != null) {
-                  //   setState(() {
-                  //     widget.product.quantity++;
-                  //     cartProvider.addToCart(cartItem);
-                  //   });
-                  // } else {
-                  //   showModalBottomSheet(
-                  //     context: context,
-                  //     builder: (context) {
-                  //       return Container(
-                  //         padding: EdgeInsets.symmetric(
-                  //           vertical: 20,
-                  //           horizontal: 40,
-                  //         ),
-                  //         height: MediaQuery.of(context).size.height * 0.25,
-                  //         child: Column(
-                  //           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  //           crossAxisAlignment: CrossAxisAlignment.center,
-                  //           children: <Widget>[
-                  //             Container(
-                  //               width: MediaQuery.of(context).size.width,
-                  //               child: Text(
-                  //                 'Hey Guest!',
-                  //                 textAlign: TextAlign.start,
-                  //                 style: TextStyle(
-                  //                   fontSize: 20,
-                  //                   fontWeight: FontWeight.w700,
-                  //                   color: kDarkGreen,
-                  //                 ),
-                  //               ),
-                  //             ),
-                  //             Container(
-                  //               width: MediaQuery.of(context).size.width,
-                  //               child: Text(
-                  //                 'Please sign up '
-                  //                 'before adding items in the '
-                  //                 'cart.',
-                  //                 textAlign: TextAlign.start,
-                  //               ),
-                  //             ),
-                  //             StartButton(
-                  //               name: 'Sign Up',
-                  //               onPressFunc: () {
-                  //                 Navigator.pushNamed(context, 'start');
-                  //               },
-                  //             ),
-                  //           ],
-                  //         ),
-                  //       );
-                  //     },
-                  //   );
-                  // }
+                  _con.addToCart(_con.product);
                 },
                 child: Container(
                   width: 100,
@@ -250,125 +189,136 @@ class _ProductDetailsState extends StateMVC<ProductDetails> {
             ),
           ),
           actions: [
-            CartButton(
-              cartTotal: _con.total,
-            ),
+            _con.loadCart
+                ? Container(
+                    height: 50,
+                    width: 50,
+                    padding: EdgeInsets.all(5),
+                    margin: EdgeInsets.all(5),
+                    child: Center(child: CircularProgressIndicator()))
+                : CartButton(
+                    cartTotal: _con.total,
+                  ),
           ],
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              Container(
-                margin: EdgeInsets.only(top: 10),
-                height: 270,
-                width: _size.width,
-                child: Image(
-                  fit: BoxFit.contain,
-                  image: NetworkImage(widget.product.media[0].url),
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.all(10),
-                alignment: Alignment.centerLeft,
-                width: _size.width,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        body: _con.product == null
+            ? Center(child: CircularProgressIndicator())
+            : SingleChildScrollView(
+                child: Column(
                   children: [
                     Container(
-                      width: _size.width * 0.65,
-                      alignment: Alignment.topLeft,
-                      child: AutoSizeText(
-                        "${widget.product.name} ",
-                        maxFontSize: 20,
-                        style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.grey,
-                            fontWeight: FontWeight.bold),
+                      margin: EdgeInsets.only(top: 10),
+                      height: 270,
+                      width: _size.width,
+                      child: Image(
+                        fit: BoxFit.contain,
+                        image: NetworkImage(_con.product.media[0].url),
                       ),
                     ),
                     Container(
-                      width: _size.width * 0.28,
-                      alignment: Alignment.centerRight,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
+                      padding: EdgeInsets.all(10),
+                      alignment: Alignment.centerLeft,
+                      width: _size.width,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Container(
-                            alignment: Alignment.topRight,
-                            child: Text(
-                              "₹ ${widget.product.price}",
-                              textAlign: TextAlign.right,
+                            width: _size.width * 0.65,
+                            alignment: Alignment.topLeft,
+                            child: AutoSizeText(
+                              "${_con.product.name}",
+                              maxFontSize: 20,
                               style: TextStyle(
-                                color: Colors.grey,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
+                                  fontSize: 20,
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.bold),
                             ),
                           ),
                           Container(
-                            alignment: Alignment.topRight,
-                            child: Text(
-                              "${widget.product.price}",
-                              textAlign: TextAlign.right,
-                              style: TextStyle(
-                                color: Colors.grey,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 10,
-                              ),
+                            width: _size.width * 0.28,
+                            alignment: Alignment.centerRight,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Container(
+                                  alignment: Alignment.topRight,
+                                  child: Text(
+                                    "₹ ${_con.product.price}",
+                                    textAlign: TextAlign.right,
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  alignment: Alignment.topRight,
+                                  child: Text(
+                                    "${_con.product.price}",
+                                    textAlign: TextAlign.right,
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 10,
+                                    ),
+                                  ),
+                                )
+                              ],
                             ),
                           )
                         ],
                       ),
-                    )
-                  ],
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.all(10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
+                    ),
                     Container(
-                      child: Text(
-                        "Availability: ",
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 14,
-                        ),
+                      padding: EdgeInsets.all(10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Container(
+                            child: Text(
+                              "Availability: ${_con.product.deliverable ? 'In Stock' : 'Out of Stock'}",
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ),
+                          // Container(
+                          //   child: Text(
+                          //     "${widget.product.deliveryDate.day}/${widget.product.deliveryDate.month}/${widget.product.deliveryDate.year}",
+                          //     style: TextStyle(
+                          //       color: kDarkGreen,
+                          //       fontSize: 14,
+                          //       fontWeight: FontWeight.bold,
+                          //     ),
+                          //   ),
+                          // ),
+                        ],
                       ),
                     ),
-                    // Container(
-                    //   child: Text(
-                    //     "${widget.product.deliveryDate.day}/${widget.product.deliveryDate.month}/${widget.product.deliveryDate.year}",
-                    //     style: TextStyle(
-                    //       color: kDarkGreen,
-                    //       fontSize: 14,
-                    //       fontWeight: FontWeight.bold,
-                    //     ),
-                    //   ),
-                    // ),
+                    Container(
+                      height: _size.height * 0.2,
+                      alignment: Alignment.topLeft,
+                      padding: EdgeInsets.all(10),
+                      child: AutoSizeText(
+                        _con.product.description == null
+                            ? ""
+                            : _con.product.description,
+                        textAlign: TextAlign.left,
+                        minFontSize: 10,
+                        style: TextStyle(fontSize: 12, color: Colors.grey[800]),
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Container(
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: _buildVariations()),
+                    ),
                   ],
                 ),
               ),
-              Container(
-                height: _size.height * 0.2,
-                alignment: Alignment.topLeft,
-                padding: EdgeInsets.all(10),
-                child: AutoSizeText(
-                  widget.product.description,
-                  textAlign: TextAlign.left,
-                  minFontSize: 10,
-                  style: TextStyle(fontSize: 12, color: Colors.grey[800]),
-                ),
-              ),
-              SizedBox(height: 10),
-              // Container(
-              //   child: Row(
-              //       mainAxisAlignment: MainAxisAlignment.spaceAround,
-              //       children: _buildVariations()),
-              // ),
-            ],
-          ),
-        ),
       ),
     );
   }
