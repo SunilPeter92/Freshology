@@ -24,7 +24,22 @@ class Address {
     this.countryId,
   });
 
-  int id;
+  Address.empty({
+    this.id = null,
+    this.userId = '',
+    this.area = '',
+    this.areaId = '',
+    this.city = '',
+    this.cityId = '',
+    this.houseNo = '',
+    this.pinecode = '',
+    this.state = '',
+    this.stateId = '',
+    this.country = '',
+    this.countryId = '',
+  });
+
+  String id;
   String userId;
   String area;
   String areaId;
@@ -53,7 +68,6 @@ class Address {
       );
 
   Map<String, dynamic> toJson() => {
-        "id": id == null ? null : id,
         "user_id": userId == null ? null : userId,
         "area": area == null ? null : area,
         "area_id": areaId == null ? null : areaId,

@@ -153,7 +153,8 @@ class _CartState extends StateMVC<Cart> {
                                           style: kProductNameTextStyle,
                                         ),
                                         Text(
-                                          product.product.weight.toString(),
+                                          product.product.weight.toString() +
+                                              product.product.unit,
                                           style: kProductWeightTextStyle,
                                         ),
                                         Text(
@@ -296,7 +297,7 @@ class _CartState extends StateMVC<Cart> {
                             cartProvider.grandTotal =
                                 amount + deliveryCharge - discountGiven;
                             cartProvider.discount = discountGiven;
-                            Navigator.pushNamed(context, 'payment');
+                            Navigator.pushNamed(context, 'addresses');
                           },
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,

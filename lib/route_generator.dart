@@ -44,10 +44,11 @@ class RouteGenerator {
       case 'products':
         return MaterialPageRoute(
             builder: (_) => Products(routeArgument: args as RouteArgument));
-      
+
       case 'productDetails':
         return MaterialPageRoute(
-            builder: (_) => ProductDetails(routeArgument: args as RouteArgument));      
+            builder: (_) =>
+                ProductDetails(routeArgument: args as RouteArgument));
 
       case 'cart':
         return MaterialPageRoute(builder: (_) => Cart());
@@ -88,7 +89,8 @@ class RouteGenerator {
       case 'confirm':
         return MaterialPageRoute(builder: (_) => OrderConfirm());
       case 'address':
-        return MaterialPageRoute(builder: (_) => AddressEdit());
+        return MaterialPageRoute(
+            builder: (_) => AddressEdit(routeArgument: args as RouteArgument));
       case 'account':
         return MaterialPageRoute(builder: (_) => Account());
       case 'addresses':

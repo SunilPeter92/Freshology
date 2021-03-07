@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:freshology/constants/Helper.dart';
 import 'package:freshology/constants/configurations.dart';
+import 'package:freshology/models/Address.dart';
 import 'package:freshology/models/userModel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -185,9 +186,73 @@ verifyLoginOTP(String code, String phone, String userId) async {
     }
     return "Something went wrong";
   } catch (e) {
-    print("ERROR ! (verifyRegisterOTP)  ${e.toString()}");
+    print(e);
+    print("ERROR ! (verifyRegisterOTP)  ");
     return "Something went wrong";
   }
+}
+
+Future<Stream<Address>> getAddresses() async {
+  User _user = currentUser.value;
+  final String _apiToken = 'api_token=${_user.apiToken}&';
+  final String url = '${baseURL}get_user_address/${_user.id}';
+  print("GET USER ADDRESSES: ${url}");
+  print("URL: ${url}");
+  print(url);
+  final client = new http.Client();
+  final streamedRest = await client.send(http.Request('get', Uri.parse(url)));
+
+  return streamedRest.stream
+      .transform(utf8.decoder)
+      .transform(json.decoder)
+      .map((data) => Helper.getData(data))
+      .expand((data) => (data as List))
+      .map((data) {
+    return Address.fromJson(data);
+  });
+}
+
+addAddress(Address address) async {
+  User _user = currentUser.value;
+  address.userId = _user.id;
+  final String url = '${baseURL}add_user_address';
+  final client = new http.Client();
+  final response = await client.post(
+    url,
+    headers: {HttpHeaders.contentTypeHeader: 'application/json'},
+    body: json.encode(address.toJson()),
+  );
+  if (json.decode(response.body)['status'] == "success") {
+    return "success";
+  } else {
+    return "failure";
+  }
+}
+
+Future<Address> updateAddress(Address address) async {
+  User _user = currentUser.value;
+  final String _apiToken = 'api_token=${_user.apiToken}';
+  address.userId = _user.id;
+  final String url = '${baseURL}delivery_addresses/${address.id}?$_apiToken';
+  final client = new http.Client();
+  final response = await client.put(
+    url,
+    headers: {HttpHeaders.contentTypeHeader: 'application/json'},
+    body: json.encode(address.toJson()),
+  );
+  return Address.fromJson(json.decode(response.body)['data']);
+}
+
+Future<Address> removeDeliveryAddress(Address address) async {
+  User _user = currentUser.value;
+  final String _apiToken = 'api_token=${_user.apiToken}';
+  final String url = '${baseURL}delivery_addresses/${address.id}?$_apiToken';
+  final client = new http.Client();
+  final response = await client.delete(
+    url,
+    headers: {HttpHeaders.contentTypeHeader: 'application/json'},
+  );
+  return Address.fromJson(json.decode(response.body)['data']);
 }
 
 // verifyLoginOTP(String code, String phone) async {
