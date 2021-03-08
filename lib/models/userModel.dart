@@ -98,28 +98,29 @@ class User {
 
 //  String role;
 
-  User(
-      {this.id,
-      this.name,
-      this.email,
-      this.apiToken,
-      this.deviceToken,
-      this.phone,
-      this.address,
-      this.bio,
-      this.image,
-      this.countryId,
-      this.countryName,
-      this.stateId,
-      this.stateName,
-      this.cityId,
-      this.cityName,
-      this.areaId,
-      this.areaName,
-      this.houseNo,
-      this.pinCode,
-      this.status,
-      this.addresses});
+  User({
+    this.id,
+    this.name,
+    this.email,
+    this.apiToken,
+    this.deviceToken,
+    this.phone,
+    this.address,
+    this.bio,
+    this.image,
+    this.countryId,
+    this.countryName,
+    this.stateId,
+    this.stateName,
+    this.cityId,
+    this.cityName,
+    this.areaId,
+    this.areaName,
+    this.houseNo,
+    this.pinCode,
+    this.status,
+    this.addresses,
+  });
 
   User.fromJSON(Map<String, dynamic> jsonMap) {
     print(jsonMap.toString());
@@ -144,7 +145,7 @@ class User {
       houseNo = jsonMap['user_data']['house_no'];
       pinCode = jsonMap['user_data']['pinecode'];
       status = jsonMap['user_data']['status'];
-      addresses = setAddress(jsonMap);
+      addresses = [];
       try {
         phone = jsonMap['user_data']['phone_no'];
       } catch (e) {

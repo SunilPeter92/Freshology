@@ -80,6 +80,7 @@ class _AddressesState extends StateMVC<Addresses> {
         ),
       ),
       appBar: AppBar(
+        centerTitle: true,
         iconTheme: IconThemeData(color: kDarkGreen),
         title: Text(
           'Address',
@@ -102,76 +103,83 @@ class _AddressesState extends StateMVC<Addresses> {
               itemBuilder: (context, index) {
                 return Container(
                   margin: EdgeInsets.all(5),
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(10),
+                  child: InkWell(
+                    onTap: () {
+                      currentUser.value.addresses.add(_con.addresses[index]);
+                      Navigator.pushNamed(context, 'payment');
+                    },
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10),
+                        ),
                       ),
-                    ),
-                    elevation: 4.0,
-                    child: Container(
-                      padding: EdgeInsets.all(10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            padding: EdgeInsets.all(5),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  _con.addresses[index].country,
-                                  style: TextStyle(
-                                    color: kDarkGreen,
+                      elevation: 4.0,
+                      child: Container(
+                        padding: EdgeInsets.all(10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              padding: EdgeInsets.all(5),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    _con.addresses[index].country,
+                                    style: TextStyle(
+                                      color: kDarkGreen,
+                                    ),
                                   ),
-                                ),
-                                Text(
-                                  _con.addresses[index].state,
+                                  Text(
+                                    _con.addresses[index].state,
+                                    style: TextStyle(
+                                      color: kDarkGreen,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: 10),
+                            Container(
+                              child: Text(
+                                "${_con.addresses[index].houseNo}+${_con.addresses[index].area}",
+                              ),
+                            ),
+                            SizedBox(height: 5),
+                            Container(
+                              child: Text(
+                                "${_con.addresses[index].city}",
+                              ),
+                            ),
+                            SizedBox(height: 5),
+                            InkWell(
+                              onTap: () {
+                                Navigator.pushNamed(
+                                  context,
+                                  'address',
+                                  arguments: RouteArgument(
+                                    param: _con.addresses[index],
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                padding: EdgeInsets.symmetric(horizontal: 10),
+                                alignment: Alignment.centerRight,
+                                child: Text(
+                                  "Edit",
                                   style: TextStyle(
-                                    color: kDarkGreen,
+                                    color: Colors.blue,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          Container(
-                            child: Text(
-                              "${_con.addresses[index].houseNo}+${_con.addresses[index].area}",
-                            ),
-                          ),
-                          SizedBox(height: 5),
-                          Container(
-                            child: Text(
-                              "${_con.addresses[index].city}",
-                            ),
-                          ),
-                          SizedBox(height: 5),
-                          InkWell(
-                            onTap: () {
-                              Navigator.pushNamed(
-                                context,
-                                'address',
-                                arguments: RouteArgument(
-                                  param: _con.addresses[index],
-                                ),
-                              );
-                            },
-                            child: Container(
-                              padding: EdgeInsets.symmetric(horizontal: 10),
-                              alignment: Alignment.centerRight,
-                              child: Text(
-                                "Edit",
-                                style: TextStyle(
-                                  color: Colors.blue,
-                                  fontWeight: FontWeight.bold,
-                                ),
                               ),
                             ),
-                          ),
-                          // Container(child:),
-                        ],
+                            // Container(child:),
+                          ],
+                        ),
                       ),
                     ),
                   ),

@@ -48,6 +48,16 @@ class _ProductDetailsState extends StateMVC<ProductDetails> {
         onTap: () {
           setState(() {
             _controller.text = weight;
+            Extra selectedExtra = _con.product.extras
+                .firstWhere((element) => element.name == weight);
+            for (int i = 0; i < _con.product.extras.length; i++) {
+              if (_con.product.extras[i].name == weight) {
+                _con.product.extras[i].checked = true;
+                _con.product.price = _con.product.extras[i].price;
+
+                print("EXTRA CHECKED");
+              }
+            }
           });
         },
         child: Column(

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:freshology/models/product_order.dart';
 
 // import 'package:foodish_application/src/models/food_order.dart';
 
@@ -211,14 +212,14 @@ class Helper {
 //     );
 //   }
 
-//   static double getTotalOrderPrice(FoodOrder foodOrder, double tax) {
-//     double total = foodOrder.price * foodOrder.quantity;
-//     foodOrder.extras.forEach((extra) {
-//       total += extra.price != null ? extra.price : 0;
-//     });
-//     total += tax * total / 100;
-//     return total;
-//   }
+  static double getTotalOrderPrice(ProductOrder foodOrder, double tax) {
+    double total = foodOrder.price * foodOrder.quantity;
+    foodOrder.extras.forEach((extra) {
+      total += extra.price != null ? extra.price : 0;
+    });
+    total += tax * total / 100;
+    return total;
+  }
 
 //   static String getDistance(double distance) {
 //     // TODO get unit from settings

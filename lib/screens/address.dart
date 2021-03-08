@@ -25,6 +25,7 @@ class _AddressEditState extends StateMVC<AddressEdit> {
     _con = controller;
   }
 
+  bool isEditing;
   String dropArea;
   List<String> areaList = [];
   String dropCity = 'Faridabad';
@@ -43,8 +44,10 @@ class _AddressEditState extends StateMVC<AddressEdit> {
       _con.address = widget.routeArgument.param;
       _houseNoController.text = _con.address.houseNo;
       _pinCodeController.text = _con.address.pinecode;
+      isEditing = true;
       _con.listGetter();
     } else {
+      isEditing = false;
       _con.address = widget.routeArgument.param;
       _con.fetched = true;
       _con.getCountry();
@@ -192,7 +195,9 @@ class _AddressEditState extends StateMVC<AddressEdit> {
                           ),
                           StartButton(
                               name: 'Save',
-                              onPressFunc: () => _con.saveAddress()),
+                              onPressFunc: () => isEditing
+                                  ? _con.updateAddress()
+                                  : _con.saveAddress()),
                         ],
                       ),
                     ),

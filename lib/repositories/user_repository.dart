@@ -229,18 +229,23 @@ addAddress(Address address) async {
   }
 }
 
-Future<Address> updateAddress(Address address) async {
+Future<String> updateAddress(Address address) async {
   User _user = currentUser.value;
-  final String _apiToken = 'api_token=${_user.apiToken}';
   address.userId = _user.id;
-  final String url = '${baseURL}delivery_addresses/${address.id}?$_apiToken';
+  final String url = '${baseURL}edit_user_address';
   final client = new http.Client();
-  final response = await client.put(
+  final response = await client.post(
     url,
     headers: {HttpHeaders.contentTypeHeader: 'application/json'},
     body: json.encode(address.toJson()),
   );
-  return Address.fromJson(json.decode(response.body)['data']);
+  print("DECODED JSON ${response.body}");
+  if (json.decode(response.body)['status'] == "success") {
+    return "success";
+  } else {
+    return "failure";
+  }
+  // return Address.fromJson(json.decode(response.body)['data']);
 }
 
 Future<Address> removeDeliveryAddress(Address address) async {

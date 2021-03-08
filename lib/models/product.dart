@@ -984,6 +984,7 @@ class Extra {
     this.customFields,
     this.hasMedia,
     this.media,
+    this.checked,
   });
 
   int id;
@@ -997,6 +998,7 @@ class Extra {
   List<dynamic> customFields;
   bool hasMedia;
   List<dynamic> media;
+  bool checked;
 
   factory Extra.fromJson(Map<String, dynamic> json) => Extra(
         id: json["id"] == null ? null : json["id"],
@@ -1006,6 +1008,7 @@ class Extra {
         foodId: json["food_id"] == null ? null : json["food_id"],
         extraGroupId:
             json["extra_group_id"] == null ? null : json["extra_group_id"],
+        checked: false,
         createdAt: json["created_at"] == null ? null : json["created_at"],
         updatedAt: json["updated_at"] == null ? null : json["updated_at"],
         customFields: json["custom_fields"] == null

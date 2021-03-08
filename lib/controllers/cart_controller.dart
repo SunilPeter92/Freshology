@@ -126,7 +126,9 @@ class CartController extends ControllerMVC {
     } else {
       var _cart = new Cart();
       _cart.product = food;
-      // _cart.extras = food.extras.where((element) => element.checked).toList();
+      print("ADD TO CART PRODUCT PRICE: ${food.price}");
+      _cart.extras = food.extras.where((element) => element.checked).toList();
+      print("CART SELECTED EXTRAS: ${_cart.extras[0].price}");
       _cart.quantity = this.quantity;
       addCart(_cart, reset).then((value) {
         setState(() {
@@ -155,11 +157,13 @@ class CartController extends ControllerMVC {
 
   void calculateSubtotal() {
     subTotal = 0;
+    double extraAmount = 0.0;
     carts.forEach((cart) {
       subTotal = subTotal + (cart.quantity * cart.product.price);
     });
 //    taxAmount = subTotal * settingRepo.setting.defaultTax / 100;
-    total = subTotal + taxAmount;
+    if (cart.extras.length > 0) extraAmount = cart.extras[0].price;
+    total = subTotal + taxAmount + extraAmount;
     print("CALCULATED TOTAL: ${total}");
     setState(() {});
     // cartValue.value = total;

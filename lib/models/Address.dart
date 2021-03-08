@@ -53,7 +53,7 @@ class Address {
   String countryId;
 
   factory Address.fromJson(Map<String, dynamic> json) => Address(
-        id: json["id"] == null ? null : json["id"],
+        id: json["id"] == null ? null : json["id"].toString(),
         userId: json["user_id"] == null ? null : json["user_id"],
         area: json["area"] == null ? null : json["area"],
         areaId: json["area_id"] == null ? null : json["area_id"],
@@ -68,6 +68,7 @@ class Address {
       );
 
   Map<String, dynamic> toJson() => {
+        "id": id == null ? null : id,
         "user_id": userId == null ? null : userId,
         "area": area == null ? null : area,
         "area_id": areaId == null ? null : areaId,

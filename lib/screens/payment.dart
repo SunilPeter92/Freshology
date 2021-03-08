@@ -5,6 +5,9 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:freshology/constants/styles.dart';
+import 'package:freshology/controllers/checkout_controller.dart';
+import 'package:freshology/models/userModel.dart';
+
 import 'package:freshology/provider/cartProvider.dart';
 import 'package:freshology/provider/orderProvider.dart';
 import 'package:freshology/provider/promoProvider.dart';
@@ -13,16 +16,22 @@ import 'package:freshology/repositories/user_repository.dart';
 import 'package:freshology/widget/startButton.dart';
 import 'package:freshology/widget/timeSlotPicker.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:provider/provider.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import '../repositories/appListenables.dart';
+import 'package:freshology/models/payment.dart' as pay;
 
 class Payment extends StatefulWidget {
   @override
   _PaymentState createState() => _PaymentState();
 }
 
-class _PaymentState extends State<Payment> {
+class _PaymentState extends StateMVC<Payment> {
+  CheckoutController _con;
+  _PaymentState() : super(CheckoutController()) {
+    _con = controller;
+  }
   DateTime deliveryDate = DateTime.now();
   TimeOfDay deliveryTime;
   bool _isSaving = false;
@@ -150,6 +159,7 @@ class _PaymentState extends State<Payment> {
 
   @override
   void initState() {
+    User user = currentUser.value;
     Future.delayed(Duration.zero, () {
       getDeliveryTimings();
     });
@@ -300,7 +310,7 @@ class _PaymentState extends State<Payment> {
         backgroundColor: Colors.white,
       ),
       body: ModalProgressHUD(
-        inAsyncCall: _isSaving,
+        inAsyncCall: _con.loading,
         child: SingleChildScrollView(
           child: Container(
             child: Column(
@@ -342,7 +352,7 @@ class _PaymentState extends State<Payment> {
                                 style: kCartPaymentTextStyle,
                               ),
                               Text(
-                                cartProvider.cartProducts.length.toString(),
+                                _con.carts.length.toString(),
                                 style: kCartPaymentTextStyle,
                               ),
                             ],
@@ -355,7 +365,7 @@ class _PaymentState extends State<Payment> {
                                 style: kCartPaymentTextStyle,
                               ),
                               Text(
-                                '₹ ' + cartProvider.grandTotal.toString(),
+                                '₹ ' + _con.total.toString(),
                                 style: kCartPaymentTextStyle,
                               ),
                             ],
@@ -372,8 +382,8 @@ class _PaymentState extends State<Payment> {
                               ),
                               Flexible(
                                 child: Text(
-                                  '${user.houseNo}, ${user.areaName}, '
-                                  '${user.cityName}',
+                                  '${user.addresses[0].houseNo}, ${user.addresses[0].area}, '
+                                  '${user.addresses[0].city}',
                                   style: kCartPaymentTextStyle,
                                   textAlign: TextAlign.right,
                                 ),
@@ -648,11 +658,13 @@ class _PaymentState extends State<Payment> {
                                 size: 16,
                               ),
                               onTap: () {
-                                if (deliveryTime == null) {
-                                  _onTimePressed();
-                                } else {
-                                  _handleCoD();
-                                }
+                                _con.payment = pay.Payment("cash");
+                                _con.addOrder(_con.carts);
+                                // if (deliveryTime == null) {
+                                //   _onTimePressed();
+                                // } else {
+                                //   _handleCoD();
+                                // }
                               },
                             ),
                           ),

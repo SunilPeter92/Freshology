@@ -74,6 +74,7 @@ class AddressController extends ControllerMVC {
         scaffoldKey.currentState.showSnackBar(SnackBar(
           content: Text("New address added successfully"),
         ));
+        Navigator.pop(context);
       } else {
         setState(() {
           isLoading = false;
@@ -90,7 +91,7 @@ class AddressController extends ControllerMVC {
   //   print("ADDRESS: ${userRepo.deliveryAddress.address}");
   // }
 
-  void updateAddress(Address address) {
+  void updateAddress() {
 //    if (address.isDefault) {
 //      this.addresses.map((model.Address _address) {
 //        setState(() {
@@ -98,14 +99,28 @@ class AddressController extends ControllerMVC {
 //        });
 //      });
 //    }
+    setState(() {
+      isLoading = true;
+    });
+
+    print("ADDRESS ID : ${address.id}");
     userRepo.updateAddress(address).then((value) {
-      //setState(() {});
-//      scaffoldKey.currentState.showSnackBar(SnackBar(
-//        content: Text(S.current.the_address_updated_successfully),
-//      ));
-      setState(() {});
-      addresses.clear();
-      listenForAddresses(message: "Address updated successfully");
+      if (value == "success") {
+        setState(() {
+          isLoading = false;
+        });
+        scaffoldKey.currentState.showSnackBar(SnackBar(
+          content: Text("Address editted successfully"),
+        ));
+        Navigator.pop(context);
+      } else {
+        setState(() {
+          isLoading = false;
+        });
+        scaffoldKey.currentState.showSnackBar(SnackBar(
+          content: Text("Something went wrong"),
+        ));
+      }
     });
   }
 

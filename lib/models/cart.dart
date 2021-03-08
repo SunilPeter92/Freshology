@@ -19,16 +19,16 @@ class Cart {
       product = jsonMap['food'] != null
           ? Product.fromJson(jsonMap['food'])
           : Product.fromJson({});
-      // extras = jsonMap['extras'] != null
-      // ? List.from(jsonMap['extras'])
-      //     .map((element) => Extra.fromJSON(element))
-      //     .toList()
-      // : [];
+      extras = jsonMap['extras'] != null
+          ? List.from(jsonMap['extras'])
+              .map((element) => Extra.fromJson(element))
+              .toList()
+          : [];
     } catch (e) {
       id = '';
       quantity = 0.0;
       product = Product.fromJson({});
-      // extras = [];
+      extras = [];
       print(CustomTrace(StackTrace.current, message: e));
     }
   }
@@ -39,17 +39,17 @@ class Cart {
     map["quantity"] = quantity;
     map["food_id"] = product.id;
     map["user_id"] = userId;
-    // map["extras"] = extras.map((element) => element.id).toList();
+    map["extras"] = extras.map((element) => element.id).toList();
     return map;
   }
 
   double getFoodPrice() {
     double result = product.price.toDouble();
-    // if (extras.isNotEmpty) {
-    //   extras.forEach((Extra extra) {
-    //     result += extra.price != null ? extra.price : 0;
-    //   });
-    // }
+    if (extras.isNotEmpty) {
+      extras.forEach((Extra extra) {
+        result += extra.price != null ? extra.price : 0;
+      });
+    }
     return result;
   }
 
