@@ -101,14 +101,14 @@ class _PaymentState extends StateMVC<Payment> {
 
   void openCheckOut() async {
     FirebaseUser _user = await _auth.currentUser();
-    int amount = Provider.of<CartProvider>(context, listen: false).grandTotal;
+    int amount = _con.total.toInt();
     var options = {
       'key': 'rzp_live_M1iVXlW7jxRqYx',
       'amount': amount * 100,
       'name': 'Freshology',
       'description': 'Order payment',
       'prefill': {
-        'contact': _user.phoneNumber,
+        'contact': user.phone,
       },
     };
     try {
@@ -195,7 +195,7 @@ class _PaymentState extends StateMVC<Payment> {
   }
 
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
-
+  final user = currentUser.value;
   Future<void> saveOrder() async {
     setState(() {
       _isSaving = true;
@@ -294,7 +294,7 @@ class _PaymentState extends StateMVC<Payment> {
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context);
-    final user = currentUser.value;
+
     final userProvider = Provider.of<UserProvider>(context);
     final orderProvider = Provider.of<OrderProvider>(context);
     deliveryTime = Provider.of<OrderProvider>(context).deliveryTime;
@@ -622,11 +622,12 @@ class _PaymentState extends StateMVC<Payment> {
                                 size: 16,
                               ),
                               onTap: () {
-                                if (deliveryTime == null) {
-                                  _onTimePressed();
-                                } else {
-                                  openCheckOut();
-                                }
+                                // if (deliveryTime == null) {
+                                // _onTimePressed();
+                                // }
+                                // else {
+                                openCheckOut();
+                                // }
                               },
                             ),
                           ),

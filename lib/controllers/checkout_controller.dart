@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:freshology/constants/styles.dart';
 import 'package:freshology/models/cart.dart';
 import 'package:freshology/models/order.dart';
 import 'package:freshology/models/order_status.dart';
@@ -10,6 +11,7 @@ import 'package:freshology/repositories/cart_repository.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:freshology/repositories/user_repository.dart' as userRepo;
 import 'package:freshology/repositories/order_repository.dart' as orderRepo;
+import 'package:somedialog/somedialog.dart';
 
 class CheckoutController extends ControllerMVC {
   List<Cart> carts = <Cart>[];
@@ -68,6 +70,8 @@ class CheckoutController extends ControllerMVC {
   }
 
   void addOrder(List<Cart> carts) async {
+    loading = true;
+    setState(() {});
     Order _order = new Order();
     _order.productOrders = new List<ProductOrder>();
     _order.tax = 5.0;
@@ -84,7 +88,20 @@ class CheckoutController extends ControllerMVC {
       _order.productOrders.add(_foodOrder);
     });
     orderRepo.addOrder(_order, this.payment).then((value) {
+      loading = false;
       if (value is Order) {
+        Navigator.pushReplacementNamed(context, 'home');
+        SomeDialog(
+            context: context,
+            path: "assets/order_success.json",
+            mode: SomeMode.Lottie,
+            content: "",
+            title: "Order Placed",
+            buttonConfig: ButtonConfig(
+                dialogDone: "Alright!", buttonDoneColor: kLightGreen),
+            submit: () {
+              // Navigator.pop(context);
+            });
         setState(() {
           loading = false;
         });

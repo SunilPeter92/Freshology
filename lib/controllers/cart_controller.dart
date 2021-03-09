@@ -13,6 +13,7 @@ class CartController extends ControllerMVC {
   int cartCount = 0;
   Product product;
   double subTotal = 0.0;
+  TextEditingController extrasController = TextEditingController();
   // double total = 0.0;
   GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
   double quantity = 1;
@@ -36,7 +37,10 @@ class CartController extends ControllerMVC {
       //   content: Text('Verify your internet connection'),
       // ));
     }, onDone: () {
-      setState(() {});
+      setState(() {
+        product.extras[0].checked = true;
+        extrasController.text = product.extras[0].name;
+      });
       if (message != null) {
         scaffoldKey.currentState?.showSnackBar(SnackBar(
           content: Text(message),
@@ -114,7 +118,7 @@ class CartController extends ControllerMVC {
     listenForCarts();
   }
 
-  void addToCart(Product food, {bool reset = false}) async {
+  void addToCart({bool reset = false}) async {
     setState(() {
       loadCart = true;
     });
@@ -125,10 +129,19 @@ class CartController extends ControllerMVC {
       ));
     } else {
       var _cart = new Cart();
-      _cart.product = food;
-      print("ADD TO CART PRODUCT PRICE: ${food.price}");
-      _cart.extras = food.extras.where((element) => element.checked).toList();
-      print("CART SELECTED EXTRAS: ${_cart.extras[0].price}");
+      _cart.product = product;
+      _cart.extras =
+          product.extras.where((element) => element.checked).toList();
+
+      _cart.quantity = this.quantity;
+      cart = _cart;
+      print("FOOD EXTRASS: ${product.extras.length}");
+      print("CART EXTRASS: ${_cart.extras.length}");
+      // _cart.extras =
+      //     product.extras.where((element) => element.checked).toList();
+      print("PRODUCT PRICE: ${product.price}");
+      print("CART PRODUCT PRICE: ${_cart.product.price}");
+
       _cart.quantity = this.quantity;
       addCart(_cart, reset).then((value) {
         setState(() {
@@ -144,6 +157,15 @@ class CartController extends ControllerMVC {
     }
   }
 
+  void calculateTotal() {
+    total = product.price ?? 0;
+    product.extras.forEach((extra) {
+      total += extra.checked ? extra.price : 0;
+    });
+    total *= quantity;
+    setState(() {});
+  }
+
   void removeFromCart(Cart _cart) async {
     removeCart(_cart).then((value) {
       setState(() {
@@ -155,19 +177,32 @@ class CartController extends ControllerMVC {
     });
   }
 
-  void calculateSubtotal() {
+  void calculateSubtotal() async {
     subTotal = 0;
-    double extraAmount = 0.0;
     carts.forEach((cart) {
-      subTotal = subTotal + (cart.quantity * cart.product.price);
+      subTotal += cart.quantity * cart.product.price;
     });
 //    taxAmount = subTotal * settingRepo.setting.defaultTax / 100;
-    if (cart.extras.length > 0) extraAmount = cart.extras[0].price;
-    total = subTotal + taxAmount + extraAmount;
-    print("CALCULATED TOTAL: ${total}");
+    total = subTotal + taxAmount;
     setState(() {});
-    // cartValue.value = total;
   }
+
+//   void calculateSubtotal() {
+//     subTotal = 0;
+//     double extraAmount = 0.0;
+//     carts.forEach((cart) {
+//       subTotal = subTotal + (cart.quantity * cart.product.price);
+//     });
+//     // print("CART EXTRASS SUB TOTAL: ${cart.extras.length}");
+// // taxAmount = subTotal * settingRepo.setting.defaultTax / 100;
+//     if (cart.extras.length > 0 || cart.extras != null)
+//       extraAmount = cart.extras[0].price;
+//     // print("PRODUCT EXTRAS: ${cart.extras}");
+//     total = subTotal + taxAmount + extraAmount;
+//     print("CALCULATED TOTAL: ${total}");
+//     setState(() {});
+//     // cartValue.value = total;
+//   }
 
   incrementQuantity(Cart cart) {
     if (cart.quantity <= 99) {

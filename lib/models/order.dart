@@ -92,6 +92,7 @@
 //         this.orderStatus.id == '1'; // 1 for order received status
 //   }
 // }
+import 'package:freshology/helpers/custom_trace.dart';
 import 'package:freshology/models/order_status.dart';
 import 'package:freshology/models/payment.dart';
 import 'package:freshology/models/product_order.dart';
@@ -124,8 +125,8 @@ class Order {
           ? OrderStatus.fromJSON(jsonMap['order_status'])
           : new OrderStatus();
       dateTime = DateTime.parse(jsonMap['updated_at']);
-      user =
-          jsonMap['user'] != null ? User.fromJSON(jsonMap['user']) : new User();
+      // user =
+      //     jsonMap['user'] != null ? User.fromJSON(jsonMap['user']) : new User();
       deliveryAddress = jsonMap['delivery_address'] != null
           ? Address.fromJson(jsonMap['delivery_address'])
           : new Address();
@@ -135,7 +136,7 @@ class Order {
               .toList()
           : [];
     } catch (e) {
-      print(e);
+      print(CustomTrace(StackTrace.current, message: e..toString()));
     }
   }
 

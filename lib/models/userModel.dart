@@ -92,7 +92,6 @@ class User {
   String houseNo;
   String pinCode;
   String status;
-  // used for indicate if client logged in or not
   List<Address> addresses;
   bool auth;
 

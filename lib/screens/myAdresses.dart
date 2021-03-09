@@ -145,7 +145,7 @@ class _AddressesState extends StateMVC<Addresses> {
                             SizedBox(height: 10),
                             Container(
                               child: Text(
-                                "${_con.addresses[index].houseNo}+${_con.addresses[index].area}",
+                                "${_con.addresses[index].houseNo}, ${_con.addresses[index].area}",
                               ),
                             ),
                             SizedBox(height: 5),

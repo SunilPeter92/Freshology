@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:freshology/helpers/helper.dart';
 import 'package:freshology/models/route.dart';
 import 'package:freshology/screens/products.dart';
 import 'package:get/get.dart';
@@ -597,18 +598,18 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                             },
                           )
                         : Container(),
-                    user.id != null
-                        ? ListTile(
-                            leading: Icon(
-                              FontAwesomeIcons.addressCard,
-                              color: Colors.black,
-                            ),
-                            title: Text('Delivery Address'),
-                            onTap: () {
-                              Navigator.pushNamed(context, 'address');
-                            },
-                          )
-                        : Container(),
+                    // user.id != null
+                    //     ? ListTile(
+                    //         leading: Icon(
+                    //           FontAwesomeIcons.addressCard,
+                    //           color: Colors.black,
+                    //         ),
+                    //         title: Text('Delivery Address'),
+                    //         onTap: () {
+                    //           Navigator.pushNamed(context, 'address');
+                    //         },
+                    //       )
+                    //     : Container(),
                     ListTile(
                       leading: Icon(
                         FontAwesomeIcons.phoneAlt,
@@ -629,7 +630,10 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                       ),
                       title: Text('Rate our app'),
                       onTap: () {
-                        Navigator.pushNamed(context, 'contact');
+                        // Navigator.pushNamed(context, 'contact');
+                        Navigator.pop(context);
+                        Helper.launchInWebView(
+                            "https://play.google.com/store/apps/details?id=com.flutterapp.freshology");
                       },
                     ),
                     user.id != null
@@ -664,7 +668,10 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                       ),
                       title: Text('Privacy Policy'),
                       onTap: () {
-                        Navigator.pushNamed(context, 'privacy');
+                        // Navigator.pushNamed(context, 'privacy');
+                        Navigator.pop(context);
+                        Helper.launchInWebView(
+                            "https://freshology.in/privacy-policy/");
                       },
                     ),
                     ListTile(
@@ -674,7 +681,10 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                       ),
                       title: Text('Return Policy'),
                       onTap: () {
-                        Navigator.pushNamed(context, 'refund');
+                        // Navigator.pushNamed(context, 'refund');
+                        Navigator.pop(context);
+                        Helper.launchInWebView(
+                            "https://freshology.in/return-policy/");
                       },
                     ),
                     ListTile(
@@ -684,7 +694,10 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                       ),
                       title: Text('Terms and conditions'),
                       onTap: () {
-                        Navigator.pushNamed(context, 'terms');
+                        // Navigator.pushNamed(context, 'terms');
+                        Navigator.pop(context);
+                        Helper.launchInWebView(
+                            "https://freshology.in/terms-conditions/");
                       },
                     ),
                     Divider(

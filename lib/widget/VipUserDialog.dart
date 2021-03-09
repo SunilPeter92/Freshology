@@ -205,7 +205,7 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
                 ),
               ),
               SizedBox(
-                height: 22,
+                height: 10,
               ),
             ],
           ),

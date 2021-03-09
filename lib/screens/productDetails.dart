@@ -32,22 +32,22 @@ class _ProductDetailsState extends StateMVC<ProductDetails> {
     _con = controller;
   }
   var _size;
-  TextEditingController _controller;
   addMoneyPresetWidget(String weight, String price) {
     return Container(
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
         border: Border.all(
           width: 1,
-          color: _controller.text == weight ? kDarkGreen : kLightGreen,
+          color:
+              _con.extrasController.text == weight ? kDarkGreen : kLightGreen,
         ),
         borderRadius: BorderRadius.circular(15),
-        color: _controller.text == weight ? kDarkGreen : Colors.white,
+        color: _con.extrasController.text == weight ? kDarkGreen : Colors.white,
       ),
       child: GestureDetector(
         onTap: () {
           setState(() {
-            _controller.text = weight;
+            _con.extrasController.text = weight;
             Extra selectedExtra = _con.product.extras
                 .firstWhere((element) => element.name == weight);
             for (int i = 0; i < _con.product.extras.length; i++) {
@@ -67,14 +67,18 @@ class _ProductDetailsState extends StateMVC<ProductDetails> {
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
-                color: _controller.text == weight ? Colors.white : Colors.black,
+                color: _con.extrasController.text == weight
+                    ? Colors.white
+                    : Colors.black,
               ),
             ),
             Text(
               "₹ ${price}",
               style: TextStyle(
                 fontSize: 12,
-                color: _controller.text == weight ? Colors.white : Colors.black,
+                color: _con.extrasController.text == weight
+                    ? Colors.white
+                    : Colors.black,
               ),
             ),
           ],
@@ -94,6 +98,7 @@ class _ProductDetailsState extends StateMVC<ProductDetails> {
         ),
       );
     });
+
     return variationsList;
   }
 
@@ -109,7 +114,6 @@ class _ProductDetailsState extends StateMVC<ProductDetails> {
     }
     user = currentUser.value;
     super.initState();
-    _controller = TextEditingController();
   }
 
   @override
@@ -142,7 +146,7 @@ class _ProductDetailsState extends StateMVC<ProductDetails> {
               ),
               GestureDetector(
                 onTap: () {
-                  _con.addToCart(_con.product);
+                  _con.addToCart();
                 },
                 child: Container(
                   width: 100,

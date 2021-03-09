@@ -10,7 +10,7 @@ import 'package:freshology/models/userModel.dart';
 import 'package:freshology/repositories/user_repository.dart';
 import 'package:http/http.dart' as http;
 
-Future<Stream<Product>> getOrders() async {
+Future<Stream<Order>> getOrders() async {
   User _user = await getCurrentUser();
   final String _apiToken = 'api_token=${_user.apiToken}&';
   final String url =
@@ -25,7 +25,7 @@ Future<Stream<Product>> getOrders() async {
       .map((data) => Helper.getData(data))
       .expand((data) => (data as List))
       .map((data) {
-    return Product.fromJson(data);
+    return Order.fromJSON(data);
   });
 }
 
@@ -133,7 +133,7 @@ getData(Map<String, dynamic> data) {
   return data['success'] ?? [];
 }
 
-Future<Product> addOrder(Order order, Payment payment) async {
+Future<Order> addOrder(Order order, Payment payment) async {
   User _user = await getCurrentUser();
   // CreditCard _creditCard = await getCreditCard();
   order.user = _user;
@@ -149,5 +149,5 @@ Future<Product> addOrder(Order order, Payment payment) async {
     headers: {HttpHeaders.contentTypeHeader: 'application/json'},
     body: json.encode(params),
   );
-  return Product.fromJson(json.decode(response.body)['data']);
+  return Order.fromJSON(json.decode(response.body)['data']);
 }
