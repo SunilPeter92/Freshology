@@ -48,12 +48,13 @@ class CheckoutController extends ControllerMVC {
         content: Text('Verify your internet connection'),
       ));
     }, onDone: () {
-      calculateSubtotal();
+      // calculateSubtotal();
       if (withAddOrder != null && withAddOrder == true) {
         addOrder(carts);
       }
       if (withAddOrder == false) {
         setState(() {
+          calculateSubtotal();
           loading = false;
         });
       }
@@ -63,10 +64,6 @@ class CheckoutController extends ControllerMVC {
         ));
       }
     });
-
-    subTotal = 100.0;
-    taxAmount = 10.0;
-    total = 110.0;
   }
 
   void addOrder(List<Cart> carts) async {
@@ -110,14 +107,55 @@ class CheckoutController extends ControllerMVC {
   }
 
   void calculateSubtotal() async {
-    subTotal = 0;
-    carts.forEach((cart) {
-      subTotal += cart.quantity * cart.product.price;
+    // subTotal = 0;
+    // double extraPrice = 0.0;
+    // carts.forEach((element) {
+    //   extraPrice = (extraPrice + element.extras[0].price).toDouble();
+    // });
+    // carts.forEach((cart) {
+    //   // subTotal += cart.quantity * extraPrice;
+    //   subTotal += cart.quantity * cart.extras[0].price;
+    // });
+
+    // // deliveryFee = carts[0].food.restaurant.deliveryFee;
+    // // taxAmount = (subTotal + deliveryFee) * settingRepo.setting.value.defaultTax / 100;
+    // total = subTotal + extraPrice;
+    // setState(() {});
+    double _grossTotal = 0;
+    double _allExtrasTotal = 0;
+    carts.forEach((c) {
+      _allExtrasTotal = _allExtrasTotal + c.extras[0].price;
     });
-    taxAmount = subTotal * 3 / 100;
-    total = subTotal + taxAmount;
+    _grossTotal = _allExtrasTotal;
+    total = _grossTotal;
     setState(() {});
   }
+  // void calculateSubtotal() async {
+  //   subTotal = 0;
+  //   carts.forEach((cart) {
+  //     subTotal += cart.quantity * cart.product.price;
+  //   });
+  //   // deliveryFee = 0.0;
+  //   // taxAmount = (subTotal) * settingRepo.setting.value.defaultTax / 100;
+  //   total = subTotal;
+  //   setState(() {});
+  // }
+
+  // void calculateSubtotal() async {
+  //   subTotal = 0;
+  //   double extraPrice = 0;
+  //   carts.forEach((cart) {
+  //     subTotal += cart.quantity * cart.product.price;
+  //     cart.product.extras.forEach((extra) {
+  //       extraPrice += extra.checked ? extra.price : 0;
+  //     });
+  //   });
+  //   taxAmount = subTotal * 3 / 100;
+  //   total = subTotal + taxAmount + extraPrice;
+  //   setState(() {});
+  // }
+
+  void calculateTotal() {}
 
   // void updateCreditCard(CreditCard creditCard) {
   //   userRepo.setCreditCard(creditCard).then((value) {

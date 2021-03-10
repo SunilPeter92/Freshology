@@ -99,7 +99,7 @@ class TrendingProductsWidget extends StatelessWidget {
                         height: 25,
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          "₹ ${product.price}",
+                          "₹ ${product.extras[0].price}",
                           style: TextStyle(
                             color: kDarkGreen,
                             fontSize: 18,
@@ -126,7 +126,7 @@ class TrendingProductsWidget extends StatelessWidget {
                         height: 25,
                         alignment: Alignment.topLeft,
                         child: Text(
-                          "₹ ${product.price}",
+                          "₹ ${product.extras[0].price}",
                           style: TextStyle(
                             decoration: TextDecoration.lineThrough,
                             color: Colors.grey,

@@ -57,6 +57,7 @@ Future<Cart> addCart(Cart cart, bool reset) async {
   final String _apiToken = 'api_token=${_user.apiToken}';
   final String _resetParam = 'reset=${reset ? 1 : 0}';
   cart.userId = _user.id.toString();
+  print("FINAL SENDING CART: ${cart.toMap()}");
   final String url = '${baseURL}carts?$_apiToken&$_resetParam';
   final client = new http.Client();
   final response = await client.post(

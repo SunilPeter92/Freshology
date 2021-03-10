@@ -46,16 +46,21 @@ class _ProductDetailsState extends StateMVC<ProductDetails> {
       ),
       child: GestureDetector(
         onTap: () {
+          _con.product.extras.forEach((element) {
+            element.checked = false;
+          });
           setState(() {
             _con.extrasController.text = weight;
+
             Extra selectedExtra = _con.product.extras
                 .firstWhere((element) => element.name == weight);
             for (int i = 0; i < _con.product.extras.length; i++) {
               if (_con.product.extras[i].name == weight) {
                 _con.product.extras[i].checked = true;
-                _con.product.price = _con.product.extras[i].price;
-
+                // _con.product.price = _con.product.extras[i].price;
                 print("EXTRA CHECKED");
+              } else {
+                _con.product.extras[i].checked = false;
               }
             }
           });
@@ -90,7 +95,6 @@ class _ProductDetailsState extends StateMVC<ProductDetails> {
   _buildVariations() {
     List<Widget> variationsList = [];
     _con.product.extras.forEach((variation) {
-      print("EXTRASSSS: ${variation.name}");
       variationsList.add(
         addMoneyPresetWidget(
           variation.name.toString(),
@@ -146,7 +150,7 @@ class _ProductDetailsState extends StateMVC<ProductDetails> {
               ),
               GestureDetector(
                 onTap: () {
-                  _con.addToCart();
+                  _con.addToCart(_con.product);
                 },
                 child: Container(
                   width: 100,
@@ -257,7 +261,7 @@ class _ProductDetailsState extends StateMVC<ProductDetails> {
                                 Container(
                                   alignment: Alignment.topRight,
                                   child: Text(
-                                    "₹ ${_con.product.price}",
+                                    "₹ ${_con.product.extras[0].price}",
                                     textAlign: TextAlign.right,
                                     style: TextStyle(
                                       color: Colors.grey,
@@ -269,7 +273,7 @@ class _ProductDetailsState extends StateMVC<ProductDetails> {
                                 Container(
                                   alignment: Alignment.topRight,
                                   child: Text(
-                                    "${_con.product.price}",
+                                    "${_con.product.extras[0].price}",
                                     textAlign: TextAlign.right,
                                     style: TextStyle(
                                       color: Colors.grey,
