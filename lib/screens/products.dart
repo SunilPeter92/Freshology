@@ -51,13 +51,13 @@ class _ProductsState extends StateMVC<Products>
     // setIndex();
 
     Future.delayed(Duration(seconds: 0), () {
-      Provider.of<ProductProvider>(context, listen: false)
-          .getVegetablesProducts();
-      Provider.of<ProductProvider>(context, listen: false).getProducts();
-      Provider.of<ProductProvider>(context, listen: false).getCat1Products();
-      Provider.of<ProductProvider>(context, listen: false).getCat2Products();
-      Provider.of<ProductProvider>(context, listen: false).getCat3Products();
-      Provider.of<ProductProvider>(context, listen: false).getCat4Products();
+      // Provider.of<ProductProvider>(context, listen: false)
+      //     .getVegetablesProducts();
+      // Provider.of<ProductProvider>(context, listen: false).getProducts();
+      // Provider.of<ProductProvider>(context, listen: false).getCat1Products();
+      // Provider.of<ProductProvider>(context, listen: false).getCat2Products();
+      // Provider.of<ProductProvider>(context, listen: false).getCat3Products();
+      // Provider.of<ProductProvider>(context, listen: false).getCat4Products();
     });
     super.initState();
   }
@@ -83,10 +83,10 @@ class _ProductsState extends StateMVC<Products>
 
   @override
   Widget build(BuildContext context) {
-    final productProvider = Provider.of<ProductProvider>(context);
+    // final productProvider = Provider.of<ProductProvider>(context);
 
     final user = currentUser;
-    final productList = productProvider.productList;
+    // final productList = productProvider.productList;
     _size = MediaQuery.of(context).size;
 
     pageCategoryTitle() {

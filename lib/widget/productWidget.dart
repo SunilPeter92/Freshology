@@ -1,14 +1,11 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:freshology/constants/styles.dart';
 import 'package:freshology/models/product.dart';
-import 'package:freshology/models/productModel.dart';
+// import 'package:freshology/models/productModel.dart';
 import 'package:freshology/models/route.dart';
 import 'package:freshology/provider/cartProvider.dart';
 import 'package:freshology/provider/categoryProvider.dart';
 import 'package:freshology/provider/userProvider.dart';
-import 'package:freshology/screens/productDetails.dart';
-import 'package:freshology/widget/trendingProductWidget.dart';
 import 'package:provider/provider.dart';
 
 class ProductWidget extends StatefulWidget {

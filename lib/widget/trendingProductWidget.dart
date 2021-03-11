@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:freshology/constants/styles.dart';
 import 'package:freshology/models/cartModel.dart';
 import 'package:freshology/models/product.dart';
-import 'package:freshology/models/productModel.dart';
+// import 'package:freshology/models/productModel.dart';
 import 'package:freshology/models/userModel.dart';
 import 'package:freshology/provider/cartProvider.dart';
 import 'package:freshology/repositories/user_repository.dart';

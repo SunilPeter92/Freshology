@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:freshology/constants/configurations.dart';
 import 'package:freshology/controllers/cart_controller.dart';
 import 'package:freshology/models/cart.dart';
+import 'package:freshology/models/timeSlots.dart';
 import 'package:freshology/models/userModel.dart';
 import '../helper/helper.dart';
 import 'package:http/http.dart' as http;
@@ -45,6 +46,20 @@ Future<Stream<int>> getCartCount() async {
       .map(
         (data) => Helper.getIntData(data),
       );
+}
+
+Future<Stream<TimeSlot>> getTimeSlots() async {
+  final String url = '${baseURL}get_time_slot';
+
+  final client = new http.Client();
+  final streamedRest = await client.send(http.Request('get', Uri.parse(url)));
+
+  return streamedRest.stream
+      .transform(utf8.decoder)
+      .transform(json.decoder)
+      .map((data) => Helper.getData(data))
+      .expand((data) => (data as List))
+      .map((data) => TimeSlot.fromJson(data));
 }
 
 Future<Cart> addCart(Cart cart, bool reset) async {

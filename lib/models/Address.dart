@@ -22,6 +22,7 @@ class Address {
     this.stateId,
     this.country,
     this.countryId,
+    this.deliveryFee,
   });
 
   Address.empty({
@@ -37,6 +38,7 @@ class Address {
     this.stateId = '',
     this.country = '',
     this.countryId = '',
+    this.deliveryFee = '',
   });
 
   String id;
@@ -51,6 +53,7 @@ class Address {
   String stateId;
   String country;
   String countryId;
+  String deliveryFee;
 
   factory Address.fromJson(Map<String, dynamic> json) => Address(
         id: json["id"] == null ? null : json["id"].toString(),
@@ -65,6 +68,7 @@ class Address {
         stateId: json["state_id"] == null ? null : json["state_id"],
         country: json["country"] == null ? null : json["country"],
         countryId: json["country_id"] == null ? null : json["country_id"],
+        deliveryFee: json['delivery_fee'] == null ? null : json['delivery_fee'],
       );
 
   Map<String, dynamic> toJson() => {
@@ -80,5 +84,6 @@ class Address {
         "state_id": stateId == null ? null : stateId,
         "country": country == null ? null : country,
         "country_id": countryId == null ? null : countryId,
+        "delivery_fee": countryId == null ? null : countryId,
       };
 }

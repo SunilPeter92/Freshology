@@ -99,7 +99,7 @@ class _CartState extends StateMVC<Cart> {
     // final cartList = Provider.of<CartProvider>(context).cartProducts;
     final cartList = _con.carts;
     final cartProvider = Provider.of<CartProvider>(context);
-    final productProvider = Provider.of<ProductProvider>(context);
+    // final productProvider = Provider.of<ProductProvider>(context);
     final promoProvider = Provider.of<PromoProvider>(context);
     amount = cartProvider.totalValue;
     if (amount < 1000) {

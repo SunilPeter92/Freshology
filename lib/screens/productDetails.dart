@@ -1,10 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:freshology/constants/styles.dart';
 import 'package:freshology/controllers/cart_controller.dart';
 import 'package:freshology/models/cartModel.dart';
 import 'package:freshology/models/product.dart';
-import 'package:freshology/models/productModel.dart';
 import 'package:freshology/models/route.dart';
 import 'package:freshology/models/userModel.dart';
 import 'package:freshology/provider/cartProvider.dart';
@@ -213,7 +213,10 @@ class _ProductDetailsState extends StateMVC<ProductDetails> {
                     width: 50,
                     padding: EdgeInsets.all(5),
                     margin: EdgeInsets.all(5),
-                    child: Center(child: CircularProgressIndicator()))
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  )
                 : CartButton(
                     cartTotal: _con.total,
                   ),
@@ -281,7 +284,7 @@ class _ProductDetailsState extends StateMVC<ProductDetails> {
                                       fontSize: 10,
                                     ),
                                   ),
-                                )
+                                ),
                               ],
                             ),
                           )
@@ -291,7 +294,7 @@ class _ProductDetailsState extends StateMVC<ProductDetails> {
                     Container(
                       padding: EdgeInsets.all(10),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Container(
                             child: Text(
@@ -301,6 +304,11 @@ class _ProductDetailsState extends StateMVC<ProductDetails> {
                                 fontSize: 14,
                               ),
                             ),
+                          ),
+                          Container(
+                            child: Icon(_con.product.isFavorite
+                                ? FontAwesomeIcons.solidHeart
+                                : FontAwesomeIcons.heart),
                           ),
                           // Container(
                           //   child: Text(
@@ -316,7 +324,7 @@ class _ProductDetailsState extends StateMVC<ProductDetails> {
                       ),
                     ),
                     Container(
-                      height: _size.height * 0.2,
+                      height: _size.height * 0.18,
                       alignment: Alignment.topLeft,
                       padding: EdgeInsets.all(10),
                       child: AutoSizeText(
@@ -328,7 +336,7 @@ class _ProductDetailsState extends StateMVC<ProductDetails> {
                         style: TextStyle(fontSize: 12, color: Colors.grey[800]),
                       ),
                     ),
-                    SizedBox(height: 10),
+                    // SizedBox(height: 5),
                     Container(
                       child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,

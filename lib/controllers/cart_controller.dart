@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:freshology/helpers/helper.dart';
 import 'package:freshology/models/cart.dart';
+import 'package:freshology/models/favorite.dart';
 import 'package:freshology/models/product.dart';
 import 'package:freshology/repositories/appListenables.dart';
 import 'package:freshology/repositories/cart_repository.dart';
+import 'package:freshology/repositories/favorite_repository.dart';
 import 'package:freshology/repositories/product_repository.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 
@@ -36,7 +38,14 @@ class CartController extends ControllerMVC {
       // scaffoldKey.currentState?.showSnackBar(SnackBar(
       //   content: Text('Verify your internet connection'),
       // ));
-    }, onDone: () {
+    }, onDone: () async {
+      final Stream<Favorite> favStream =
+          await isFavoriteFood(product.id.toString());
+      favStream.listen((_fav) {
+        if (_fav != null || _fav.id != null) ;
+        product.isFavorite = true;
+      });
+
       setState(() {
         product.extras[0].checked = true;
         extrasController.text = product.extras[0].name;

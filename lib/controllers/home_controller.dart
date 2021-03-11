@@ -120,7 +120,7 @@ class HomeController extends ControllerMVC with ChangeNotifier {
         content: Text('Verify your internet connection'),
       ));
     }, onDone: () {
-      calculateSubtotal();
+      calculateCartTotal();
       if (message != null) {
         scaffoldKey.currentState.showSnackBar(SnackBar(
           content: Text(message),
@@ -129,19 +129,30 @@ class HomeController extends ControllerMVC with ChangeNotifier {
     });
   }
 
-  void calculateSubtotal() {
-    subTotal = 0;
-    carts.forEach((cart) {
-      subTotal += cart.quantity * cart.product.price;
-    });
-//    taxAmount = subTotal * settingRepo.setting.defaultTax / 100;
 
-    // cartValue.value = total;
-    // cartValue.notifyListeners();
-    setState(() {
-      total = subTotal + taxAmount;
+  calculateCartTotal() {
+    double _grossTotal = 0;
+    double _allExtrasTotal = 0;
+    carts.forEach((c) {
+      _allExtrasTotal = _allExtrasTotal + (c.extras[0].price * c.quantity);
     });
+    _grossTotal = _allExtrasTotal;
+    total = _grossTotal;
+    setState(() {});
   }
+//   void calculateSubtotal() {
+//     subTotal = 0;
+//     carts.forEach((cart) {
+//       subTotal += cart.quantity * cart.product.price;
+//     });
+// //    taxAmount = subTotal * settingRepo.setting.defaultTax / 100;
+
+//     // cartValue.value = total;
+//     // cartValue.notifyListeners();
+//     setState(() {
+//       total = subTotal + taxAmount;
+//     });
+//   }
 
   void listenForTrendingFoods() async {
     final Stream<Product> stream = await getTrendingProducts();

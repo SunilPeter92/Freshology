@@ -2,6 +2,8 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:freshology/constants/styles.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:provider/provider.dart';
 import 'package:freshology/provider/userProvider.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
@@ -9,13 +11,21 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:freshology/widget/startButton.dart';
-
+import '../controllers/WalletController.dart';
 class Wallet extends StatefulWidget {
   @override
   _WalletState createState() => _WalletState();
 }
 
-class _WalletState extends State<Wallet> {
+class _WalletState extends StateMVC<Wallet> {
+
+  WalletController _con;
+
+  _WalletState() : super(WalletController()) {
+    _con = controller;
+  }
+
+
   TextEditingController _controller = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   Razorpay _razorpay;
@@ -27,6 +37,7 @@ class _WalletState extends State<Wallet> {
 
   @override
   void initState() {
+    _con.getWalletAmount();
     _razorpay = Razorpay();
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
@@ -158,6 +169,7 @@ class _WalletState extends State<Wallet> {
     final user = Provider.of<UserProvider>(context).userDetail;
     size = MediaQuery.of(context).size;
     return Scaffold(
+      key: _con.scaffoldKey,
       appBar: AppBar(
         iconTheme: IconThemeData(color: kDarkGreen),
         title: Text(
@@ -168,155 +180,161 @@ class _WalletState extends State<Wallet> {
         ),
         backgroundColor: Colors.white,
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          width: MediaQuery.of(context).size.height,
-          padding: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Container(
-                // color: Colors.blue,
-                padding: EdgeInsets.all(15),
-                child: IntrinsicHeight(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        width: size.width * 0.37,
-                        child: Column(
-                          children: [
-                            Text(
-                              "Main Balance",
-                              style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 12,
+      body: ModalProgressHUD(
+        inAsyncCall: _con.isLoading,
+              child: SingleChildScrollView(
+          child: Container(
+            width: MediaQuery.of(context).size.height,
+            padding: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                  // color: Colors.blue,
+                  padding: EdgeInsets.all(15),
+                  child: IntrinsicHeight(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          width: size.width * 0.37,
+                          child: Column(
+                            children: [
+                              Text(
+                                "Main Balance",
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 12,
+                                ),
                               ),
-                            ),
-                            Text(
-                              "₹ balance",
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w700,
+                              Text(
+                                // "₹ ${_con.wallet.amount}",
+                                _con.wallet.amount==null?"₹ ${0.0}":"₹ ${_con.wallet.amount}",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                      VerticalDivider(
-                        width: 1,
-                        thickness: 1,
-                        color: Colors.grey,
-                      ),
-                      Container(
-                        width: size.width * 0.37,
-                        child: Column(
-                          children: [
-                            Text(
-                              "Promotional Balance",
-                              style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 12,
-                              ),
-                            ),
-                            Text(
-                              "₹ balance",
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ],
+                        VerticalDivider(
+                          width: 1,
+                          thickness: 1,
+                          color: Colors.grey,
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              SizedBox(height: 75),
-              Container(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Add Money",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              SizedBox(height: 15),
-              Form(
-                key: _formKey,
-                child: Column(
-                  children: <Widget>[
-                    TextFormField(
-                      controller: _controller,
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                        labelText: '₹ 1000',
-                      ),
-                      validator: (nameValue) {
-                        if (nameValue.isEmpty) {
-                          return 'Please Enter a amount';
-                        }
-                        return null;
-                      },
+                        Container(
+                          width: size.width * 0.37,
+                          child: Column(
+                            children: [
+                              Text(
+                                "Promotional Balance",
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 12,
+                                ),
+                              ),
+                              Text(
+                                "₹ balance",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                    SizedBox(height: 30),
-                  ],
+                  ),
                 ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  addMoneyPresetWidget("1000", "10"),
-                  addMoneyPresetWidget("2000", "20"),
-                  addMoneyPresetWidget("3000", "30"),
-                  addMoneyPresetWidget("4000", "40"),
-                ],
-              ),
-              SizedBox(height: 15),
-              ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(50)),
-                child: FlatButton(
-                  color: kLightGreen,
+                SizedBox(height: 75),
+                Container(
+                  alignment: Alignment.centerLeft,
                   child: Text(
-                    'Add money',
+                    "Add Money",
                     style: TextStyle(
-                      color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  onPressed: () {
-                    // if (_formKey.currentState.validate()) {
-                    //   walletBalance = user.userBalance +
-                    //       int.parse(_controller.value.text.trim());
-                    //   openCheckOut();
-                    // }
-                  },
                 ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Container(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    historyButtons("wallet_history", "Wallet\nHistory", () {}),
-                    historyButtons(
-                        "billing_history", "Billing\nHistory", () {}),
-                    historyButtons("reserve_money", "Reserve\nMoney", () {})
+                SizedBox(height: 15),
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    children: <Widget>[
+                      TextFormField(
+                        controller: _controller,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          labelText: '₹ 1000',
+                        ),
+                        validator: (nameValue) {
+                          if (nameValue.isEmpty) {
+                            return 'Please Enter a amount';
+                          }
+                          return null;
+                        },
+                      ),
+                      SizedBox(height: 30),
+                    ],
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    addMoneyPresetWidget("1000", "10"),
+                    addMoneyPresetWidget("2000", "20"),
+                    addMoneyPresetWidget("3000", "30"),
+                    addMoneyPresetWidget("4000", "40"),
                   ],
                 ),
-              ),
-              Column(
-                children: [
-                  billingHistoryData("Last recharge amount", "0"),
-                  billingHistoryData("Balance after last recharge", "0"),
-                  billingHistoryData("Bill since last recharge", "0")
-                ],
-              )
-            ],
+                SizedBox(height: 15),
+                ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(50)),
+                  child: FlatButton(
+                    color: kLightGreen,
+                    child: Text(
+                      'Add money',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    onPressed: () {
+
+                      if (_formKey.currentState.validate()) {
+                        _con.updateWallet(_controller.value.text.trim(), 'add');
+                        // walletBalance = user.userBalance +
+                        //     int.parse(_controller.value.text.trim());
+                        // openCheckOut();
+                      }
+                    },
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Container(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      historyButtons("wallet_history", "Wallet\nHistory", () {}),
+                      historyButtons(
+                          "billing_history", "Billing\nHistory", () {}),
+                      historyButtons("reserve_money", "Reserve\nMoney", () {})
+                    ],
+                  ),
+                ),
+                Column(
+                  children: [
+                    billingHistoryData("Last recharge amount", "0"),
+                    billingHistoryData("Balance after last recharge", "0"),
+                    billingHistoryData("Bill since last recharge", "0")
+                  ],
+                )
+              ],
+            ),
           ),
         ),
       ),

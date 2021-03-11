@@ -884,6 +884,7 @@ class Product {
     this.restaurant,
     this.extras,
     this.media,
+    this.isFavorite,
   });
 
   int id;
@@ -906,6 +907,7 @@ class Product {
   Restaurant restaurant;
   List<Extra> extras;
   List<Media> media;
+  bool isFavorite;
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(
         id: json["id"] == null ? null : json["id"],
@@ -939,6 +941,7 @@ class Product {
         media: json["media"] == null
             ? null
             : List<Media>.from(json["media"].map((x) => Media.fromJson(x))),
+        isFavorite: false,
       );
 
   Map<String, dynamic> toJson() => {

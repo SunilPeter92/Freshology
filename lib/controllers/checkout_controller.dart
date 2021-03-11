@@ -2,15 +2,21 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:freshology/constants/styles.dart';
+import 'package:freshology/models/Wallet.dart';
 import 'package:freshology/models/cart.dart';
 import 'package:freshology/models/order.dart';
 import 'package:freshology/models/order_status.dart';
 import 'package:freshology/models/payment.dart';
 import 'package:freshology/models/product_order.dart';
+import 'package:freshology/models/timeSlots.dart';
+import 'package:freshology/models/userModel.dart';
+import 'package:freshology/repositories/appListenables.dart';
 import 'package:freshology/repositories/cart_repository.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:freshology/repositories/user_repository.dart' as userRepo;
 import 'package:freshology/repositories/order_repository.dart' as orderRepo;
+import '../repositories/wallet_repository.dart' as wRepo;
+
 import 'package:somedialog/somedialog.dart';
 
 class CheckoutController extends ControllerMVC {
@@ -22,10 +28,13 @@ class CheckoutController extends ControllerMVC {
   // CreditCard creditCard = new CreditCard();
   bool loading = true;
   GlobalKey<ScaffoldState> scaffoldKey;
+  UserWallet wallet = UserWallet();
+  double deliveryFee = 0;
+  List<TimeSlot> timeSlots = [];
 
   CheckoutController() {
     this.scaffoldKey = new GlobalKey<ScaffoldState>();
-    listenForCarts();
+    // listenForCarts();
     // listenForCreditCard();
   }
 
@@ -106,6 +115,22 @@ class CheckoutController extends ControllerMVC {
     });
   }
 
+  void listenForTimeSlots() async {
+    final Stream<TimeSlot> stream = await getTimeSlots();
+    stream.listen((TimeSlot _timeSlots) {
+      setState(() {
+        timeSlots.add(_timeSlots);
+      });
+    }, onError: (a) {
+      print(a);
+      scaffoldKey?.currentState?.showSnackBar(SnackBar(
+        content: Text("Verify your internet connection"),
+      ));
+    }, onDone: () {
+      print("TIME SLOTS LENGTH: ${timeSlots.length}");
+    });
+  }
+
   void calculateSubtotal() async {
     // subTotal = 0;
     // double extraPrice = 0.0;
@@ -121,13 +146,18 @@ class CheckoutController extends ControllerMVC {
     // // taxAmount = (subTotal + deliveryFee) * settingRepo.setting.value.defaultTax / 100;
     // total = subTotal + extraPrice;
     // setState(() {});
+    double _deliveryFee = 0.0;
+    if (deliveryFee != null) {
+      _deliveryFee = deliveryFee;
+    }
     double _grossTotal = 0;
     double _allExtrasTotal = 0;
     carts.forEach((c) {
-      _allExtrasTotal = _allExtrasTotal + c.extras[0].price;
+      _allExtrasTotal = _allExtrasTotal + (c.extras[0].price * c.quantity);
     });
     _grossTotal = _allExtrasTotal;
-    total = _grossTotal;
+    total = _grossTotal + _deliveryFee;
+    subTotal = _grossTotal;
     setState(() {});
   }
   // void calculateSubtotal() async {
@@ -154,6 +184,47 @@ class CheckoutController extends ControllerMVC {
   //   total = subTotal + taxAmount + extraPrice;
   //   setState(() {});
   // }
+
+  getWalletAmount() async {
+    loading = true;
+    setState(() {});
+    User _user = currentUser.value;
+    var _req = await wRepo.getWallet(_user.id);
+    if (_req != null) {
+      wallet = _req;
+      setState(() {
+        loading = false;
+      });
+    } else {
+      wallet.amount = "0.0";
+      scaffoldKey.currentState?.showSnackBar(SnackBar(
+        content: Text("Something went wrong"),
+      ));
+    }
+  }
+
+  payWithWallet() async {
+    User _user = currentUser.value;
+    loading = true;
+    setState(() {});
+    await getWalletAmount();
+    if (int.parse(wallet.amount) > total) {
+      var _req = await wRepo.updateWallet(total.toString(), _user.id,
+          type: "suubtract");
+      if (_req == true) {
+        // getWalletAmount();
+        addOrder(carts);
+      } else {
+        scaffoldKey.currentState?.showSnackBar(SnackBar(
+          content: Text("Something went wrong"),
+        ));
+      }
+    } else {
+      scaffoldKey.currentState?.showSnackBar(SnackBar(
+        content: Text("Not enough balance"),
+      ));
+    }
+  }
 
   void calculateTotal() {}
 

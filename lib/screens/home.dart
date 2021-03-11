@@ -19,7 +19,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:freshology/constants/styles.dart';
 import 'package:freshology/controllers/home_controller.dart';
 import 'package:freshology/functions/stringExtension.dart';
-import 'package:freshology/models/productModel.dart';
 import 'package:freshology/provider/cartProvider.dart';
 import 'package:freshology/provider/categoryProvider.dart';
 import 'package:freshology/provider/offersProvider.dart';
@@ -241,18 +240,18 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
 
       _con.listenForTrendingFoods();
       getGeneralData();
-      Provider.of<ProductProvider>(context, listen: false).getFruitsAndVeg();
+      // Provider.of<ProductProvider>(context, listen: false).getFruitsAndVeg();
 
-      Provider.of<CategoryProvider>(context, listen: false).categories.clear();
-      Provider.of<ProductProvider>(context, listen: false)
-          .featuredProductList
-          .clear();
+      // Provider.of<CategoryProvider>(context, listen: false).categories.clear();
+      // Provider.of<ProductProvider>(context, listen: false)
+      // .featuredProductList
+      // .clear();
       Provider.of<OffersProvider>(context, listen: false).getProductOffers();
       Provider.of<OffersProvider>(context, listen: false).getCategoriesOffers();
       Provider.of<CategoryProvider>(context, listen: false).getCategories();
-      Provider.of<ProductProvider>(context, listen: false)
-          .getFeaturedProducts();
-      Provider.of<ProductProvider>(context, listen: false).getProductNames();
+      // Provider.of<ProductProvider>(context, listen: false)
+      //     .getFeaturedProducts();
+      // Provider.of<ProductProvider>(context, listen: false).getProductNames();
       Provider.of<UserProvider>(context, listen: false).getUserDetail();
       Provider.of<OrderProvider>(context, listen: false).getUserDetail();
       _scrollController = ScrollController();
@@ -412,18 +411,18 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     _total = _con.total;
-    final names = Provider.of<ProductProvider>(context).productNames;
-    final searchRef = Provider.of<ProductProvider>(context);
+    // final names = Provider.of<ProductProvider>(context).productNames;
+    // final searchRef = Provider.of<ProductProvider>(context);
     final cartProvider = Provider.of<CartProvider>(context);
     var size = MediaQuery.of(context).size;
     final categoryList = Provider.of<CategoryProvider>(context).categories;
-    final featuredList =
-        Provider.of<ProductProvider>(context).featuredProductList;
-    final fruitsAndVegList =
-        Provider.of<ProductProvider>(context).fruitsAndVegetables;
-    Provider.of<ProductProvider>(context).featuredProductList;
+    // final featuredList =
+    //     Provider.of<ProductProvider>(context).featuredProductList;
+    // final fruitsAndVegList =
+    //     Provider.of<ProductProvider>(context).fruitsAndVegetables;
+    // Provider.of<ProductProvider>(context).featuredProductList;
     final userProvider = Provider.of<UserProvider>(context);
-    final productProvider = Provider.of<ProductProvider>(context);
+    // final productProvider = Provider.of<ProductProvider>(context);
     final offersProvider = Provider.of<OffersProvider>(context);
     final offersList = Provider.of<OffersProvider>(context).offers;
     final categoryOfferList =
@@ -583,6 +582,18 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                             title: Text('My Orders'),
                             onTap: () {
                               Navigator.pushNamed(context, 'orders');
+                            },
+                          )
+                        : Container(),
+                    user.id != null
+                        ? ListTile(
+                            leading: Icon(
+                              FontAwesomeIcons.heart,
+                              color: Colors.black,
+                            ),
+                            title: Text('Favorites'),
+                            onTap: () {
+                              Navigator.pushNamed(context, 'favorites');
                             },
                           )
                         : Container(),
@@ -814,9 +825,9 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                       child: AutoCompleteTextField<String>(
                         itemSubmitted: (value) {
                           print(value);
-                          searchRef.searchItemName = value;
-                          Provider.of<ProductProvider>(context, listen: false)
-                              .getSearchProduct(context);
+                          // searchRef.searchItemName = value;
+                          // Provider.of<ProductProvider>(context, listen: false)
+                          //     .getSearchProduct(context);
                           FocusScope.of(context).unfocus();
                         },
                         key: null,
@@ -843,7 +854,7 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                           contentPadding: EdgeInsets.symmetric(horizontal: 15),
                           hintText: "Search",
                         ),
-                        suggestions: names,
+                        // suggestions: names,
                         itemBuilder: (context, item) {
                           return ListTile(
                             leading: Icon(

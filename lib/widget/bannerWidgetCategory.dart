@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:freshology/models/categoryModel.dart';
 import 'package:freshology/models/offerModel.dart';
-import 'package:freshology/models/productModel.dart';
+// import 'package:freshology/models/productModel.dart';
 import 'package:freshology/provider/offersProvider.dart';
 import 'package:freshology/provider/productProvider.dart';
 import 'package:freshology/screens/productDetails.dart';
@@ -36,7 +36,7 @@ class _BannerScrollableCategoryState extends State<BannerScrollableCategory>
   @override
   Widget build(BuildContext context) {
     // final offersProvider = Provider.of<OffersProvider>(context);
-    final productProvider = Provider.of<ProductProvider>(context);
+    // final productProvider = Provider.of<ProductProvider>(context);
     final offersList = widget.offersList;
     var size = MediaQuery.of(context).size;
     return Column(
@@ -65,8 +65,8 @@ class _BannerScrollableCategoryState extends State<BannerScrollableCategory>
                               borderRadius: BorderRadius.circular(5),
                               child: GestureDetector(
                                 onTap: () {
-                                  productProvider.selectedCategoryName = i.name;
-                                  Navigator.pushNamed(context, 'products');
+                                  // productProvider.selectedCategoryName = i.name;
+                                  // Navigator.pushNamed(context, 'products');
                                 },
                                 child: Image(
                                   image: NetworkImage(i.imageUrl),

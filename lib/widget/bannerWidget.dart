@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:freshology/models/offerModel.dart';
-import 'package:freshology/models/productModel.dart';
+// import 'package:freshology/models/productModel.dart';
 import 'package:freshology/models/route.dart';
 import 'package:freshology/models/slides.dart';
 import 'package:freshology/provider/offersProvider.dart';
@@ -43,7 +43,7 @@ class _BannerScrollableState extends State<BannerScrollable>
     // print("WIDGET LENGTH: ${widget.length}");
     _tabController =
         TabController(length: widget.slidesList.length, vsync: this);
-    final productProvider = Provider.of<ProductProvider>(context);
+    // final productProvider = Provider.of<ProductProvider>(context);
     var size = MediaQuery.of(context).size;
     return Column(
       children: [

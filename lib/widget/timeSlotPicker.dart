@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:freshology/constants/styles.dart';
 import 'package:freshology/provider/orderProvider.dart';
+import 'package:freshology/models/timeSlots.dart';
+
 import 'package:provider/provider.dart';
 
 class TimeSlotPicker extends StatefulWidget {
   final DateTime deliveryDay; // Day selected for delivery
   final int start; // Start time in firebase
-  final int end; // End time in firebase
-
+  final int end;
+  Function checker; // End time in firebase
+  List<TimeSlot> timeSlots;
   TimeSlotPicker({
     @required this.deliveryDay,
     @required this.end,
     @required this.start,
+    @required this.timeSlots,
+    @required this.checker,
   });
 
   @override
@@ -19,26 +24,50 @@ class TimeSlotPicker extends StatefulWidget {
 }
 
 class _TimeSlotPickerState extends State<TimeSlotPicker> {
+  _buildTimeSlots() {
+    widget.timeSlots.forEach(
+      (slot) {
+        setState(() {
+          timeSlotsList.add(
+            Slots(
+              displayText: '${slot.dateTime}',
+              isSelected: slot.checked,
+              unavailable: slot.available == "0",
+              value: TimeOfDay(hour: 9, minute: 0),
+            ),
+          );
+        });
+      },
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _buildTimeSlots();
+  }
+
   List<Slots> timeSlotsList = [
-    Slots(
-        displayText: '9 AM - 12 PM',
-        isSelected: false,
-        unavailable: false,
-        value: TimeOfDay(hour: 9, minute: 0)),
-    Slots(
-        displayText: '2 PM - 5 PM',
-        isSelected: false,
-        unavailable: false,
-        value: TimeOfDay(hour: 14, minute: 0)),
-    Slots(
-        displayText: '6 PM - 9 PM',
-        isSelected: false,
-        unavailable: false,
-        value: TimeOfDay(hour: 18, minute: 0)),
+    // Slots(
+    //     displayText: '9 AM - 12 PM',
+    //     isSelected: false,
+    //     unavailable: false,
+    //     value: TimeOfDay(hour: 9, minute: 0)),
+    // Slots(
+    //     displayText: '2 PM - 5 PM',
+    //     isSelected: false,
+    //     unavailable: false,
+    //     value: TimeOfDay(hour: 14, minute: 0)),
+    // Slots(
+    //     displayText: '6 PM - 9 PM',
+    //     isSelected: false,
+    //     unavailable: false,
+    //     value: TimeOfDay(hour: 18, minute: 0)),
   ];
 
   @override
   Widget build(BuildContext context) {
+    print("TIME SLOT WIDGET LENGHHT: ${timeSlotsList.length}");
     DateTime _deliveryDay = widget.deliveryDay;
     final orderProvider = Provider.of<OrderProvider>(context);
     return Container(
@@ -49,25 +78,25 @@ class _TimeSlotPickerState extends State<TimeSlotPicker> {
       child: ListView.builder(
         itemBuilder: (context, index) {
           var timeSlot = timeSlotsList[index];
-          if (_deliveryDay.day == DateTime.now().day) {
-            TimeOfDay now = TimeOfDay.now();
-            int nowInMinutes = now.hour * 60 + now.minute + 60;
-            int timeSlotValueInMinutes =
-                timeSlot.value.hour * 60 + timeSlot.value.minute;
-            if (timeSlotValueInMinutes < nowInMinutes) {
-              timeSlot.unavailable = true;
-            }
-          } else {
-            timeSlot.unavailable = false;
-          }
-          if (_deliveryDay.day == DateTime.now().day) {
-            if (timeSlot.value.hour <= widget.start) {
-              timeSlot.unavailable = true;
-            }
-            if (timeSlot.value.hour >= widget.end) {
-              timeSlot.unavailable = true;
-            }
-          }
+          // if (_deliveryDay.day == DateTime.now().day) {
+          //   TimeOfDay now = TimeOfDay.now();
+          //   int nowInMinutes = now.hour * 60 + now.minute + 60;
+          //   int timeSlotValueInMinutes =
+          //       timeSlot.value.hour * 60 + timeSlot.value.minute;
+          //   if (timeSlotValueInMinutes < nowInMinutes) {
+          //     timeSlot.unavailable = true;
+          //   }
+          // } else {
+          //   timeSlot.unavailable = false;
+          // }
+          // if (_deliveryDay.day == DateTime.now().day) {
+          //   if (timeSlot.value.hour <= widget.start) {
+          //     timeSlot.unavailable = true;
+          //   }
+          //   if (timeSlot.value.hour >= widget.end) {
+          //     timeSlot.unavailable = true;
+          //   }
+          // }
           return InkWell(
             onTap: () {
               if (timeSlot.unavailable == false) {
@@ -78,6 +107,7 @@ class _TimeSlotPickerState extends State<TimeSlotPicker> {
                 orderProvider.updateTime();
                 setState(() {
                   timeSlot.isSelected = true;
+                  widget.checker(timeSlot);
                 });
               }
             },

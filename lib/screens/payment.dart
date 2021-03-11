@@ -6,6 +6,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:freshology/constants/styles.dart';
 import 'package:freshology/controllers/checkout_controller.dart';
+import 'package:freshology/models/timeSlots.dart';
 import 'package:freshology/models/userModel.dart';
 
 import 'package:freshology/provider/cartProvider.dart';
@@ -129,7 +130,7 @@ class _PaymentState extends StateMVC<Payment> {
   void _handlePaymentSuccess(PaymentSuccessResponse response) async {
     //Fluttertoast.showToast(msg: 'Payment Success, Order Placed');
     paymentMethod = 'RazorPay';
-    await saveOrder();
+    // await saveOrder();
     //Navigator.pushNamed(context, 'confirm');
   }
 
@@ -140,29 +141,20 @@ class _PaymentState extends StateMVC<Payment> {
   void _handleExternalWallet(ExternalWalletResponse response) async {
     Fluttertoast.showToast(msg: 'External Wallet' + response.walletName);
     paymentMethod = 'External Wallet';
-    await saveOrder();
-    //Navigator.pushNamed(context, 'confirm');
-  }
-
-  void _handleCoD() async {
-    setState(() {
-      _isSaving = true;
-    });
-    paymentMethod = 'Cash on Delivery';
-    await saveOrder();
-    //Fluttertoast.showToast(msg: 'Order Placed');
-    setState(() {
-      _isSaving = false;
-    });
+    // await saveOrder();
     //Navigator.pushNamed(context, 'confirm');
   }
 
   @override
   void initState() {
     User user = currentUser.value;
+    _con.deliveryFee = double.parse(user.addresses[0].deliveryFee).toDouble();
+    _con.listenForCarts();
     Future.delayed(Duration.zero, () {
       getDeliveryTimings();
     });
+    _con.listenForTimeSlots();
+    _con.getWalletAmount();
     _razorpay = Razorpay();
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
@@ -176,120 +168,23 @@ class _PaymentState extends StateMVC<Payment> {
     super.dispose();
   }
 
-  Future<void> _handleInternalWallet(int val) async {
-    setState(() {
-      _isSaving = true;
-      paymentMethod = 'Freshology Wallet';
+  slotSelectedChecker() {
+    List<TimeSlot> _slots = [];
+    _con.timeSlots.forEach((s) {
+      if (s.checked) {
+        _slots.add(s);
+      }
     });
-    String userDocId =
-        Provider.of<UserProvider>(context, listen: false).userDocID;
-    await _fireStore.collection('user').document(userDocId).updateData({
-      'balance': val,
-    });
-    Provider.of<UserProvider>(context, listen: false).getUserDetail();
-    await saveOrder();
-    setState(() {
-      _isSaving = false;
-    });
-    //Navigator.pushNamed(context, 'confirm');
+    print("SLOT: ${_slots.length}");
+    if (_slots.length < 1) {
+      return false;
+    } else {
+      return true;
+    }
   }
 
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
   final user = currentUser.value;
-  Future<void> saveOrder() async {
-    setState(() {
-      _isSaving = true;
-    });
-    String orderDocId;
-    var num =
-        await _fireStore.collection('general').document('invoice_number').get();
-    int invoiceID = num.data['invoice_number'];
-    final cartProvider = Provider.of<CartProvider>(context, listen: false);
-    final user = Provider.of<UserProvider>(context, listen: false).userDetail;
-    final userDocID =
-        Provider.of<UserProvider>(context, listen: false).userDocID;
-    orderID = "4534";
-    // save user data in orders db
-    final userProvider =
-        Provider.of<UserProvider>(context, listen: false).userDetail;
-    final promoProvider = Provider.of<PromoProvider>(context, listen: false);
-    var _res = await _fireStore.collection('orders').add({
-      'amount': cartProvider.grandTotal.toString(),
-      'c_name': userProvider.name,
-      'c_house': userProvider.houseNo,
-      'c_state': userProvider.stateName,
-      'c_phone': userProvider.phone,
-      'c_city': userProvider.cityName,
-      'c_area': userProvider.areaName,
-      'c_pincode': userProvider.pinCode,
-      'order_id': orderID,
-      'time': DateTime.now(),
-      'is_completed': false,
-      'user_doc_ic': userDocID,
-      'delivery_date': deliveryDate,
-      'delivery_time': deliveryTime.hour.toString(),
-      'payment_method': paymentMethod,
-      'discount': cartProvider.discount,
-      'delivery_charge': cartProvider.deliveryCharge,
-      'delivery_amount': promoProvider.deliveryCharge,
-      'invoice_number': 'FSFDH20-' + invoiceID.toString(),
-    });
-    // Save orders item in order db //
-    orderDocId = _res.documentID;
-    await _fireStore
-        .collection('orders')
-        .document(orderDocId)
-        .collection('order_status')
-        .add({
-      'order_status': '',
-    });
-    Provider.of<OrderProvider>(context, listen: false).savedOrderID =
-        orderDocId;
-    final cartProducts =
-        Provider.of<CartProvider>(context, listen: false).cartProducts;
-    cartProducts.forEach((item) async {
-      await _fireStore
-          .collection('orders')
-          .document(orderDocId)
-          .collection('items')
-          .add({
-        'name': item.productName,
-        'price': item.productPrice,
-        'weight': item.productWeight,
-        'quantity': item.productQuantity,
-        'SKU': item.sKU,
-        'CGST': item.cGST,
-        'IGST': item.iGST,
-        'HSN/SAC': item.hSN,
-        'SGST': item.sGST,
-      });
-    });
-    String userDocId =
-        Provider.of<UserProvider>(context, listen: false).userDocID;
-    // Save order id in user //
-    await _fireStore
-        .collection('user')
-        .document(userDocId)
-        .collection('orders')
-        .document(orderDocId)
-        .setData({
-      'orderDocID': orderDocId,
-    });
-    await _fireStore
-        .collection('user')
-        .document(userDocId)
-        .updateData({'total_orders': FieldValue.increment(1)});
-    await _fireStore
-        .collection('general')
-        .document('invoice_number')
-        .updateData({'invoice_number': invoiceID + 1});
-    Provider.of<UserProvider>(context, listen: false).getUserDetail();
-    setState(() {
-      cleanList();
-      _isSaving = false;
-      Navigator.pushNamed(context, 'confirm');
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -361,6 +256,32 @@ class _PaymentState extends StateMVC<Payment> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Text(
+                                'Sub Total',
+                                style: kCartPaymentTextStyle,
+                              ),
+                              Text(
+                                '₹ ' + _con.subTotal.toString(),
+                                style: kCartPaymentTextStyle,
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text(
+                                'Delivery Fee',
+                                style: kCartPaymentTextStyle,
+                              ),
+                              Text(
+                                '₹ ' + _con.deliveryFee.toString(),
+                                style: kCartPaymentTextStyle,
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text(
                                 'Grand Total',
                                 style: kCartPaymentTextStyle,
                               ),
@@ -370,6 +291,7 @@ class _PaymentState extends StateMVC<Payment> {
                               ),
                             ],
                           ),
+
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
@@ -444,12 +366,7 @@ class _PaymentState extends StateMVC<Payment> {
                                 Container(
                                   alignment: Alignment.centerLeft,
                                   child: Text(
-                                    "Delivery Slot " +
-                                        deliveryDate.day.toString() +
-                                        '/' +
-                                        deliveryDate.month.toString() +
-                                        "/" +
-                                        deliveryDate.year.toString(),
+                                    "Delivery Slot ",
                                     textAlign: TextAlign.left,
                                     style: kCartGrandTotalTextStyle,
                                   ),
@@ -469,11 +386,25 @@ class _PaymentState extends StateMVC<Payment> {
                             ),
                           ),
                           SizedBox(height: 20),
-                          TimeSlotPicker(
-                            deliveryDay: deliveryDate,
-                            end: endTime,
-                            start: startTime,
-                          ),
+                          _con.timeSlots.length == 0
+                              ? Container()
+                              : TimeSlotPicker(
+                                  deliveryDay: deliveryDate,
+                                  end: endTime,
+                                  start: startTime,
+                                  timeSlots: _con.timeSlots,
+                                  checker: (Slots s) {
+                                    _con.timeSlots.forEach((element) {
+                                      element.checked = false;
+                                    });
+                                    _con.timeSlots.forEach((element) {
+                                      if (element.dateTime == s.displayText) {
+                                        element.checked = true;
+                                        setState(() {});
+                                      }
+                                    });
+                                  },
+                                ),
                           SizedBox(height: 20),
                           InkWell(
                             onTap: () {
@@ -570,7 +501,9 @@ class _PaymentState extends StateMVC<Payment> {
                                     color: Colors.white, fontSize: 14),
                               ),
                               trailing: Text(
-                                '₹ user balance',
+                                _con.wallet.amount == null
+                                    ? "₹ ${0.0}"
+                                    : "₹ ${_con.wallet.amount}",
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w700,
@@ -578,6 +511,12 @@ class _PaymentState extends StateMVC<Payment> {
                                 ),
                               ),
                               onTap: () {
+                                _con.payment = pay.Payment("wallet");
+                                slotSelectedChecker()
+                                    ? _con.payWithWallet()
+                                    : Fluttertoast.showToast(
+                                        msg: "Please select time slot");
+                                //         msg: 'Not enough balance!');
                                 // if (deliveryTime == null) {
                                 //   _onTimePressed();
                                 // } else {
@@ -626,7 +565,11 @@ class _PaymentState extends StateMVC<Payment> {
                                 // _onTimePressed();
                                 // }
                                 // else {
-                                openCheckOut();
+                                slotSelectedChecker()
+                                    ? openCheckOut()
+                                    : Fluttertoast.showToast(
+                                        msg: "Please select time slot");
+
                                 // }
                               },
                             ),
@@ -660,7 +603,11 @@ class _PaymentState extends StateMVC<Payment> {
                               ),
                               onTap: () {
                                 _con.payment = pay.Payment("cash");
-                                _con.addOrder(_con.carts);
+                                slotSelectedChecker()
+                                    ? _con.addOrder(_con.carts)
+                                    : Fluttertoast.showToast(
+                                        msg: "Please select time slot");
+
                                 // if (deliveryTime == null) {
                                 //   _onTimePressed();
                                 // } else {
