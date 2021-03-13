@@ -858,6 +858,8 @@
 
 import 'dart:convert';
 
+import 'package:freshology/models/coupon.dart';
+
 Product productFromJson(String str) => Product.fromJson(json.decode(str));
 
 String productToJson(Product data) => json.encode(data.toJson());
@@ -972,6 +974,52 @@ class Product {
             ? null
             : List<dynamic>.from(media.map((x) => x.toJson())),
       };
+
+  @override
+  bool operator ==(dynamic other) {
+    return other.id == this.id;
+  }
+
+  @override
+  int get hashCode => this.id.hashCode;
+
+  // Coupon applyCoupon(Coupon coupon) {
+  //   if (coupon.code != '') {
+  //     if (coupon.valid == null) {
+  //       coupon.valid = false;
+  //     }
+  //     coupon.discountables.forEach((element) {
+  //       if (!coupon.valid) {
+  //         if (element.discountableType == "App\\Models\\Food") {
+  //           if (element.discountableId == id) {
+  //             coupon = _couponDiscountPrice(coupon);
+  //           }
+  //         } else if (element.discountableType == "App\\Models\\Restaurant") {
+  //           if (element.discountableId == restaurant.id) {
+  //             coupon = _couponDiscountPrice(coupon);
+  //           }
+  //         } else if (element.discountableType == "App\\Models\\Category") {
+  //           if (element.discountableId == categoryId.toString()) {
+  //             coupon = _couponDiscountPrice(coupon);
+  //           }
+  //         }
+  //       }
+  //     });
+  //   }
+  //   return coupon;
+  // }
+
+  // Coupon _couponDiscountPrice(Coupon coupon) {
+  //   coupon.valid = true;
+  //   discountPrice = price;
+  //   if (coupon.discountType == 'fixed') {
+  //     price -= coupon.discount;
+  //   } else {
+  //     price = price - (price * coupon.discount / 100);
+  //   }
+  //   if (price < 0) price = 0;
+  //   return coupon;
+  // }
 }
 
 class Extra {

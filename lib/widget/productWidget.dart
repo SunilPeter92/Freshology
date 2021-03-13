@@ -72,7 +72,8 @@ class _ProductWidgetState extends State<ProductWidget> {
                     Navigator.pushNamed(
                       context,
                       'productDetails',
-                      arguments: RouteArgument(param: widget.product, id: null),
+                      arguments:
+                          RouteArgument(id: widget.product.id.toString()),
                     );
                   },
                   child: Container(

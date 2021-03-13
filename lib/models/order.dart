@@ -93,11 +93,11 @@
 //   }
 // }
 import 'package:freshology/helpers/custom_trace.dart';
+import 'package:freshology/models/Address.dart';
 import 'package:freshology/models/order_status.dart';
 import 'package:freshology/models/payment.dart';
 import 'package:freshology/models/product_order.dart';
 
-import '../models/address.dart';
 import '../models/userModel.dart';
 
 class Order {

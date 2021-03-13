@@ -24,26 +24,28 @@ class ProductController extends ControllerMVC {
   bool loadCart = false;
 
   void listenForCarts({String message, isGrocery = false}) async {
-    final Stream<Cart> stream = await getCart();
-    stream.listen((Cart _cart) {
-      if (!carts.contains(_cart)) {
-        setState(() {
-          carts.add(_cart);
-        });
-      }
-    }, onError: (a) {
-      print(a);
-      // scaffoldKey?.currentState?.showSnackBar(SnackBar(
-      //   content: Text('Verify your internet connection'),
-      // ));
-    }, onDone: () {
-      calculateSubtotal();
-      if (message != null) {
-        // scaffoldKey.currentState.showSnackBar(SnackBar(
-        //   content: Text(message),
+    if (currentUser.value.apiToken != null) {
+      final Stream<Cart> stream = await getCart();
+      stream.listen((Cart _cart) {
+        if (!carts.contains(_cart)) {
+          setState(() {
+            carts.add(_cart);
+          });
+        }
+      }, onError: (a) {
+        print(a);
+        // scaffoldKey?.currentState?.showSnackBar(SnackBar(
+        //   content: Text('Verify your internet connection'),
         // ));
-      }
-    });
+      }, onDone: () {
+        calculateSubtotal();
+        if (message != null) {
+          // scaffoldKey.currentState.showSnackBar(SnackBar(
+          //   content: Text(message),
+          // ));
+        }
+      });
+    }
   }
 
   void calculateSubtotal() {

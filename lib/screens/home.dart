@@ -722,7 +722,8 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                             ),
                             title: Text('Logout'),
                             onTap: () {
-                              _auth.signOut();
+                              // _auth.signOut();
+                              logout();
                               Navigator.pushNamed(context, 'login');
                             },
                           )
@@ -784,10 +785,10 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                           Container(
                             child: GestureDetector(
                               onTap: () {
-                                Navigator.pushNamed(context, 'notify');
+                                Navigator.pushNamed(context, 'favorites');
                               },
                               child: Icon(
-                                Icons.notifications,
+                                FontAwesomeIcons.heart,
                                 size: 30,
                                 color: Colors.black,
                               ),

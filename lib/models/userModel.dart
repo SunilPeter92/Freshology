@@ -144,6 +144,7 @@ class User {
       houseNo = jsonMap['user_data']['house_no'];
       pinCode = jsonMap['user_data']['pinecode'];
       status = jsonMap['user_data']['status'];
+      bio = jsonMap['user_data']['bio'];
       addresses = [];
       try {
         phone = jsonMap['user_data']['phone_no'];

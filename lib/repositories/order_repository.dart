@@ -70,7 +70,7 @@ Future<Stream<Product>> getOrder(orderId) async {
 //   });
 // }
 
-Future<Stream<Product>> getRecentOrders() async {
+Future<Stream<Order>> getRecentOrders() async {
   User _user = await getCurrentUser();
   final String _apiToken = 'api_token=${_user.apiToken}&';
   final String url =
@@ -85,7 +85,7 @@ Future<Stream<Product>> getRecentOrders() async {
       .map((data) => Helper.getData(data))
       .expand((data) => (data as List))
       .map((data) {
-    return Product.fromJson(data);
+    return Order.fromJSON(data);
   });
 }
 

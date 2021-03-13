@@ -23,6 +23,7 @@ class CartController extends ControllerMVC {
   Cart cart;
   // Favorite favorite;
   bool loadCart = false;
+  Favorite favorite;
 
   CartController() {
     listenForCarts();
@@ -39,17 +40,11 @@ class CartController extends ControllerMVC {
       //   content: Text('Verify your internet connection'),
       // ));
     }, onDone: () async {
-      final Stream<Favorite> favStream =
-          await isFavoriteFood(product.id.toString());
-      favStream.listen((_fav) {
-        if (_fav != null || _fav.id != null) ;
-        product.isFavorite = true;
-      });
-
       setState(() {
         product.extras[0].checked = true;
         extrasController.text = product.extras[0].name;
       });
+
       if (message != null) {
         scaffoldKey.currentState?.showSnackBar(SnackBar(
           content: Text(message),
@@ -58,60 +53,77 @@ class CartController extends ControllerMVC {
     });
   }
 
-  void addmultiplecart(Cart cart) {}
-
-  void listenForCarts({String message, bool withAddOrder = false}) async {
-    final Stream<Cart> stream = await getCart();
-    stream.listen((Cart _cart) {
-      if (!carts.contains(_cart)) {
-        setState(() {
-          carts.add(_cart);
-        });
-      }
+  void listenForFavorite({String foodId}) async {
+    final Stream<Favorite> stream = await isFavoriteFood(foodId);
+    stream.listen((Favorite _favorite) {
+      setState(() => favorite = _favorite);
     }, onError: (a) {
       print(a);
-      scaffoldKey?.currentState?.showSnackBar(SnackBar(
-        content: Text("Verify your internet connection"),
-      ));
-    }, onDone: () {
-      calculateCartTotal();
-      // if (withAddOrder != null && withAddOrder == true) {
-      //   addOrder(carts);
-      // }
-      if (message != null) {
-        scaffoldKey.currentState.showSnackBar(SnackBar(
-          content: Text(message),
-        ));
-      }
     });
   }
 
-  // void listenForCarts({String message, isGrocery = false}) async {
-  //   setState(() {
-  //     loadCart = true;
-  //   });
-  //   final Stream<Cart> stream = await getCart();
-  //   stream.listen((Cart _cart) {
-  //     if (!carts.contains(_cart)) {
-  //       setState(() {
-  //         carts.add(_cart);
-  //       });
-  //     }
-  //   }, onError: (a) {
-  //     print(a);
-  //   }, onDone: () async {
-  //     await calculateSubtotal();
-  //     print("RECALCULATED TOTAL: $total");
-  //     setState(() {
-  //       loadCart = false;
-  //     });
-  //     if (message != null) {
-  //       scaffoldKey.currentState.showSnackBar(SnackBar(
-  //         content: Text(message),
-  //       ));
-  //     }
-  //   });
-  // }
+  void addToFavorite(Product food) async {
+    if (currentUser.value.apiToken == null) {
+      scaffoldKey.currentState.showSnackBar(SnackBar(
+        content: Text('Please login/register to continue'),
+      ));
+    } else {
+      var _favorite = new Favorite();
+      _favorite.food = food;
+      _favorite.extras = food.extras.where((Extra _extra) {
+        return _extra.checked;
+      }).toList();
+      addFavorite(_favorite).then((value) {
+        setState(() {
+          this.favorite = value;
+        });
+        scaffoldKey.currentState.showSnackBar(SnackBar(
+          content: Text('This food was added to favorite'),
+        ));
+      });
+    }
+  }
+
+  void removeFromFavorite(Favorite _favorite) async {
+    removeFavorite(_favorite).then((value) {
+      setState(() {
+        this.favorite = new Favorite();
+      });
+      scaffoldKey.currentState.showSnackBar(SnackBar(
+        content: Text('This food was removed from favorites'),
+      ));
+    });
+  }
+
+  void addmultiplecart(Cart cart) {}
+
+  void listenForCarts({String message, bool withAddOrder = false}) async {
+    if (currentUser.value.apiToken != null) {
+      final Stream<Cart> stream = await getCart();
+      stream.listen((Cart _cart) {
+        if (!carts.contains(_cart)) {
+          setState(() {
+            carts.add(_cart);
+          });
+        }
+      }, onError: (a) {
+        print(a);
+        scaffoldKey?.currentState?.showSnackBar(SnackBar(
+          content: Text("Verify your internet connection"),
+        ));
+      }, onDone: () {
+        calculateCartTotal();
+        // if (withAddOrder != null && withAddOrder == true) {
+        //   addOrder(carts);
+        // }
+        if (message != null) {
+          scaffoldKey.currentState.showSnackBar(SnackBar(
+            content: Text(message),
+          ));
+        }
+      });
+    }
+  }
 
   void listenForCartsCount({String message}) async {
     final Stream<int> stream = await getCartCount();
@@ -140,74 +152,39 @@ class CartController extends ControllerMVC {
   }
 
   void addToCart(Product product, {bool reset = false}) async {
-    setState(() {
-      this.loadCart = true;
-    });
-    var _cart = new Cart();
-    _cart.product = product;
-    _cart.extras = product.extras.where((element) => element.checked).toList();
-    // _cart.extras = product.extras;
-    _cart.quantity = this.quantity;
-    addCart(_cart, reset).then((value) {
-      // listenForCart();
-      cart = _cart;
-      setState(() {
-        this.loadCart = false;
-        listenForCarts();
-      });
+    if (currentUser.value == null || currentUser.value.apiToken == null) {
       scaffoldKey.currentState.showSnackBar(SnackBar(
-        content: Text('This food was added to cart'),
+        content: Text('Please login/register to continue'),
       ));
-    });
+    } else {
+      if (product.deliverable) {
+        setState(() {
+          this.loadCart = true;
+        });
+        var _cart = new Cart();
+        _cart.product = product;
+        _cart.extras =
+            product.extras.where((element) => element.checked).toList();
+        // _cart.extras = product.extras;
+        _cart.quantity = this.quantity;
+        addCart(_cart, reset).then((value) {
+          // listenForCart();
+          cart = _cart;
+          setState(() {
+            this.loadCart = false;
+            listenForCarts();
+          });
+          scaffoldKey.currentState.showSnackBar(SnackBar(
+            content: Text('This food was added to cart'),
+          ));
+        });
+      } else {
+        scaffoldKey.currentState.showSnackBar(SnackBar(
+          content: Text('Product not available currently'),
+        ));
+      }
+    }
   }
-
-  // void addToCart({bool reset = false}) async {
-  //   setState(() {
-  //     loadCart = true;
-  //   });
-  //   print(currentUser.value.apiToken);
-  //   if (currentUser.value.apiToken == null) {
-  //     scaffoldKey.currentState.showSnackBar(SnackBar(
-  //       content: Text('Please login/register to continue'),
-  //     ));
-  //   } else {
-  //     var _cart = new Cart();
-  //     _cart.product = product;
-
-  //     _cart.extras =
-  //         product.extras.where((element) => element.checked).toList();
-  //     _cart.product.price = _cart.extras[0].price;
-  //     _cart.quantity = this.quantity;
-  //     cart = _cart;
-  //     _cart.extras[0].price = 0.0;
-
-  //     // _cart.extras =
-  //     //     product.extras.where((element) => element.checked).toList();
-
-  //     _cart.quantity = this.quantity;
-  //     addCart(_cart, reset).then((value) {
-  //       setState(() {
-  //         loadCart = false;
-  //       });
-  //       // calculateSubtotal();
-  //       // refreshCarts();
-  //       listenForCarts();
-  //       // calculateSubtotal();
-  //       scaffoldKey.currentState.showSnackBar(SnackBar(
-  //         content: Text('This food was added to cart'),
-  //       ));
-  //     });
-  //   }
-  // }
-
-  // void calculateTotal() {
-  //   total = product.price ?? 0;
-  //   product.extras.forEach((extra) {
-  //     total += extra.checked ? extra.price : 0;
-  //   });
-  //   total *= quantity;
-  //   setState(() {});
-  // }
 
   void removeFromCart(Cart _cart) async {
     removeCart(_cart).then((value) {
@@ -247,44 +224,6 @@ class CartController extends ControllerMVC {
     total = subTotal + extraPrice;
     setState(() {});
   }
-//   void calculateSubtotal() async {
-// //     subTotal = 0;
-// //     carts.forEach((cart) {
-// //       subTotal += cart.quantity * cart.product.price;
-// //     });
-// // //    taxAmount = subTotal * settingRepo.setting.defaultTax / 100;
-// //     total = subTotal + taxAmount;
-// //     setState(() {});
-//     subTotal = 0;
-//     double extraPrice = 0;
-//     carts.forEach((cart) {
-//       subTotal += cart.quantity * cart.product.price;
-
-//       // cart.product.extras.forEach((extra) {
-//       //   extraPrice += extra.checked ? extra.price : 0;
-//       // });
-//     });
-//     taxAmount = 0;
-//     total = subTotal + taxAmount + extraPrice;
-//     setState(() {});
-//   }
-
-//   void calculateSubtotal() {
-//     subTotal = 0;
-//     double extraAmount = 0.0;
-//     carts.forEach((cart) {
-//       subTotal = subTotal + (cart.quantity * cart.product.price);
-//     });
-//     // print("CART EXTRASS SUB TOTAL: ${cart.extras.length}");
-// // taxAmount = subTotal * settingRepo.setting.defaultTax / 100;
-//     if (cart.extras.length > 0 || cart.extras != null)
-//       extraAmount = cart.extras[0].price;
-//     // print("PRODUCT EXTRAS: ${cart.extras}");
-//     total = subTotal + taxAmount + extraAmount;
-//     print("CALCULATED TOTAL: ${total}");
-//     setState(() {});
-//     // cartValue.value = total;
-//   }
 
   incrementQuantity(Cart cart) {
     if (cart.quantity <= 99) {

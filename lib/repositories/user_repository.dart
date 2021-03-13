@@ -24,6 +24,20 @@ Future<User> getCurrentUser() async {
   return currentUser.value;
 }
 
+Future<User> update(User user) async {
+  final String _apiToken = 'api_token=${currentUser.value.apiToken}';
+  final String url = '${baseURL}users/${currentUser.value.id}?$_apiToken';
+  final client = new http.Client();
+  final response = await client.post(
+    url,
+    headers: {HttpHeaders.contentTypeHeader: 'application/json'},
+    body: json.encode(user.toMap()),
+  );
+  setCurrentUser(response.body);
+  currentUser.value = User.fromJSON(json.decode(response.body)['data']);
+  return currentUser.value;
+}
+
 void setCurrentUser(jsonString) async {
   try {
     if (json.decode(jsonString)['user_data'] != null) {
@@ -260,6 +274,11 @@ Future<Address> removeDeliveryAddress(Address address) async {
   return Address.fromJson(json.decode(response.body)['data']);
 }
 
+Future<void> logout() async {
+  currentUser.value = new User();
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.remove('current_user');
+}
 // verifyLoginOTP(String code, String phone) async {
 //   var map = {
 //     "code": code,

@@ -9,25 +9,56 @@ import 'package:freshology/repositories/user_repository.dart' as userRepo;
 import 'package:freshology/repositories/appListenables.dart';
 import 'package:http/http.dart' as http;
 
+// Future<bool> isFavoriteFood(String foodId) async {
+//   User _user = currentUser.value;
+//   if (_user.apiToken == null) {
+//     return false;
+//   }
+//   final String _apiToken = 'api_token=${_user.apiToken}&';
+//   final String url =
+//       '${baseURL}favorites/exist?${_apiToken}food_id=$foodId&user_id=${_user.id}';
+//   print("IS FAVOTITE URL: ${url}");
+   
+//   try {
+//     var response = await http.get(url, headers: header);
+//     if (response.statusCode == 201 || response.statusCode == 200) {
+//       var data = Helper.getData(json.decode(response.body));
+//       print("FAVORITE DATA: ${data}");
+//       if(data!=null && data.length>0){
+//         return true;
+//       }else{
+//         return false;
+//       }
+    
+//     }
+//   } catch (e) {
+//     print("ERROR! ${e}");
+//   }
+//   // final client = new http.Client();
+//   // final streamedRest = await client.send(http.Request('get', Uri.parse(url)));
+
+//   // return streamedRest.stream
+//   //     .transform(utf8.decoder)
+//   //     .transform(json.decoder)
+//   //     .map((data) => Helper.getObjectData(data))
+//   //     .map((data) => Favorite.fromJSON(data));
+// }
+
+
+
 Future<Stream<Favorite>> isFavoriteFood(String foodId) async {
   User _user = currentUser.value;
   if (_user.apiToken == null) {
     return Stream.value(null);
   }
   final String _apiToken = 'api_token=${_user.apiToken}&';
-  final String url =
-      '${baseURL}favorites/exist?${_apiToken}food_id=$foodId&user_id=${_user.id}';
-  print("IS FAVOTITE URL: ${url}");
+  final String url = '${baseURL}favorites/exist?${_apiToken}food_id=$foodId&user_id=${_user.id}';
+
   final client = new http.Client();
   final streamedRest = await client.send(http.Request('get', Uri.parse(url)));
 
-  return streamedRest.stream
-      .transform(utf8.decoder)
-      .transform(json.decoder)
-      .map((data) => Helper.getObjectData(data))
-      .map((data) => Favorite.fromJSON(data));
+  return streamedRest.stream.transform(utf8.decoder).transform(json.decoder).map((data) => Helper.getObjectData(data)).map((data) => Favorite.fromJSON(data));
 }
-
 Future<Stream<Favorite>> getFavorites() async {
   User _user = currentUser.value;
   if (_user.apiToken == null) {
@@ -36,6 +67,7 @@ Future<Stream<Favorite>> getFavorites() async {
   final String _apiToken = 'api_token=${_user.apiToken}&';
   final String url =
       '${baseURL}favorites?${_apiToken}with=food;user;extras&search=user_id:${_user.id}&searchFields=user_id:=';
+      print("FAVORITES GET: ${url} ");
 
   final client = new http.Client();
   final streamedRest = await client.send(http.Request('get', Uri.parse(url)));
@@ -47,6 +79,8 @@ Future<Stream<Favorite>> getFavorites() async {
       .expand((data) => (data as List))
       .map((data) => Favorite.fromJSON(data));
 }
+
+
 
 Future<Favorite> addFavorite(Favorite favorite) async {
   User _user = currentUser.value;

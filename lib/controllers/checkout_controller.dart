@@ -44,35 +44,37 @@ class CheckoutController extends ControllerMVC {
   // }
 
   void listenForCarts({String message, bool withAddOrder = false}) async {
-    final Stream<Cart> stream = await getCart();
-    stream.listen((Cart _cart) {
-      if (!carts.contains(_cart)) {
-        setState(() {
-          carts.add(_cart);
-        });
-      }
-    }, onError: (a) {
-      print(a);
-      scaffoldKey?.currentState?.showSnackBar(SnackBar(
-        content: Text('Verify your internet connection'),
-      ));
-    }, onDone: () {
-      // calculateSubtotal();
-      if (withAddOrder != null && withAddOrder == true) {
-        addOrder(carts);
-      }
-      if (withAddOrder == false) {
-        setState(() {
-          calculateSubtotal();
-          loading = false;
-        });
-      }
-      if (message != null) {
-        scaffoldKey.currentState.showSnackBar(SnackBar(
-          content: Text(message),
+    if (currentUser.value.apiToken != null) {
+      final Stream<Cart> stream = await getCart();
+      stream.listen((Cart _cart) {
+        if (!carts.contains(_cart)) {
+          setState(() {
+            carts.add(_cart);
+          });
+        }
+      }, onError: (a) {
+        print(a);
+        scaffoldKey?.currentState?.showSnackBar(SnackBar(
+          content: Text('Verify your internet connection'),
         ));
-      }
-    });
+      }, onDone: () {
+        // calculateSubtotal();
+        if (withAddOrder != null && withAddOrder == true) {
+          addOrder(carts);
+        }
+        if (withAddOrder == false) {
+          setState(() {
+            calculateSubtotal();
+            loading = false;
+          });
+        }
+        if (message != null) {
+          scaffoldKey.currentState.showSnackBar(SnackBar(
+            content: Text(message),
+          ));
+        }
+      });
+    }
   }
 
   void addOrder(List<Cart> carts) async {

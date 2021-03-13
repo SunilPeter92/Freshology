@@ -115,6 +115,7 @@ class _ProductDetailsState extends StateMVC<ProductDetails> {
       _con.product = widget.routeArgument.param;
     } else {
       _con.listenForProduct(productId: widget.routeArgument.id);
+      _con.listenForFavorite(foodId: widget.routeArgument.id);
     }
     user = currentUser.value;
     super.initState();
@@ -305,10 +306,17 @@ class _ProductDetailsState extends StateMVC<ProductDetails> {
                               ),
                             ),
                           ),
-                          Container(
-                            child: Icon(_con.product.isFavorite
-                                ? FontAwesomeIcons.solidHeart
-                                : FontAwesomeIcons.heart),
+                          InkWell(
+                            onTap: () {
+                              _con.favorite?.id != null?_con.removeFromFavorite(_con.favorite)
+                              : _con.addToFavorite(_con.product);
+                              // _con.product.isFavorite?_con.removeFromFavorite(_)
+                            },
+                            child: Container(
+                              child: Icon(_con.favorite?.id != null
+                                  ? FontAwesomeIcons.solidHeart
+                                  : FontAwesomeIcons.heart),
+                            ),
                           ),
                           // Container(
                           //   child: Text(

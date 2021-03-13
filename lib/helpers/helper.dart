@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:freshology/models/product_order.dart';
+import 'package:freshology/repositories/settings_repository.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Helper {
@@ -189,64 +191,62 @@ class Helper {
 //    }
 //  }
 
-  // static FutureBuilder<Setting> getPrice(double myPrice, {TextStyle style}) {
-  //   if (style != null) {
-  //     style = style.merge(TextStyle(fontSize: style.fontSize + 2));
-  //   }
-  //   return FutureBuilder(
-  //     builder: (context, priceSnap) {
-  //       if (priceSnap.connectionState == ConnectionState.none &&
-  //           priceSnap.hasData == false) {
-  //         return Text('');
-  //       }
-  //       return RichText(
-  //         softWrap: false,
-  //         overflow: TextOverflow.fade,
-  //         maxLines: 1,
-  //         text: priceSnap.data?.currencyRight != null &&
-  //                 priceSnap.data?.currencyRight == false
-  //             ? TextSpan(
-  //                 text: priceSnap.data?.defaultCurrency,
-  //                 style: style ?? Theme.of(context).textTheme.subhead,
-  //                 children: <TextSpan>[
-  //                   TextSpan(
-  //                       text: myPrice.toStringAsFixed(2) ?? '',
-  //                       style: style ?? Theme.of(context).textTheme.subhead),
-  //                 ],
-  //               )
-  //             : TextSpan(
-  //                 text: myPrice.toStringAsFixed(2) ?? '',
-  //                 style: style ?? Theme.of(context).textTheme.subhead,
-  //                 children: <TextSpan>[
-  //                   TextSpan(
-  //                       text: priceSnap.data?.defaultCurrency,
-  //                       style: TextStyle(
-  //                           fontWeight: FontWeight.w400,
-  //                           fontSize: style != null
-  //                               ? style.fontSize - 4
-  //                               : Theme.of(context).textTheme.subhead.fontSize -
-  //                                   4)),
-  //                 ],
-  //               ),
-  //       );
-  //     },
-  //     future: getCurrentSettings(),
-  //   );
-  // }
+  static Widget getPrice(double myPrice, BuildContext context,
+      {TextStyle style}) {
+    if (style != null) {
+      style = style.merge(TextStyle(fontSize: style.fontSize + 2));
+    }
+    try {
+      return RichText(
+        softWrap: false,
+        overflow: TextOverflow.fade,
+        maxLines: 1,
+        text: setting.value?.currencyRight != null &&
+                setting.value?.currencyRight == false
+            ? TextSpan(
+                text: setting.value?.defaultCurrency,
+                style: style ?? Theme.of(context).textTheme.subhead,
+                children: <TextSpan>[
+                  TextSpan(
+                      text: myPrice.toStringAsFixed(2) ?? '',
+                      style: style ?? Theme.of(context).textTheme.subhead),
+                ],
+              )
+            : TextSpan(
+                text: myPrice.toStringAsFixed(2) ?? '',
+                style: style ?? Theme.of(context).textTheme.subhead,
+                children: <TextSpan>[
+                  TextSpan(
+                      text: setting.value?.defaultCurrency,
+                      style: TextStyle(
+                          fontWeight: FontWeight.w400,
+                          fontSize: style != null
+                              ? style.fontSize - 4
+                              : Theme.of(context).textTheme.subhead.fontSize -
+                                  4)),
+                ],
+              ),
+      );
+    } catch (e) {
+      return Text('');
+    }
+  }
 
-  // static double getTotalOrderPrice(FoodOrder foodOrder, double tax) {
-  //   double total = foodOrder.price * foodOrder.quantity;
-  //   foodOrder.extras.forEach((extra) {
-  //     total += extra.price != null ? extra.price : 0;
-  //   });
-  //   total += tax * total / 100;
-  //   return total;
-  // }
+  static double getTotalOrderPrice(
+      ProductOrder foodOrder, double tax, double deliveryFee) {
+    double total = foodOrder.price * foodOrder.quantity;
+    foodOrder.extras.forEach((extra) {
+      total += extra.price != null ? extra.price : 0;
+    });
+    total += deliveryFee;
+    total += tax * total / 100;
+    return total;
+  }
 
-  // static String getDistance(double distance) {
-  //   // TODO get unit from settings
-  //   return distance != null ? distance.toStringAsFixed(2) + " mi" : "";
-  // }
+  static String getDistance(double distance) {
+    // TODO get unit from settings
+    return distance != null ? distance.toStringAsFixed(2) + " mi" : "";
+  }
 
   // static String skipHtml(String htmlString) {
   //   var document = parse(htmlString);
