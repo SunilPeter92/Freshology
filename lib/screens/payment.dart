@@ -120,11 +120,11 @@ class _PaymentState extends StateMVC<Payment> {
   }
 
   void cleanList() {
-    Provider.of<CartProvider>(context, listen: false).cartProducts.clear();
-    Provider.of<CartProvider>(context, listen: false).productNames.clear();
-    Provider.of<CartProvider>(context, listen: false).itemCount = 0;
-    Provider.of<CartProvider>(context, listen: false).totalValue = 0;
-    Provider.of<CartProvider>(context, listen: false).grandTotal = 0;
+    // Provider.of<CartProvider>(context, listen: false).cartProducts.clear();
+    // Provider.of<CartProvider>(context, listen: false).productNames.clear();
+    // Provider.of<CartProvider>(context, listen: false).itemCount = 0;
+    // Provider.of<CartProvider>(context, listen: false).totalValue = 0;
+    // Provider.of<CartProvider>(context, listen: false).grandTotal = 0;
   }
 
   void _handlePaymentSuccess(PaymentSuccessResponse response) async {

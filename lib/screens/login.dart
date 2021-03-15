@@ -19,7 +19,6 @@ class _LoginState extends StateMVC<Login> {
   TextEditingController _number = TextEditingController();
   Firestore _fireStore = Firestore.instance;
   String phoneNumber;
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   Future<bool> checkUser() async {
     print("PHONE NO: ${phoneNumber}");
     var data = await _fireStore.collection('user').getDocuments();
@@ -36,14 +35,14 @@ class _LoginState extends StateMVC<Login> {
   _LoginState() : super(UserController()) {
     _con = controller;
   }
-  Future<void> handleLogin() async {
-    bool res = await checkUser();
-    if (res == true) {
-      print("Navigated");
-    } else {
-      Navigator.pushNamed(context, 'register');
-    }
-  }
+  // Future<void> handleLogin() async {
+  //   bool res = await checkUser();
+  //   if (res == true) {
+  //     print("Navigated");
+  //   } else {
+  //     Navigator.pushNamed(context, 'register');
+  //   }
+  // }
 
   Future<bool> _onBackPress() {
     return SystemChannels.platform.invokeMethod('SystemNavigator.pop');
@@ -51,18 +50,18 @@ class _LoginState extends StateMVC<Login> {
 
   @override
   void initState() {
-    _con.scaffoldKey = scaffoldKey;
+    // _con.scaffoldKey = scaffoldKey;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final userProvider = Provider.of<UserProvider>(context);
-    userProvider.scaffoldKey = scaffoldKey;
+    // final userProvider = Provider.of<UserProvider>(context);
+    // userProvider.scaffoldKey = scaffoldKey;
     return WillPopScope(
       onWillPop: _onBackPress,
       child: Scaffold(
-        key: scaffoldKey,
+        key: _con.scaffoldKey,
         body: SingleChildScrollView(
           child: Container(
             height: MediaQuery.of(context).size.height,
@@ -138,8 +137,8 @@ class _LoginState extends StateMVC<Login> {
                               setState(() {
                                 _con.user.phone = phoneNumber;
                               });
-                              print(
-                                  "NEW USER PHONE: ${userProvider.userPhoneNumber}");
+                              // print(
+                              //     "NEW USER PHONE: ${userProvider.userPhoneNumber}");
                               _con.loginUser();
                               // userProvider.loginUser(context);
                             }

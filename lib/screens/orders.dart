@@ -30,8 +30,8 @@ class _OrdersState extends StateMVC<Orders> {
 
   @override
   Widget build(BuildContext context) {
-    final orderProvider = Provider.of<OrderProvider>(context);
-    var orders = orderProvider.orderList;
+    // final orderProvider = Provider.of<OrderProvider>(context);
+    // var orders = orderProvider.orderList;
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(

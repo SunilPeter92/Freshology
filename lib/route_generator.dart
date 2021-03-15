@@ -85,8 +85,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => Terms());
       case 'orders':
         return MaterialPageRoute(builder: (_) => Orders());
-      case 'orderDetails':
-        return MaterialPageRoute(builder: (_) => OrderDetails());
+      // case 'orderDetails':
+      //   return MaterialPageRoute(builder: (_) => OrderDetails());
       case 'setting':
         return MaterialPageRoute(builder: (_) => Setting());
       case 'confirm':

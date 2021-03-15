@@ -63,9 +63,6 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
     _con = controller;
   }
 
-  FirebaseAuth _auth = FirebaseAuth.instance;
-  Firestore _db = Firestore.instance;
-
   List<Container> carMockList = [
     Container(),
     Container(),
@@ -87,108 +84,108 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
   TabController tabController2;
   TabController tabController3;
 
-  void getGeneralData() async {
-    try {
-      appVersion = await GetVersion.projectVersion;
-    } on PlatformException {
-      appVersion = 'Failed to get project version.';
-    }
-    bool _popDisplayed =
-        Provider.of<PromoProvider>(context, listen: false).popDisplayed;
-    bool _updatePopDisplayed =
-        Provider.of<PromoProvider>(context, listen: false).updatePopup;
-    var data = await _db.collection('general').document('home_offer').get();
-    offerImageUrl = data.data['offer_url'];
-    var d = await _db.collection('general').document('accepting').get();
-    setState(() {
-      _isOrders = d.data['orders'];
-      msg = d.data['msg'];
-    });
-    var p = await _db.collection('general').document('pop_up').get();
-    setState(() {
-      _isPopup = p.data['show'];
-      popTitle = p.data['title'];
-      popMessage = p.data['msg'];
-    });
-    if (_isPopup == true && _popDisplayed == false) {
-      showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              backgroundColor: Colors.white,
-              title: Text(
-                popTitle,
-                style: TextStyle(
-                  color: Colors.black87,
-                ),
-              ),
-              content: Text(
-                popMessage,
-                style: TextStyle(
-                  color: Colors.black87,
-                ),
-              ),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text('OK'),
-                  onPressed: () {
-                    Provider.of<PromoProvider>(context, listen: false)
-                        .popDisplayed = true;
-                    Navigator.of(context).pop(false);
-                  },
-                )
-              ],
-            );
-          });
-    }
-    var v = await _db.collection('general').document('update_popup').get();
-    if (v.data['check'] == true && _updatePopDisplayed == false) {
-      if (appVersion != v.data['version']) {
-        showDialog(
-          barrierDismissible: false,
-          context: context,
-          builder: (context) {
-            return WillPopScope(
-              onWillPop: () async => false,
-              child: AlertDialog(
-                backgroundColor: Colors.white,
-                title: Text(
-                  'A new update is available!',
-                  style: TextStyle(
-                    color: Colors.black87,
-                  ),
-                ),
-                content: Text(
-                  'Please update the app to continue.',
-                  style: TextStyle(
-                    color: Colors.black87,
-                  ),
-                ),
-                actions: <Widget>[
-                  FlatButton(
-                    child: Text('Update'),
-                    onPressed: () {
-                      Provider.of<PromoProvider>(context, listen: false)
-                          .updatePopup = true;
-                      if (Platform.isAndroid) {
-                        StoreRedirect.redirect(
-                            androidAppId: 'com.flutterapp.freshology');
-                        //com.flutterapp.freshology
-                      } else if (Platform.isIOS) {
-                        //1517619201
-                        print('clicked');
-                        StoreRedirect.redirect(iOSAppId: '1517619201');
-                      }
-                    },
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      }
-    }
-  }
+  // void getGeneralData() async {
+  //   try {
+  //     appVersion = await GetVersion.projectVersion;
+  //   } on PlatformException {
+  //     appVersion = 'Failed to get project version.';
+  //   }
+  //   bool _popDisplayed =
+  //       Provider.of<PromoProvider>(context, listen: false).popDisplayed;
+  //   bool _updatePopDisplayed =
+  //       Provider.of<PromoProvider>(context, listen: false).updatePopup;
+  //   var data = await _db.collection('general').document('home_offer').get();
+  //   offerImageUrl = data.data['offer_url'];
+  //   var d = await _db.collection('general').document('accepting').get();
+  //   setState(() {
+  //     _isOrders = d.data['orders'];
+  //     msg = d.data['msg'];
+  //   });
+  //   var p = await _db.collection('general').document('pop_up').get();
+  //   setState(() {
+  //     _isPopup = p.data['show'];
+  //     popTitle = p.data['title'];
+  //     popMessage = p.data['msg'];
+  //   });
+  //   if (_isPopup == true && _popDisplayed == false) {
+  //     showDialog(
+  //         context: context,
+  //         builder: (context) {
+  //           return AlertDialog(
+  //             backgroundColor: Colors.white,
+  //             title: Text(
+  //               popTitle,
+  //               style: TextStyle(
+  //                 color: Colors.black87,
+  //               ),
+  //             ),
+  //             content: Text(
+  //               popMessage,
+  //               style: TextStyle(
+  //                 color: Colors.black87,
+  //               ),
+  //             ),
+  //             actions: <Widget>[
+  //               FlatButton(
+  //                 child: Text('OK'),
+  //                 onPressed: () {
+  //                   Provider.of<PromoProvider>(context, listen: false)
+  //                       .popDisplayed = true;
+  //                   Navigator.of(context).pop(false);
+  //                 },
+  //               )
+  //             ],
+  //           );
+  //         });
+  //   }
+  //   var v = await _db.collection('general').document('update_popup').get();
+  //   if (v.data['check'] == true && _updatePopDisplayed == false) {
+  //     if (appVersion != v.data['version']) {
+  //       showDialog(
+  //         barrierDismissible: false,
+  //         context: context,
+  //         builder: (context) {
+  //           return WillPopScope(
+  //             onWillPop: () async => false,
+  //             child: AlertDialog(
+  //               backgroundColor: Colors.white,
+  //               title: Text(
+  //                 'A new update is available!',
+  //                 style: TextStyle(
+  //                   color: Colors.black87,
+  //                 ),
+  //               ),
+  //               content: Text(
+  //                 'Please update the app to continue.',
+  //                 style: TextStyle(
+  //                   color: Colors.black87,
+  //                 ),
+  //               ),
+  //               actions: <Widget>[
+  //                 FlatButton(
+  //                   child: Text('Update'),
+  //                   onPressed: () {
+  //                     Provider.of<PromoProvider>(context, listen: false)
+  //                         .updatePopup = true;
+  //                     if (Platform.isAndroid) {
+  //                       StoreRedirect.redirect(
+  //                           androidAppId: 'com.flutterapp.freshology');
+  //                       //com.flutterapp.freshology
+  //                     } else if (Platform.isIOS) {
+  //                       //1517619201
+  //                       print('clicked');
+  //                       StoreRedirect.redirect(iOSAppId: '1517619201');
+  //                     }
+  //                   },
+  //                 ),
+  //               ],
+  //             ),
+  //           );
+  //         },
+  //       );
+  //     }
+  //   }
+  // }
 
   Future<bool> _onBackPressed() {
     return showDialog(
@@ -239,21 +236,21 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
       _con.listenForSlider();
 
       _con.listenForTrendingFoods();
-      getGeneralData();
+      // getGeneralData();
       // Provider.of<ProductProvider>(context, listen: false).getFruitsAndVeg();
 
       // Provider.of<CategoryProvider>(context, listen: false).categories.clear();
       // Provider.of<ProductProvider>(context, listen: false)
       // .featuredProductList
       // .clear();
-      Provider.of<OffersProvider>(context, listen: false).getProductOffers();
-      Provider.of<OffersProvider>(context, listen: false).getCategoriesOffers();
-      Provider.of<CategoryProvider>(context, listen: false).getCategories();
+      // Provider.of<OffersProvider>(context, listen: false).getProductOffers();
+      // Provider.of<OffersProvider>(context, listen: false).getCategoriesOffers();
+      // Provider.of<CategoryProvider>(context, listen: false).getCategories();
       // Provider.of<ProductProvider>(context, listen: false)
       //     .getFeaturedProducts();
       // Provider.of<ProductProvider>(context, listen: false).getProductNames();
-      Provider.of<UserProvider>(context, listen: false).getUserDetail();
-      Provider.of<OrderProvider>(context, listen: false).getUserDetail();
+      // Provider.of<UserProvider>(context, listen: false).getUserDetail();
+      // Provider.of<OrderProvider>(context, listen: false).getUserDetail();
       _scrollController = ScrollController();
       tabController1 = TabController(length: 7, vsync: this);
       tabController2 = TabController(length: 6, vsync: this);

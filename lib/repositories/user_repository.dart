@@ -115,7 +115,7 @@ login(String phone) async {
   if (response.statusCode == 201 ||
       response.statusCode == 202 ||
       response.statusCode == 200) {
-    if (json.decode(response.body)['status'] == "successfully") {
+    if (json.decode(response.body)['status'] == "successfully" || json.decode(response.body)['status'] == "Verify your account") {
       Map<String, dynamic> userObj = json.decode(response.body)['data'];
 
       // setCurrentUser(json.encode(json.decode(response.body)));

@@ -62,7 +62,7 @@ class _AddressesState extends StateMVC<Addresses> {
 
   @override
   Widget build(BuildContext context) {
-    final userProvider = Provider.of<UserProvider>(context);
+    // final userProvider = Provider.of<UserProvider>(context);
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         elevation: 10,
