@@ -74,6 +74,26 @@ class Helper {
     }
   }
 
+
+
+  static String availabilityChecker(String d){
+  DateTime date = DateTime.parse(d);
+
+        DateTime now = DateTime.now();
+
+      int diff =  DateTime(date.year, date.month, date.day).difference(DateTime(now.year, now.month, now.day)).inDays;
+
+      if(diff == -1){
+        return "Yesterday";
+      }else if(diff == 0){
+        return "Today";
+      }else if(diff == 1){
+        return "Tomorrow";
+      }else{
+        return "${date.day}/${date.month}/${date.year}";
+      }
+    }
+
   Future<void> launchInBrowser(String url) async {
     if (await canLaunch(url)) {
       await launch(
@@ -234,12 +254,19 @@ class Helper {
 
   static double getTotalOrderPrice(
       ProductOrder foodOrder, double tax, double deliveryFee) {
-    double total = foodOrder.price * foodOrder.quantity;
-    foodOrder.extras.forEach((extra) {
-      total += extra.price != null ? extra.price : 0;
-    });
-    total += deliveryFee;
-    total += tax * total / 100;
+    double total = 0 ;
+    // double total = foodOrder.price * foodOrder.quantity;
+
+    for(int i = 0 ; i<foodOrder.extras.length;i++){
+      total = total + (foodOrder.extras[i].price * foodOrder.quantity);
+    }
+
+
+    // foodOrder.food.extras.forEach((extra) {
+    //   total += extra.price != null ? extra.price : 0;
+    // });
+    // total += deliveryFee;
+    // total += tax * total / 100;
     return total;
   }
 

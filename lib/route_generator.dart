@@ -11,6 +11,8 @@ import 'package:freshology/screens/login.dart';
 import 'package:freshology/screens/myAdresses.dart';
 import 'package:freshology/screens/notify.dart';
 import 'package:freshology/screens/orderConfirm.dart';
+import 'package:freshology/screens/search.dart';
+
 import 'package:freshology/screens/orderDetails.dart';
 import 'package:freshology/screens/orders.dart';
 import 'package:freshology/screens/payment.dart';
@@ -89,6 +91,8 @@ class RouteGenerator {
       //   return MaterialPageRoute(builder: (_) => OrderDetails());
       case 'setting':
         return MaterialPageRoute(builder: (_) => Setting());
+      case 'search':
+        return MaterialPageRoute(builder: (_) => SearchPage());
       case 'confirm':
         return MaterialPageRoute(builder: (_) => OrderConfirm());
       case 'address':

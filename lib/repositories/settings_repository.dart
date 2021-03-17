@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:freshology/constants/configurations.dart';
+import 'package:freshology/models/coupon.dart';
 import 'package:freshology/models/settings.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,6 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 ValueNotifier<Setting> setting = new ValueNotifier(new Setting());
 // LocationData locationData;
 
+Coupon coupon = Coupon.fromJSON({});
 Future<Setting> initSettings() async {
   Setting _setting;
   final String url = '${baseURL}settings';

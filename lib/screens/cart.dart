@@ -12,6 +12,7 @@ import 'package:freshology/provider/cartProvider.dart';
 import 'package:freshology/provider/productProvider.dart';
 import 'package:freshology/provider/promoProvider.dart';
 import 'package:freshology/provider/userProvider.dart';
+import 'package:freshology/repositories/settings_repository.dart';
 import 'package:freshology/widget/EmptyCartWidget.dart';
 import 'package:freshology/widget/startButton.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -284,6 +285,61 @@ class _CartState extends StateMVC<Cart> {
                           );
                         },
                         itemCount: cartList == null ? 0 : cartList.length,
+                      ),
+                    ),
+                    TextField(
+                      keyboardType: TextInputType.text,
+                      onSubmitted: (String value) {
+                        _con.doApplyCoupon(value);
+                      },
+                      cursorColor: Theme.of(context).accentColor,
+                      controller: TextEditingController()
+                        ..text = coupon?.code ?? '',
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 15),
+                        floatingLabelBehavior:
+                        FloatingLabelBehavior.always,
+                        hintStyle:
+                        Theme.of(context).textTheme.bodyText1,
+                        suffixText: coupon?.valid == null
+                            ? ''
+                            : (coupon.valid
+                            ? "Valid coupon"
+                            : "Invalid coupon"),
+                        suffixStyle: Theme.of(context)
+                            .textTheme
+                            .caption
+                            .merge(TextStyle(
+                            color: kDarkGreen)),
+                        suffixIcon: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 15),
+                          child: Icon(
+                            Icons.confirmation_number,
+                            color: kDarkGreen,
+                            size: 28,
+                          ),
+                        ),
+                        hintText: "Have coupon code?",
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                            borderSide: BorderSide(
+                                color: Theme.of(context)
+                                    .focusColor
+                                    .withOpacity(0.2))),
+                        focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                            borderSide: BorderSide(
+                                color: Theme.of(context)
+                                    .focusColor
+                                    .withOpacity(0.5))),
+                        enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                            borderSide: BorderSide(
+                                color: Theme.of(context)
+                                    .focusColor
+                                    .withOpacity(0.2))),
                       ),
                     ),
                     Expanded(

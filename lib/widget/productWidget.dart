@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:freshology/constants/styles.dart';
+import 'package:freshology/helpers/helper.dart';
 import 'package:freshology/models/product.dart';
 // import 'package:freshology/models/productModel.dart';
 import 'package:freshology/models/route.dart';
@@ -214,25 +215,25 @@ class _ProductWidgetState extends State<ProductWidget> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Container(
-              //   child: Text(
-              //     "Availability: ",
-              //     style: TextStyle(
-              //       color: Colors.grey,
-              //       fontSize: 12,
-              //     ),
-              //   ),
-              // ),
-              // Container(
-              //   child: Text(
-              //     "${widget.product.deliveryDate.day}/${widget.product.deliveryDate.month}/${widget.product.deliveryDate.year}",
-              //     style: TextStyle(
-              //       color: kDarkGreen,
-              //       fontSize: 12,
-              //       fontWeight: FontWeight.bold,
-              //     ),
-              //   ),
-              // ),
+              Container(
+                child: Text(
+                  "Availability: ",
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+              Container(
+                child: Text(
+                  Helper.availabilityChecker(widget.product.availability),
+                  style: TextStyle(
+                    color: kDarkGreen,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
             ],
           ),
         ],

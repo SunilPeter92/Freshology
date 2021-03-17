@@ -234,7 +234,6 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
       _con.fetchBanners();
       _con.listenForCarts();
       _con.listenForSlider();
-
       _con.listenForTrendingFoods();
       // getGeneralData();
       // Provider.of<ProductProvider>(context, listen: false).getFruitsAndVeg();
@@ -820,59 +819,89 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                           ),
                         ],
                       ),
-                      child: AutoCompleteTextField<String>(
-                        itemSubmitted: (value) {
-                          print(value);
-                          // searchRef.searchItemName = value;
-                          // Provider.of<ProductProvider>(context, listen: false)
-                          //     .getSearchProduct(context);
-                          FocusScope.of(context).unfocus();
+                      child: GestureDetector(
+                        onTap:(){
+                          Navigator.pushNamed(context, 'search');
                         },
-                        key: null,
-                        decoration: InputDecoration(
-                          suffixIcon: Icon(
-                            Icons.search,
-                            color: Colors.grey,
-                          ),
-                          focusedBorder: OutlineInputBorder(
+                        child: Container(
+                          decoration: BoxDecoration(
                             borderRadius: BorderRadius.all(
                               Radius.circular(50),
                             ),
-                            borderSide: BorderSide(
-                                color: Colors.transparent, width: 1.5),
                           ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(50),
-                            ),
-                            borderSide: BorderSide(
-                                color: Colors.transparent, width: 1.5),
+                          padding: EdgeInsets.all(15),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                child: Text(
+                                  "Search",
+                                  style:TextStyle(color:Colors.grey[800]),
+                                ),
+                              ),
+                              Container(
+                                child: Icon(
+                                  Icons.search,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ],
                           ),
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 15),
-                          hintText: "Search",
                         ),
-                        // suggestions: names,
-                        itemBuilder: (context, item) {
-                          return ListTile(
-                            leading: Icon(
-                              Icons.search,
-                              color: kLightGreen,
-                            ),
-                            title: Text(
-                              item,
-                            ),
-                          );
-                        },
-                        itemSorter: (a, b) {
-                          return a.compareTo(b);
-                        },
-                        itemFilter: (name, query) {
-                          return name
-                              .toLowerCase()
-                              .contains(query.toLowerCase());
-                        },
                       ),
+                      // child: AutoCompleteTextField<String>(
+                      //
+                      //   itemSubmitted: (value) {
+                      //     print(value);
+                      //     // searchRef.searchItemName = value;
+                      //     // Provider.of<ProductProvider>(context, listen: false)
+                      //     //     .getSearchProduct(context);
+                      //     Navigator.pushNamed(context,'search');
+                      //     FocusScope.of(context).unfocus();
+                      //   },
+                      //   key: null,
+                      //   decoration: InputDecoration(
+                      //     suffixIcon: Icon(
+                      //       Icons.search,
+                      //       color: Colors.grey,
+                      //     ),
+                      //     focusedBorder: OutlineInputBorder(
+                      //       borderRadius: BorderRadius.all(
+                      //         Radius.circular(50),
+                      //       ),
+                      //       borderSide:
+                      //       BorderSide(color: Colors.transparent, width: 1.5),
+                      //     ),
+                      //     enabledBorder: OutlineInputBorder(
+                      //       borderRadius: BorderRadius.all(
+                      //         Radius.circular(50),
+                      //       ),
+                      //       borderSide:
+                      //       BorderSide(color: Colors.transparent, width: 1.5),
+                      //     ),
+                      //     border: InputBorder.none,
+                      //     contentPadding: EdgeInsets.symmetric(horizontal: 15),
+                      //     hintText: "Search",
+                      //   ),
+                      //   // suggestions: names,
+                      //   itemBuilder: (context, item) {
+                      //     return ListTile(
+                      //       leading: Icon(
+                      //         Icons.search,
+                      //         color: kLightGreen,
+                      //       ),
+                      //       title: Text(
+                      //         item,
+                      //       ),
+                      //     );
+                      //   },
+                      //   itemSorter: (a, b) {
+                      //     return a.compareTo(b);
+                      //   },
+                      //   itemFilter: (name, query) {
+                      //     return name.toLowerCase().contains(query.toLowerCase());
+                      //   },
+                      // ),
                     ),
                     content: Center(
                       child: Column(

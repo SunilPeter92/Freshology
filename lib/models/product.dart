@@ -887,6 +887,7 @@ class Product {
     this.extras,
     this.media,
     this.isFavorite,
+    this.availability,
   });
 
   int id;
@@ -910,6 +911,7 @@ class Product {
   List<Extra> extras;
   List<Media> media;
   bool isFavorite;
+  String availability;
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(
         id: json["id"] == null ? null : json["id"],
@@ -944,6 +946,8 @@ class Product {
             ? null
             : List<Media>.from(json["media"].map((x) => Media.fromJson(x))),
         isFavorite: false,
+        availability:
+            json["availability"] == null ? null : json["availability"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -983,43 +987,45 @@ class Product {
   @override
   int get hashCode => this.id.hashCode;
 
-  // Coupon applyCoupon(Coupon coupon) {
-  //   if (coupon.code != '') {
-  //     if (coupon.valid == null) {
-  //       coupon.valid = false;
-  //     }
-  //     coupon.discountables.forEach((element) {
-  //       if (!coupon.valid) {
-  //         if (element.discountableType == "App\\Models\\Food") {
-  //           if (element.discountableId == id) {
-  //             coupon = _couponDiscountPrice(coupon);
-  //           }
-  //         } else if (element.discountableType == "App\\Models\\Restaurant") {
-  //           if (element.discountableId == restaurant.id) {
-  //             coupon = _couponDiscountPrice(coupon);
-  //           }
-  //         } else if (element.discountableType == "App\\Models\\Category") {
-  //           if (element.discountableId == categoryId.toString()) {
-  //             coupon = _couponDiscountPrice(coupon);
-  //           }
-  //         }
-  //       }
-  //     });
-  //   }
-  //   return coupon;
-  // }
+  Coupon applyCoupon(Coupon coupon) {
+    if (coupon.code != '') {
+      if (coupon.valid == null) {
+        coupon.valid = false;
+      }
+      coupon.discountables.forEach((element) {
+        if (!coupon.valid) {
+          if (element.discountableType == "App\\Models\\Food") {
+            if (element.discountableId == id) {
+              coupon = _couponDiscountPrice(coupon);
+            }
+          }
+          // else if (element.discountableType == "App\\Models\\Market") {
+          //   if (element.discountableId == market.id) {
+          //     coupon = _couponDiscountPrice(coupon);
+          //   }
+          // } else if (element.discountableType == "App\\Models\\Category") {
+          //   if (element.discountableId == category.id) {
+          //     coupon = _couponDiscountPrice(coupon);
+          //   }
+          // }
+        }
+      });
+    }
+    return coupon;
+  }
 
-  // Coupon _couponDiscountPrice(Coupon coupon) {
-  //   coupon.valid = true;
-  //   discountPrice = price;
-  //   if (coupon.discountType == 'fixed') {
-  //     price -= coupon.discount;
-  //   } else {
-  //     price = price - (price * coupon.discount / 100);
-  //   }
-  //   if (price < 0) price = 0;
-  //   return coupon;
-  // }
+  Coupon _couponDiscountPrice(Coupon coupon) {
+    print("_couponDiscountPrice");
+    coupon.valid = true;
+    discountPrice = price;
+    if (coupon.discountType == 'fixed') {
+      price -= coupon.discount;
+    } else {
+      price = price - (price * coupon.discount / 100);
+    }
+    if (price < 0) price = 0;
+    return coupon;
+  }
 }
 
 class Extra {

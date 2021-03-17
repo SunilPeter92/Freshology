@@ -1,5 +1,6 @@
 import 'package:freshology/constants/Helper.dart';
 import 'package:freshology/constants/configurations.dart';
+import 'package:freshology/helpers/custom_trace.dart';
 import 'package:freshology/models/product.dart';
 import 'package:freshology/models/userModel.dart';
 import 'package:freshology/repositories/category_repository.dart';
@@ -72,6 +73,35 @@ Future<Stream<Product>> getTrendingProducts() async {
       .map((data) {
     return Product.fromJson(data);
   });
+}
+
+
+Future<Stream<Product>> searchProducts(String search) async {
+  Uri uri = Uri.parse(
+  '${baseURL}foods');
+  Map<String, dynamic> _queryParams = {};
+  _queryParams['search'] = 'name:$search;description:$search';
+  _queryParams['searchFields'] = 'name:like;description:like';
+  _queryParams['limit'] = '5';
+  // if (!address.isUnknown()) {
+  //   _queryParams['myLon'] = address.longitude.toString();
+  //   _queryParams['myLat'] = address.latitude.toString();
+  //   _queryParams['areaLon'] = address.longitude.toString();
+  //   _queryParams['areaLat'] = address.latitude.toString();
+  // }
+  uri = uri.replace(queryParameters: _queryParams);
+  print('URI SEARCH : ${uri.toString()}');
+  try {
+    final client = new http.Client();
+    final streamedRest = await client.send(http.Request('get', uri));
+
+    return streamedRest.stream.transform(utf8.decoder).transform(json.decoder).map((data) => Helper.getData(data)).expand((data) => (data as List)).map((data) {
+      return Product.fromJson(data);
+    });
+  } catch (e) {
+    print(CustomTrace(StackTrace.current, message: uri.toString()).toString());
+    return new Stream.value(new Product.fromJson({}));
+  }
 }
 // Future<List<Product>> getSubCategoryProducts(String id) async {
 //   List<Product> products = [];

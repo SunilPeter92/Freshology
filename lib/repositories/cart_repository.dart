@@ -3,7 +3,9 @@ import 'dart:io';
 
 import 'package:freshology/constants/configurations.dart';
 import 'package:freshology/controllers/cart_controller.dart';
+import 'package:freshology/helpers/custom_trace.dart';
 import 'package:freshology/models/cart.dart';
+import 'package:freshology/models/coupon.dart';
 import 'package:freshology/models/timeSlots.dart';
 import 'package:freshology/models/userModel.dart';
 import '../helper/helper.dart';
@@ -29,6 +31,35 @@ Future<Stream<Cart>> getCart() async {
       .map((data) {
     return Cart.fromJSON(data);
   });
+}
+
+
+Future<Stream<Coupon>> verifyCoupon(String code) async {
+  Uri uri = Uri.parse(
+      '${baseURL}coupons');
+  // Uri uri = Helper.getUri('api/coupons');
+  User _user = currentUser.value;
+  if (_user.apiToken == null) {
+    return new Stream.value(null);
+  }
+  Map<String, dynamic> query = {
+    'api_token': _user.apiToken,
+    'with': 'discountables',
+    'search': 'code:$code',
+    'searchFields': 'code:=',
+  };
+  uri = uri.replace(queryParameters: query);
+  print(CustomTrace(StackTrace.current, message: uri.toString()).toString());
+  try {
+    final client = new http.Client();
+    final streamedRest = await client.send(http.Request('get', uri));
+    return streamedRest.stream.transform(utf8.decoder).transform(json.decoder).map((data) => Helper.getData(data)).expand((data) => (data as List)).map((data) {
+      return Coupon.fromJSON(data);
+    });
+  } catch (e) {
+    print(CustomTrace(StackTrace.current, message: uri.toString()).toString());
+    return new Stream.value(new Coupon.fromJSON({}));
+  }
 }
 
 Future<Stream<int>> getCartCount() async {
@@ -125,7 +156,7 @@ Future<Cart> updateCart(Cart cart) async {
   return Cart.fromJSON(json.decode(response.body)['data']);
 }
 
-Future<Cart> removeCart(Cart cart) async {
+Future<String> removeCart(Cart cart) async {
   User _user = currentUser.value;
   final String _apiToken = 'api_token=${_user.apiToken}';
   final String url = '${baseURL}carts/${cart.id}?$_apiToken';
@@ -134,5 +165,5 @@ Future<Cart> removeCart(Cart cart) async {
     url,
     headers: {HttpHeaders.contentTypeHeader: 'application/json'},
   );
-  return Cart.fromJSON(json.decode(response.body)['data']);
+  return json.decode(response.body)['message'];
 }

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:freshology/helpers/helper.dart';
 import 'package:freshology/models/cart.dart';
+import 'package:freshology/models/coupon.dart';
 import 'package:freshology/models/favorite.dart';
+import 'package:freshology/repositories/settings_repository.dart';
+import 'package:freshology/widget/NoUserModal.dart';
 import 'package:freshology/models/product.dart';
 import 'package:freshology/repositories/appListenables.dart';
 import 'package:freshology/repositories/cart_repository.dart';
@@ -62,11 +65,29 @@ class CartController extends ControllerMVC {
     });
   }
 
+  void doApplyCoupon(String code, {String message}) async {
+    coupon = new Coupon.fromJSON({"code": code, "valid": null});
+    final Stream<Coupon> stream = await verifyCoupon(code);
+    stream.listen((Coupon _coupon) async {
+      print("DO APPLY COUPON ${_coupon.discount}");
+      coupon = _coupon;
+    }, onError: (a) {
+      print(a);
+      scaffoldKey?.currentState?.showSnackBar(SnackBar(
+        content: Text("Verify your internet connection"),
+      ));
+    }, onDone: () {
+      print("COUPON LISTENIG FOR CARTS");
+      listenForCarts();
+    });
+  }
+
   void addToFavorite(Product food) async {
     if (currentUser.value.apiToken == null) {
-      scaffoldKey.currentState.showSnackBar(SnackBar(
-        content: Text('Please login/register to continue'),
-      ));
+      showNoUserModal(context);
+      // scaffoldKey.currentState.showSnackBar(SnackBar(
+      //   content: Text('Please login/register to continue'),
+      // ));
     } else {
       var _favorite = new Favorite();
       _favorite.food = food;
@@ -98,11 +119,15 @@ class CartController extends ControllerMVC {
   void addmultiplecart(Cart cart) {}
 
   void listenForCarts({String message, bool withAddOrder = false}) async {
+    carts.clear();
     if (currentUser.value.apiToken != null) {
       final Stream<Cart> stream = await getCart();
       stream.listen((Cart _cart) {
         if (!carts.contains(_cart)) {
           setState(() {
+            coupon = _cart.product.applyCoupon(coupon);
+            // print(
+            //     "DISCOUNTED PRICE CALCULATED: ${_cart.product.extras[0].price}");
             carts.add(_cart);
           });
         }
@@ -122,6 +147,8 @@ class CartController extends ControllerMVC {
           ));
         }
       });
+    } else {
+      // showNoUserModal(context);
     }
   }
 
@@ -153,9 +180,10 @@ class CartController extends ControllerMVC {
 
   void addToCart(Product product, {bool reset = false}) async {
     if (currentUser.value == null || currentUser.value.apiToken == null) {
-      scaffoldKey.currentState.showSnackBar(SnackBar(
-        content: Text('Please login/register to continue'),
-      ));
+      showNoUserModal(context);
+      // scaffoldKey.currentState.showSnackBar(SnackBar(
+      //   content: Text('Please login/register to continue'),
+      // ));
     } else {
       if (product.deliverable) {
         setState(() {
@@ -188,12 +216,23 @@ class CartController extends ControllerMVC {
 
   void removeFromCart(Cart _cart) async {
     removeCart(_cart).then((value) {
-      setState(() {
-        this.carts.remove(_cart);
-      });
+      if (value == "Deleted successfully") {
+        setState(() {
+          this.carts.remove(_cart);
+        });
+      } else {
+        scaffoldKey.currentState.showSnackBar(SnackBar(
+          content: Text("Something went wrong"),
+        ));
+      }
+
       scaffoldKey.currentState.showSnackBar(SnackBar(
         content: Text("The ${_cart.product.name} was removed from your cart"),
       ));
+      setState(() {
+        carts = [];
+      });
+      listenForCarts();
     });
   }
 
@@ -226,6 +265,7 @@ class CartController extends ControllerMVC {
   }
 
   incrementQuantity(Cart cart) {
+    print("INCREMENT CALLED: ${cart.quantity}");
     if (cart.quantity <= 99) {
       ++cart.quantity;
       updateCart(cart);
@@ -234,10 +274,15 @@ class CartController extends ControllerMVC {
   }
 
   decrementQuantity(Cart cart) {
+    print("DECREMENT CALLED: ${cart.quantity}");
     if (cart.quantity > 1) {
       --cart.quantity;
       updateCart(cart);
       calculateCartTotal();
+    } else if (cart.quantity == 1.0) {
+      print("DECREMENT ELSE IF CALLED");
+
+      removeFromCart(cart);
     }
   }
 }

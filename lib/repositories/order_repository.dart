@@ -14,7 +14,7 @@ Future<Stream<Order>> getOrders() async {
   User _user = await getCurrentUser();
   final String _apiToken = 'api_token=${_user.apiToken}&';
   final String url =
-      '${baseURL}orders?${_apiToken}with=user;foodOrders;foodOrders.food;orderStatus&search=user.id:${_user.id}&searchFields=user.id:=&orderBy=id&sortedBy=desc';
+      '${baseURL}orders?${_apiToken}with=user;foodOrders;foodOrders.food;foodOrders.food.extras;orderStatus&search=user.id:${_user.id}&searchFields=user.id:=&orderBy=id&sortedBy=desc';
   print("getOrders URL: ${url}");
   final client = new http.Client();
   final streamedRest = await client.send(http.Request('get', Uri.parse(url)));
@@ -74,7 +74,7 @@ Future<Stream<Order>> getRecentOrders() async {
   User _user = await getCurrentUser();
   final String _apiToken = 'api_token=${_user.apiToken}&';
   final String url =
-      '${baseURL}orders?${_apiToken}with=user;foodOrders;foodOrders.food;orderStatus&search=user.id:${_user.id}&searchFields=user.id:=&orderBy=updated_at&sortedBy=desc&limit=3';
+      '${baseURL}orders?${_apiToken}with=user;foodOrders;foodOrders.food;foodOrders.extras;orderStatus&search=user.id:${_user.id}&searchFields=user.id:=&orderBy=updated_at&sortedBy=desc&limit=3';
   print("GET RECENT ORDERS URL : ${url}");
   final client = new http.Client();
   final streamedRest = await client.send(http.Request('get', Uri.parse(url)));

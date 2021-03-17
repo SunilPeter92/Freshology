@@ -72,6 +72,18 @@ class HomeController extends ControllerMVC with ChangeNotifier {
     }
   }
 
+  void listenForSearch({String search = "tomato"}) async {
+
+    // Address _address = deliveryAddress.value;
+    final Stream<Product> stream = await searchProducts(search,);
+    stream.listen((Product _product) {
+      print("PRODUCT NAME: ${_product.name}");
+      // setState(() => products.add(_product));
+    }, onError: (a) {
+      print(a);
+    }, onDone: () {});
+  }
+
   void requestForSubCategories(String categoryId) async {
     final _subCategories = await getSubCategory(categoryId.toString());
     if (_subCategories != null) {

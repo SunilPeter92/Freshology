@@ -35,6 +35,7 @@ class CartProvider extends ChangeNotifier {
   }
 
   void addToCart(CartModel item) {
+
     if (productNames.contains(item.productName) == false) {
       cartProducts.add(item);
       itemCount++;
