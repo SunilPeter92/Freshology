@@ -293,20 +293,20 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
           width: 50,
           margin: EdgeInsets.all(0),
           padding: EdgeInsets.all(5),
-          decoration: BoxDecoration(
-              color: _selectedIndex == index ? kLightGreen : Colors.transparent,
-              shape: BoxShape.circle),
+          // decoration: BoxDecoration(
+          //     color: _selectedIndex == index ? kLightGreen : Colors.transparent,
+          //     shape: BoxShape.circle),
           child: Column(
             children: [
               Icon(
                 icon,
-                color: _selectedIndex == index ? Colors.white : Colors.black,
+                color: _selectedIndex == index ?  kLightGreen : Colors.black,
               ),
               Text(
                 label,
                 style: TextStyle(
                   fontSize: 11,
-                  color: _selectedIndex == index ? Colors.white : Colors.black,
+                  color: _selectedIndex == index ?  kLightGreen : Colors.black,
                 ),
               )
             ],
@@ -326,22 +326,23 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
             width: 50,
             margin: EdgeInsets.all(0),
             padding: EdgeInsets.all(5),
-            decoration: BoxDecoration(
-                color:
-                    _selectedIndex == index ? kLightGreen : Colors.transparent,
-                shape: BoxShape.circle),
+
+            // decoration: BoxDecoration(
+            //     color:
+            //         _selectedIndex == index ? kLightGreen : Colors.transparent,
+            //     shape: BoxShape.circle),
             child: Column(
               children: [
                 Icon(
                   icon,
-                  color: _selectedIndex == index ? Colors.white : Colors.black,
+                  color: _selectedIndex == index ?  kLightGreen  : Colors.black,
                 ),
                 Text(
                   label,
                   style: TextStyle(
                     fontSize: 11,
                     color:
-                        _selectedIndex == index ? Colors.white : Colors.black,
+                        _selectedIndex == index ?  kLightGreen  : Colors.black,
                   ),
                 )
               ],
@@ -444,7 +445,7 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
             setState(() {});
           },
         ));
-        _widgetList.add(SizedBox(height: 10));
+        _widgetList.add(SizedBox());
       });
       return _widgetList;
     }
@@ -746,6 +747,7 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
               iconSize: 20,
               showSelectedLabels: false,
               showUnselectedLabels: false,
+              selectedItemColor: kLightGreen,
               unselectedItemColor: Colors.black,
               items: <BottomNavigationBarItem>[
                 customNavigationBarItem(
@@ -755,7 +757,7 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                 customCartButtom("Cart", Icons.shopping_cart, 3, cartProvider),
               ],
               currentIndex: _selectedIndex,
-              selectedItemColor: Colors.amber[800],
+             // selectedItemColor: Colors.amber[800],
               onTap: _onItemTapped,
             ),
           ),
@@ -803,7 +805,7 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                   body: SingleChildScrollView(
                       child: StickyHeader(
                     header: Container(
-                      margin: EdgeInsets.all(10),
+                      margin: EdgeInsets.only(top: 2),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.all(
@@ -1025,8 +1027,8 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                                       width: 2,
                                     ),
                                   ),
-                                  padding: EdgeInsets.all(15),
-                                  margin: EdgeInsets.only(bottom: 10),
+                                //  padding: EdgeInsets.all(5),
+                                  margin: EdgeInsets.only(bottom: 5),
                                   child: Text(
                                     msg ?? '',
                                     style: GoogleFonts.notoSans(
@@ -1040,12 +1042,12 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                               ? AnnouncementWidget(
                                   announcement: _con.announcement)
                               : Container(),
-                          SizedBox(height: 20),
+                          SizedBox(height: 0),
                           Container(
                             child: Row(
                               children: [
                                 Container(
-                                  padding: EdgeInsets.all(10),
+                                  padding: EdgeInsets.all(5),
                                   child: Icon(
                                     Icons.trending_up,
                                     color: kDarkGreen,
@@ -1083,7 +1085,7 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                               ],
                             ),
                           ),
-                          SizedBox(height: 20),
+                          SizedBox(height: 10),
                           Container(
                             margin: EdgeInsets.only(left: 5),
                             child: _con.trendingProducts.length < 1
@@ -1138,7 +1140,7 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                                   ),
                           ),
 
-                          SizedBox(height: 20),
+                          SizedBox(height: 5),
                           offerImageUrl != null
                               ? Container(
                                   width: size.width,
@@ -1147,12 +1149,11 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                                   ),
                                 )
                               : Container(),
-                          SizedBox(height: 20),
+                          SizedBox(height: 5),
 
                           Column(
                             children: _buildCategoryWidgetList(),
                           ),
-                          SizedBox(height: 20),
                           (_con.slides2.length < 1 && !_con.showSlider)
                               ? Container()
                               : BannerScrollable(
@@ -1168,12 +1169,12 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                                     );
                                   },
                                 ),
-                          SizedBox(height: 20),
+                          SizedBox(height: 5),
                           Container(
                             child: Row(
                               children: [
                                 Container(
-                                  padding: EdgeInsets.all(10),
+                                  padding: EdgeInsets.only(left: 10),
                                   child: Icon(
                                     Icons.trending_up,
                                     color: kDarkGreen,
@@ -1211,7 +1212,7 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                               ],
                             ),
                           ),
-                          SizedBox(height: 20),
+                          SizedBox(height: 10),
                           Container(
                             margin: EdgeInsets.only(left: 5),
                             child: _con.trendingProducts.length < 1
@@ -1265,7 +1266,7 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                                     ],
                                   ),
                           ),
-                          SizedBox(height: 20),
+                          SizedBox(height: 10),
                           offerImageUrl != null
                               ? Container(
                                   width: size.width,
@@ -1278,7 +1279,7 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                           HorizontalBannerWidget(
                             bannerList: _con.adBanners,
                           ),
-                          SizedBox(height: 20),
+                          SizedBox(height: 10),
                         ],
                       ),
                     ),

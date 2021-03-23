@@ -37,9 +37,10 @@ class _CategoryWidgetState extends State<CategoryWidget> {
 
     buildCategory(String mainCatName) {
       return ConfigurableExpansionTile(
+        initiallyExpanded: true,
         headerExpanded: Container(
           width: size.width * 0.97,
-          padding: EdgeInsets.all(10),
+          // padding: EdgeInsets.all(10),
           margin: EdgeInsets.all(0),
           decoration: BoxDecoration(
             color: kLightGreen.withOpacity(0.15),
@@ -55,7 +56,7 @@ class _CategoryWidgetState extends State<CategoryWidget> {
                     width: 70,
                   ),
                 ),
-                SizedBox(width: 5),
+                // SizedBox(width: 5),
                 Container(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

@@ -12,7 +12,7 @@ class AnnouncementWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     _size = MediaQuery.of(context).size;
     return Container(
-      height: 80,
+      height: 60,
       padding: EdgeInsets.all(20),
       margin: EdgeInsets.all(5),
       decoration: BoxDecoration(
@@ -22,8 +22,8 @@ class AnnouncementWidget extends StatelessWidget {
         ),
       ),
       child: Container(
-        height: 80,
-        padding: EdgeInsets.only(top: 10),
+        height: 70,
+       // padding: EdgeInsets.only(top: 10),
         child: Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -38,7 +38,7 @@ class AnnouncementWidget extends StatelessWidget {
               width: _size.width * 0.7,
               alignment: Alignment.topLeft,
               padding: EdgeInsets.only(left: 20),
-              height: 120,
+              height: 80,
               child: AutoSizeText(
                 announcement.description,
                 minFontSize: 11,

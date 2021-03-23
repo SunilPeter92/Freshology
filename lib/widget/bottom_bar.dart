@@ -39,23 +39,23 @@ class _HomeParentState extends State<HomeParent> {
           width: 50,
           margin: EdgeInsets.all(0),
           padding: EdgeInsets.all(5),
-          decoration: BoxDecoration(
-              color: _selectedIndex == index ? kLightGreen : Colors.transparent,
-              // borderRadius: BorderRadius.all(
-              //   Radius.circular(500),
-              // ),
-              shape: BoxShape.circle),
+          // decoration: BoxDecoration(
+          //     color: _selectedIndex == index ? kLightGreen : Colors.transparent,
+          //     // borderRadius: BorderRadius.all(
+          //     //   Radius.circular(500),
+          //     // ),
+          //     shape: BoxShape.circle),
           child: Column(
             children: [
               Icon(
                 icon,
-                color: _selectedIndex == index ? Colors.white : Colors.black,
+                color: _selectedIndex == index ?  kLightGreen  : Colors.black,
               ),
               Text(
                 label,
                 style: TextStyle(
                   fontSize: 11,
-                  color: _selectedIndex == index ? Colors.white : Colors.black,
+                  color: _selectedIndex == index ?  kLightGreen  : Colors.black,
                 ),
               )
             ],
@@ -75,25 +75,25 @@ class _HomeParentState extends State<HomeParent> {
             width: 50,
             margin: EdgeInsets.all(0),
             padding: EdgeInsets.all(5),
-            decoration: BoxDecoration(
-                color:
-                    _selectedIndex == index ? kLightGreen : Colors.transparent,
-                // borderRadius: BorderRadius.all(
-                //   Radius.circular(500),
-                // ),
-                shape: BoxShape.circle),
+            // decoration: BoxDecoration(
+            //     color:
+            //         _selectedIndex == index ? kLightGreen : Colors.transparent,
+            //     // borderRadius: BorderRadius.all(
+            //     //   Radius.circular(500),
+            //     // ),
+            //     shape: BoxShape.circle),
             child: Column(
               children: [
                 Icon(
                   icon,
-                  color: _selectedIndex == index ? Colors.white : Colors.black,
+                  color: _selectedIndex == index ?  kLightGreen  : Colors.black,
                 ),
                 Text(
                   label,
                   style: TextStyle(
                     fontSize: 11,
                     color:
-                        _selectedIndex == index ? Colors.white : Colors.black,
+                        _selectedIndex == index ?  kLightGreen : Colors.black,
                   ),
                 )
               ],
@@ -110,16 +110,16 @@ class _HomeParentState extends State<HomeParent> {
             width: 200,
             margin: EdgeInsets.only(right: 10),
             padding: EdgeInsets.all(5),
-            decoration: BoxDecoration(
-              // color: _selectedIndex == index ? kLightGreen : Colors.transparent,
-              border: Border.all(
-                color: kLightGreen,
-                width: 1.5,
-              ),
-              borderRadius: BorderRadius.all(
-                Radius.circular(6),
-              ),
-            ),
+            // decoration: BoxDecoration(
+            //   // color: _selectedIndex == index ? kLightGreen : Colors.transparent,
+            //   border: Border.all(
+            //     color: kLightGreen,
+            //     width: 1.5,
+            //   ),
+            //   borderRadius: BorderRadius.all(
+            //     Radius.circular(6),
+            //   ),
+            // ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -168,9 +168,9 @@ class _HomeParentState extends State<HomeParent> {
           type: BottomNavigationBarType.fixed,
           selectedFontSize: 0,
           iconSize: 20,
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
-          unselectedItemColor: Colors.black,
+          showSelectedLabels: true,
+          showUnselectedLabels: true,
+          unselectedItemColor: kLightGreen,
           items: <BottomNavigationBarItem>[
             customNavigationBarItem("Wallet", Icons.account_balance_wallet, 0),
             customNavigationBarItem("Home", Icons.home, 1),
@@ -178,7 +178,7 @@ class _HomeParentState extends State<HomeParent> {
             customCartButtom("Cart", Icons.shopping_cart, 3),
           ],
           currentIndex: _selectedIndex,
-          selectedItemColor: Colors.amber[800],
+          selectedItemColor: kLightGreen,
           onTap: _onItemTapped,
         ),
       ),
