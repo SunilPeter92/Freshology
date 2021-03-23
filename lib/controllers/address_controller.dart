@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'dart:js';
-
 import 'package:flutter/material.dart';
 import 'package:freshology/constants/configurations.dart';
 import 'package:freshology/models/Address.dart';

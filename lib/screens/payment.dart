@@ -513,7 +513,7 @@ class _PaymentState extends StateMVC<Payment> {
                               onTap: () {
                                 _con.payment = pay.Payment("wallet");
                                 slotSelectedChecker()
-                                    ? _con.payWithWallet()
+                                    ? _con.payWithWallet(context)
                                     : Fluttertoast.showToast(
                                         msg: "Please select time slot");
                                 //         msg: 'Not enough balance!');

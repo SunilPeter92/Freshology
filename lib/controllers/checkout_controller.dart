@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:js';
 
 import 'package:flutter/material.dart';
 import 'package:freshology/constants/styles.dart';
@@ -206,7 +205,7 @@ class CheckoutController extends ControllerMVC {
     }
   }
 
-  payWithWallet() async {
+  payWithWallet(BuildContext context ) async {
     User _user = currentUser.value;
     loading = true;
     setState(() {});
