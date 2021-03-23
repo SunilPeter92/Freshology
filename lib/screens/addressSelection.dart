@@ -150,7 +150,7 @@ class _AddressSelectionState extends StateMVC<AddressSelection> {
                       //   userEmail: widget.user.userState,
                       // );
 
-                      _con.registerUser();
+                      _con.registerUser(context);
                     }
                     // }
                   },

@@ -226,8 +226,8 @@ class _OtpVerifyState extends StateMVC<OtpVerify> {
                     name: 'Verify',
                     onPressFunc: () {
                       if (widget.routeArgument.id == "0")
-                        _con.verifyRegister(code: _pin.text);
-                      _con.verifyLogin(code: _pin.text);
+                        _con.verifyRegister(context ,code: _pin.text);
+                      _con.verifyLogin(context ,code: _pin.text);
                     },
                   ),
                 ),

@@ -151,7 +151,7 @@ class _ProductDetailsState extends StateMVC<ProductDetails> {
               ),
               GestureDetector(
                 onTap: () {
-                  _con.addToCart(_con.product);
+                  _con.addToCart(context ,_con.product);
                 },
                 child: Container(
                   width: 100,
@@ -309,7 +309,7 @@ class _ProductDetailsState extends StateMVC<ProductDetails> {
                           InkWell(
                             onTap: () {
                               _con.favorite?.id != null?_con.removeFromFavorite(_con.favorite)
-                              : _con.addToFavorite(_con.product);
+                              : _con.addToFavorite(context , _con.product);
                               // _con.product.isFavorite?_con.removeFromFavorite(_)
                             },
                             child: Container(

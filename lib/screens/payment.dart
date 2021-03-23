@@ -604,7 +604,7 @@ class _PaymentState extends StateMVC<Payment> {
                               onTap: () {
                                 _con.payment = pay.Payment("cash");
                                 slotSelectedChecker()
-                                    ? _con.addOrder(_con.carts)
+                                    ? _con.addOrder(context , _con.carts)
                                     : Fluttertoast.showToast(
                                         msg: "Please select time slot");
 

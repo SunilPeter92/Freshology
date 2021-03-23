@@ -40,7 +40,7 @@ class UserController extends ControllerMVC {
     });
   }
 
-  void loginUser() async {
+  void loginUser(BuildContext context) async {
     print("USER: ${user.toMap()}");
     repo.login(user.phone).then((value) {
       if (value != null && value.apiToken != null) {
@@ -85,7 +85,7 @@ class UserController extends ControllerMVC {
   //   }
   // }
 
-  verifyLogin({
+  verifyLogin(BuildContext context ,{
     String code,
   }) async {
     var res = await repo.verifyLoginOTP(code, user.phone, user.id);
@@ -96,7 +96,7 @@ class UserController extends ControllerMVC {
     }
   }
 
-  verifyRegister({String code}) async {
+  verifyRegister(BuildContext context ,{String code}) async {
     var res = await repo.verifyRegisterOTP(code, user.phone, user.id);
     if (res == "success") {
       Navigator.pushNamed(context, 'home');
@@ -241,7 +241,7 @@ class UserController extends ControllerMVC {
     }
   }
 
-  void registerUser() async {
+  void registerUser( context ) async {
     print("USER: ${user.toMap()}");
     repo.register(user).then((value) {
       if (value != null && value.apiToken != null) {

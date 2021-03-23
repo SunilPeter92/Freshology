@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:js';
 
 import 'package:flutter/material.dart';
 import 'package:freshology/constants/styles.dart';
@@ -60,7 +61,7 @@ class CheckoutController extends ControllerMVC {
       }, onDone: () {
         // calculateSubtotal();
         if (withAddOrder != null && withAddOrder == true) {
-          addOrder(carts);
+          addOrder(BuildContext ,carts);
         }
         if (withAddOrder == false) {
           setState(() {
@@ -77,7 +78,7 @@ class CheckoutController extends ControllerMVC {
     }
   }
 
-  void addOrder(List<Cart> carts) async {
+  void addOrder(context  ,List<Cart> carts) async {
     loading = true;
     setState(() {});
     Order _order = new Order();
@@ -215,7 +216,7 @@ class CheckoutController extends ControllerMVC {
           type: "suubtract");
       if (_req == true) {
         // getWalletAmount();
-        addOrder(carts);
+        addOrder(context ,carts);
       } else {
         scaffoldKey.currentState?.showSnackBar(SnackBar(
           content: Text("Something went wrong"),

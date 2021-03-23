@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:js';
 
 import 'package:flutter/material.dart';
 import 'package:freshology/constants/configurations.dart';
@@ -62,7 +63,7 @@ class AddressController extends ControllerMVC {
     listenForAddresses(message: "Address refreshed successfully");
   }
 
-  void addAddress(Address address) {
+  void addAddress(context  , Address address) {
     setState(() {
       isLoading = true;
     });
@@ -91,7 +92,7 @@ class AddressController extends ControllerMVC {
   //   print("ADDRESS: ${userRepo.deliveryAddress.address}");
   // }
 
-  void updateAddress() {
+  void updateAddress(BuildContext context ,) {
 //    if (address.isDefault) {
 //      this.addresses.map((model.Address _address) {
 //        setState(() {
@@ -324,7 +325,7 @@ class AddressController extends ControllerMVC {
       ));
     } else {
       address.userId = currentUser.value.id.toString();
-      addAddress(this.address);
+      addAddress(BuildContext ,this.address);
     }
   }
 

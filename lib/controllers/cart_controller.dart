@@ -82,7 +82,7 @@ class CartController extends ControllerMVC {
     });
   }
 
-  void addToFavorite(Product food) async {
+  void addToFavorite(BuildContext context  , Product food) async {
     if (currentUser.value.apiToken == null) {
       showNoUserModal(context);
       // scaffoldKey.currentState.showSnackBar(SnackBar(
@@ -178,7 +178,7 @@ class CartController extends ControllerMVC {
     listenForCarts();
   }
 
-  void addToCart(Product product, {bool reset = false}) async {
+  void addToCart(BuildContext context , Product product, {bool reset = false}) async {
     if (currentUser.value == null || currentUser.value.apiToken == null) {
       showNoUserModal(context);
       // scaffoldKey.currentState.showSnackBar(SnackBar(
