@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:freshology/helpers/helper.dart';
 import 'package:freshology/models/route.dart';
 import 'package:freshology/screens/SABT.dart';
@@ -52,16 +53,107 @@ import 'package:store_redirect/store_redirect.dart';
 
 import 'cart.dart';
 
-class Home extends StatefulWidget {
+class TestHome extends StatefulWidget {
   @override
-  _HomeState createState() => _HomeState();
+  _TestHomeState createState() => _TestHomeState();
 }
 
-class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
+class _TestHomeState extends StateMVC<TestHome> with TickerProviderStateMixin {
   HomeController _con;
 
-  _HomeState() : super(HomeController()) {
+  _TestHomeState() : super(HomeController()) {
     _con = controller;
+  }
+
+  SliverAppBar createSilverAppBar1() {
+    return SliverAppBar(
+
+      iconTheme: IconThemeData(color: Colors.black),
+
+      // leading: Container(),
+      title: Container(
+        child: SABT(
+          child: Image(
+            image: AssetImage(
+              'assets/logo_text.png',
+            ),
+            width: 200,
+            height: 50,
+          ),
+        ),
+      ),
+      actions: [
+        Container(
+          child: GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(context, 'favorites');
+            },
+            child: Icon(
+              FontAwesomeIcons.heart,
+              size: 30,
+              color: Colors.black,
+            ),
+          ),
+        ),
+        SizedBox(width: 15)
+      ],
+     // backgroundColor: Colors.redAccent,
+      expandedHeight: 100,
+      floating: true,
+      elevation: 0,
+      pinned: true,
+      excludeHeaderSemantics: true,
+
+      flexibleSpace: FlexibleSpaceBar(
+
+        title: Container(
+
+          margin: EdgeInsets.symmetric(horizontal: 10),
+          height: 25,
+          width: 200,
+          alignment: Alignment.topLeft,
+          decoration: BoxDecoration(
+            boxShadow: <BoxShadow>[
+              BoxShadow(
+                  color: Colors.grey.withOpacity(0.6),
+                  offset: const Offset(1.1, 1.1),
+                  blurRadius: 5.0),
+            ],
+          ),
+          child: CupertinoTextField(
+            // controller: _filter,
+            keyboardType: TextInputType.text,
+            placeholder: 'Search',
+            placeholderStyle: TextStyle(
+              color: Color(0xffC4C6CC),
+              fontSize: 14.0,
+              fontFamily: 'Brutal',
+            ),
+            prefix: Padding(
+              padding: const EdgeInsets.fromLTRB(5.0, 5.0, 0.0, 5.0),
+              child: Icon(
+                Icons.search,
+                size: 18,
+                color: Colors.black,
+              ),
+            ),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8.0),
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  SliverAppBar createSilverAppBar2() {
+    return SliverAppBar(
+      backgroundColor: Colors.redAccent,
+      pinned: true,
+        automaticallyImplyLeading : false ,
+
+    );
   }
 
   List<Container> carMockList = [
@@ -190,39 +282,39 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
 
   Future<bool> _onBackPressed() {
     return showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              backgroundColor: Colors.white,
-              title: Text(
-                'Are you sure?',
-                style: TextStyle(
-                  color: Colors.black87,
-                ),
-              ),
-              content: Text(
-                'Do you want to exit the app',
-                style: TextStyle(
-                  color: Colors.black87,
-                ),
-              ),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text('NO'),
-                  onPressed: () {
-                    Navigator.of(context).pop(false);
-                  },
-                ),
-                FlatButton(
-                  child: Text('YES'),
-                  onPressed: () {
-                    SystemChannels.platform.invokeMethod('SystemNavigator.pop');
-                  },
-                )
-              ],
-            );
-          },
-        ) ??
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          title: Text(
+            'Are you sure?',
+            style: TextStyle(
+              color: Colors.black87,
+            ),
+          ),
+          content: Text(
+            'Do you want to exit the app',
+            style: TextStyle(
+              color: Colors.black87,
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('NO'),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            FlatButton(
+              child: Text('YES'),
+              onPressed: () {
+                SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+              },
+            )
+          ],
+        );
+      },
+    ) ??
         false;
   }
 
@@ -264,10 +356,10 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
   int _selectedIndex = 1;
   int _prevIndex = 0;
   static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+  TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static List<Widget> _widgetOptions = <Widget>[
     Wallet(),
-    Home(),
+    TestHome(),
     Orders(),
     Cart()
   ];
@@ -343,7 +435,7 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                   style: TextStyle(
                     fontSize: 11,
                     color:
-                        _selectedIndex == index ?  kLightGreen  : Colors.black,
+                    _selectedIndex == index ?  kLightGreen  : Colors.black,
                   ),
                 )
               ],
@@ -442,7 +534,7 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
             print("SUB CATEGORY ID: ${id}");
             _con.total = await Get.to(() => Products(
                 routeArgument:
-                    RouteArgument(param: category, id: id.toString())));
+                RouteArgument(param: category, id: id.toString())));
             setState(() {});
           },
         ));
@@ -532,80 +624,80 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                     ),
                     user.id != null
                         ? ListTile(
-                            leading: Icon(
-                              FontAwesomeIcons.userCircle,
-                              color: Colors.black,
-                            ),
-                            title: Text(
-                              'My Account',
-                            ),
-                            onTap: () {
-                              Navigator.pushNamed(context, 'account');
-                            },
-                          )
+                      leading: Icon(
+                        FontAwesomeIcons.userCircle,
+                        color: Colors.black,
+                      ),
+                      title: Text(
+                        'My Account',
+                      ),
+                      onTap: () {
+                        Navigator.pushNamed(context, 'account');
+                      },
+                    )
                         : Container(),
                     user.id != null
                         ? ListTile(
-                            leading: Icon(
-                              FontAwesomeIcons.addressBook,
-                              color: Colors.black,
-                            ),
-                            title: Text(
-                              'Addresses',
-                            ),
-                            onTap: () {
-                              Navigator.pushNamed(context, 'addresses');
-                            },
-                          )
+                      leading: Icon(
+                        FontAwesomeIcons.addressBook,
+                        color: Colors.black,
+                      ),
+                      title: Text(
+                        'Addresses',
+                      ),
+                      onTap: () {
+                        Navigator.pushNamed(context, 'addresses');
+                      },
+                    )
                         : Container(),
                     user.id != null
                         ? ListTile(
-                            leading: Icon(
-                              FontAwesomeIcons.wallet,
-                              color: Colors.black,
-                            ),
-                            title: Text('Freshology Cash'),
-                            trailing: Text("₹ "),
-                            onTap: () {
-                              Navigator.pushNamed(context, 'wallet');
-                            },
-                          )
+                      leading: Icon(
+                        FontAwesomeIcons.wallet,
+                        color: Colors.black,
+                      ),
+                      title: Text('Freshology Cash'),
+                      trailing: Text("₹ "),
+                      onTap: () {
+                        Navigator.pushNamed(context, 'wallet');
+                      },
+                    )
                         : Container(),
                     user.id != null
                         ? ListTile(
-                            leading: Icon(
-                              FontAwesomeIcons.shoppingBasket,
-                              color: Colors.black,
-                            ),
-                            title: Text('My Orders'),
-                            onTap: () {
-                              Navigator.pushNamed(context, 'orders');
-                            },
-                          )
+                      leading: Icon(
+                        FontAwesomeIcons.shoppingBasket,
+                        color: Colors.black,
+                      ),
+                      title: Text('My Orders'),
+                      onTap: () {
+                        Navigator.pushNamed(context, 'orders');
+                      },
+                    )
                         : Container(),
                     user.id != null
                         ? ListTile(
-                            leading: Icon(
-                              FontAwesomeIcons.heart,
-                              color: Colors.black,
-                            ),
-                            title: Text('Favorites'),
-                            onTap: () {
-                              Navigator.pushNamed(context, 'favorites');
-                            },
-                          )
+                      leading: Icon(
+                        FontAwesomeIcons.heart,
+                        color: Colors.black,
+                      ),
+                      title: Text('Favorites'),
+                      onTap: () {
+                        Navigator.pushNamed(context, 'favorites');
+                      },
+                    )
                         : Container(),
                     user.id != null
                         ? ListTile(
-                            leading: Icon(
-                              FontAwesomeIcons.moneyBillAlt,
-                              color: Colors.black,
-                            ),
-                            title: Text('New Offers'),
-                            onTap: () {
-                              Navigator.pushNamed(context, 'orders');
-                            },
-                          )
+                      leading: Icon(
+                        FontAwesomeIcons.moneyBillAlt,
+                        color: Colors.black,
+                      ),
+                      title: Text('New Offers'),
+                      onTap: () {
+                        Navigator.pushNamed(context, 'orders');
+                      },
+                    )
                         : Container(),
                     // user.id != null
                     //     ? ListTile(
@@ -647,15 +739,15 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                     ),
                     user.id != null
                         ? ListTile(
-                            leading: Icon(
-                              FontAwesomeIcons.shareSquare,
-                              color: Colors.black,
-                            ),
-                            title: Text('Refer and earn'),
-                            onTap: () {
-                              Navigator.pushNamed(context, 'address');
-                            },
-                          )
+                      leading: Icon(
+                        FontAwesomeIcons.shareSquare,
+                        color: Colors.black,
+                      ),
+                      title: Text('Refer and earn'),
+                      onTap: () {
+                        Navigator.pushNamed(context, 'address');
+                      },
+                    )
                         : Container(),
                     ListTile(
                       leading: Icon(
@@ -714,27 +806,27 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                     ),
                     user.id != null
                         ? ListTile(
-                            leading: Icon(
-                              FontAwesomeIcons.signOutAlt,
-                              color: Colors.black,
-                            ),
-                            title: Text('Logout'),
-                            onTap: () {
-                              // _auth.signOut();
-                              logout();
-                              Navigator.pushNamed(context, 'login');
-                            },
-                          )
+                      leading: Icon(
+                        FontAwesomeIcons.signOutAlt,
+                        color: Colors.black,
+                      ),
+                      title: Text('Logout'),
+                      onTap: () {
+                        // _auth.signOut();
+                        logout();
+                        Navigator.pushNamed(context, 'login');
+                      },
+                    )
                         : ListTile(
-                            leading: Icon(
-                              FontAwesomeIcons.signInAlt,
-                              color: Colors.black,
-                            ),
-                            title: Text('Login/Register'),
-                            onTap: () {
-                              Navigator.pushNamed(context, 'start');
-                            },
-                          ),
+                      leading: Icon(
+                        FontAwesomeIcons.signInAlt,
+                        color: Colors.black,
+                      ),
+                      title: Text('Login/Register'),
+                      onTap: () {
+                        Navigator.pushNamed(context, 'start');
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -758,294 +850,139 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                 customCartButtom("Cart", Icons.shopping_cart, 3, cartProvider),
               ],
               currentIndex: _selectedIndex,
-             // selectedItemColor: Colors.amber[800],
+              // selectedItemColor: Colors.amber[800],
               onTap: _onItemTapped,
             ),
           ),
           body: _selectedIndex == 1
-              ? NestedScrollView(
-                  controller: _scrollController,
-                  headerSliverBuilder:
-                      (BuildContext context, bool innerBoxIsScrolled) {
-                    return <Widget>[
-                      SliverAppBar(
-                        iconTheme: IconThemeData(color: Colors.black),
-                        // leading: Container(),
-                        title: SABT(
-                          child: Container(
-                            child:
-                            Image(
-                              image: AssetImage(
-                                'assets/logo_text.png',
-                              ),
-                              width: 200,
-                              height: 50,
-                            ),
-                          ),
+              ?NestedScrollView(
+              headerSliverBuilder: (BuildContext context, bool innerBoxScrolled) {
+                return <Widget>[
+                  createSilverAppBar1(),
+                //  createSilverAppBar2()
+                ];
+              },
+              body: SingleChildScrollView(
+                  child: StickyHeader(
+                    header: Container(
+                      margin: EdgeInsets.only(top: 2),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(50),
                         ),
-                        actions: [
-                          Container(
-                            child: GestureDetector(
-                              onTap: () {
-                                Navigator.pushNamed(context, 'favorites');
-                              },
-                              child: Icon(
-                                FontAwesomeIcons.heart,
-                                size: 30,
-                                color: Colors.black,
-                              ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 3,
+                            blurRadius: 3,
+                            offset:
+                            Offset(01, 01), // changes position of shadow
+                          ),
+                        ],
+                      ),
+                      child: InkWell(
+                        onTap:(){
+                          Navigator.pushNamed(context, 'search');
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(50),
                             ),
                           ),
-                          SizedBox(width: 15)
-                        ],
-                        backgroundColor: Colors.white,
-                        expandedHeight: 130,
-                        pinned: true,
-                        floating: true,
-                        forceElevated: innerBoxIsScrolled,
-                        centerTitle: true,
-                        flexibleSpace: FlexibleSpaceBar(
-                          titlePadding: EdgeInsetsDirectional.only(
-                            start: 0.0,
-                            bottom: 10,
-                            end: 0.0,
-                          ),
-
-                          title: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                          padding: EdgeInsets.all(15),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Container(
-                                height: 40,
-                                width: MediaQuery.of(context).size.width/1.6,
-                                padding: EdgeInsets.symmetric(horizontal: 5),
-                                alignment: Alignment.center,
-                                margin: EdgeInsets.only(top: 2),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(10),
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.3),
-                                      spreadRadius: 3,
-                                      blurRadius: 3,
-                                      offset:
-                                      Offset(01, 01), // changes position of shadow
-                                    ),
-                                  ],
+                                child: Text(
+                                  "Search",
+                                  style:TextStyle(color:Colors.grey[800]),
                                 ),
-                                child: InkWell(
-                                  onTap:(){
-                                    Navigator.pushNamed(context, 'search');
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(50),
-                                      ),
-                                    ),
-                                    padding: EdgeInsets.all(10),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Container(
-                                          child: Text(
-                                            "Search",
-                                            style:TextStyle(color:Colors.grey[800], fontSize: 10),
-                                          ),
-                                        ),
-                                        Container(
-                                          child: Icon(
-                                            Icons.search,
-                                            color: Colors.grey,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
+                              ),
+                              Container(
+                                child: Icon(
+                                  Icons.search,
+                                  color: Colors.grey,
                                 ),
-                                // child: AutoCompleteTextField<String>(
-                                //
-                                //   itemSubmitted: (value) {
-                                //     print(value);
-                                //     // searchRef.searchItemName = value;
-                                //     // Provider.of<ProductProvider>(context, listen: false)
-                                //     //     .getSearchProduct(context);
-                                //     Navigator.pushNamed(context,'search');
-                                //     FocusScope.of(context).unfocus();
-                                //   },
-                                //   key: null,
-                                //   decoration: InputDecoration(
-                                //     suffixIcon: Icon(
-                                //       Icons.search,
-                                //       color: Colors.grey,
-                                //     ),
-                                //     focusedBorder: OutlineInputBorder(
-                                //       borderRadius: BorderRadius.all(
-                                //         Radius.circular(50),
-                                //       ),
-                                //       borderSide:
-                                //       BorderSide(color: Colors.transparent, width: 1.5),
-                                //     ),
-                                //     enabledBorder: OutlineInputBorder(
-                                //       borderRadius: BorderRadius.all(
-                                //         Radius.circular(50),
-                                //       ),
-                                //       borderSide:
-                                //       BorderSide(color: Colors.transparent, width: 1.5),
-                                //     ),
-                                //     border: InputBorder.none,
-                                //     contentPadding: EdgeInsets.symmetric(horizontal: 15),
-                                //     hintText: "Search",
-                                //   ),
-                                //   // suggestions: names,
-                                //   itemBuilder: (context, item) {
-                                //     return ListTile(
-                                //       leading: Icon(
-                                //         Icons.search,
-                                //         color: kLightGreen,
-                                //       ),
-                                //       title: Text(
-                                //         item,
-                                //       ),
-                                //     );
-                                //   },
-                                //   itemSorter: (a, b) {
-                                //     return a.compareTo(b);
-                                //   },
-                                //   itemFilter: (name, query) {
-                                //     return name.toLowerCase().contains(query.toLowerCase());
-                                //   },
-                                // ),
                               ),
                             ],
                           ),
                         ),
                       ),
-                    ];
-                  },
-                  body: SingleChildScrollView(
-                      // child: StickyHeader(
-                    // header: Container(
-                    //   margin: EdgeInsets.only(top: 2),
-                    //   decoration: BoxDecoration(
-                    //     color: Colors.white,
-                    //     borderRadius: BorderRadius.all(
-                    //       Radius.circular(50),
-                    //     ),
-                    //     boxShadow: [
-                    //       BoxShadow(
-                    //         color: Colors.grey.withOpacity(0.5),
-                    //         spreadRadius: 3,
-                    //         blurRadius: 3,
-                    //         offset:
-                    //             Offset(01, 01), // changes position of shadow
-                    //       ),
-                    //     ],
-                    //   ),
-                    //   child: InkWell(
-                    //     onTap:(){
-                    //       Navigator.pushNamed(context, 'search');
-                    //     },
-                    //     child: Container(
-                    //       decoration: BoxDecoration(
-                    //         borderRadius: BorderRadius.all(
-                    //           Radius.circular(50),
-                    //         ),
-                    //       ),
-                    //       padding: EdgeInsets.all(15),
-                    //       child: Row(
-                    //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //         children: [
-                    //           Container(
-                    //             child: Text(
-                    //               "Search",
-                    //               style:TextStyle(color:Colors.grey[800]),
-                    //             ),
-                    //           ),
-                    //           Container(
-                    //             child: Icon(
-                    //               Icons.search,
-                    //               color: Colors.grey,
-                    //             ),
-                    //           ),
-                    //         ],
-                    //       ),
-                    //     ),
-                    //   ),
-                    //   // child: AutoCompleteTextField<String>(
-                    //   //
-                    //   //   itemSubmitted: (value) {
-                    //   //     print(value);
-                    //   //     // searchRef.searchItemName = value;
-                    //   //     // Provider.of<ProductProvider>(context, listen: false)
-                    //   //     //     .getSearchProduct(context);
-                    //   //     Navigator.pushNamed(context,'search');
-                    //   //     FocusScope.of(context).unfocus();
-                    //   //   },
-                    //   //   key: null,
-                    //   //   decoration: InputDecoration(
-                    //   //     suffixIcon: Icon(
-                    //   //       Icons.search,
-                    //   //       color: Colors.grey,
-                    //   //     ),
-                    //   //     focusedBorder: OutlineInputBorder(
-                    //   //       borderRadius: BorderRadius.all(
-                    //   //         Radius.circular(50),
-                    //   //       ),
-                    //   //       borderSide:
-                    //   //       BorderSide(color: Colors.transparent, width: 1.5),
-                    //   //     ),
-                    //   //     enabledBorder: OutlineInputBorder(
-                    //   //       borderRadius: BorderRadius.all(
-                    //   //         Radius.circular(50),
-                    //   //       ),
-                    //   //       borderSide:
-                    //   //       BorderSide(color: Colors.transparent, width: 1.5),
-                    //   //     ),
-                    //   //     border: InputBorder.none,
-                    //   //     contentPadding: EdgeInsets.symmetric(horizontal: 15),
-                    //   //     hintText: "Search",
-                    //   //   ),
-                    //   //   // suggestions: names,
-                    //   //   itemBuilder: (context, item) {
-                    //   //     return ListTile(
-                    //   //       leading: Icon(
-                    //   //         Icons.search,
-                    //   //         color: kLightGreen,
-                    //   //       ),
-                    //   //       title: Text(
-                    //   //         item,
-                    //   //       ),
-                    //   //     );
-                    //   //   },
-                    //   //   itemSorter: (a, b) {
-                    //   //     return a.compareTo(b);
-                    //   //   },
-                    //   //   itemFilter: (name, query) {
-                    //   //     return name.toLowerCase().contains(query.toLowerCase());
-                    //   //   },
-                    //   // ),
-                    // ),
-
+                      // child: AutoCompleteTextField<String>(
+                      //
+                      //   itemSubmitted: (value) {
+                      //     print(value);
+                      //     // searchRef.searchItemName = value;
+                      //     // Provider.of<ProductProvider>(context, listen: false)
+                      //     //     .getSearchProduct(context);
+                      //     Navigator.pushNamed(context,'search');
+                      //     FocusScope.of(context).unfocus();
+                      //   },
+                      //   key: null,
+                      //   decoration: InputDecoration(
+                      //     suffixIcon: Icon(
+                      //       Icons.search,
+                      //       color: Colors.grey,
+                      //     ),
+                      //     focusedBorder: OutlineInputBorder(
+                      //       borderRadius: BorderRadius.all(
+                      //         Radius.circular(50),
+                      //       ),
+                      //       borderSide:
+                      //       BorderSide(color: Colors.transparent, width: 1.5),
+                      //     ),
+                      //     enabledBorder: OutlineInputBorder(
+                      //       borderRadius: BorderRadius.all(
+                      //         Radius.circular(50),
+                      //       ),
+                      //       borderSide:
+                      //       BorderSide(color: Colors.transparent, width: 1.5),
+                      //     ),
+                      //     border: InputBorder.none,
+                      //     contentPadding: EdgeInsets.symmetric(horizontal: 15),
+                      //     hintText: "Search",
+                      //   ),
+                      //   // suggestions: names,
+                      //   itemBuilder: (context, item) {
+                      //     return ListTile(
+                      //       leading: Icon(
+                      //         Icons.search,
+                      //         color: kLightGreen,
+                      //       ),
+                      //       title: Text(
+                      //         item,
+                      //       ),
+                      //     );
+                      //   },
+                      //   itemSorter: (a, b) {
+                      //     return a.compareTo(b);
+                      //   },
+                      //   itemFilter: (name, query) {
+                      //     return name.toLowerCase().contains(query.toLowerCase());
+                      //   },
+                      // ),
+                    ),
+                    content: Center(
                       child: Column(
                         children: <Widget>[
                           (_con.slides1.length < 1 && !_con.showSlider)
                               ? Container()
                               : BannerScrollable(
-                                  slidesList: _con.slides1,
-                                  length: _con.slides1.length,
-                                  onPressed: (i) async {
-                                    _con.total = await Get.to(
-                                      ProductDetails(
-                                        routeArgument: RouteArgument(
-                                          id: i.foodId.toString(),
-                                        ),
-                                      ),
-                                    );
-                                  },
+                            slidesList: _con.slides1,
+                            length: _con.slides1.length,
+                            onPressed: (i) async {
+                              _con.total = await Get.to(
+                                ProductDetails(
+                                  routeArgument: RouteArgument(
+                                    id: i.foodId.toString(),
+                                  ),
                                 ),
+                              );
+                            },
+                          ),
                           // SizedBox(height: 20),
                           // (offersProvider.offers.length > 0)
                           //     ? ImageSlider(
@@ -1143,27 +1080,27 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                           _isOrders
                               ? Container()
                               : Container(
-                                  width: size.width,
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color: kDarkGreen,
-                                      width: 2,
-                                    ),
-                                  ),
-                                //  padding: EdgeInsets.all(5),
-                                  margin: EdgeInsets.only(bottom: 5),
-                                  child: Text(
-                                    msg ?? '',
-                                    style: GoogleFonts.notoSans(
-                                      textStyle: kCartGrandTotalTextStyle,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
+                            width: size.width,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: kDarkGreen,
+                                width: 2,
+                              ),
+                            ),
+                            //  padding: EdgeInsets.all(5),
+                            margin: EdgeInsets.only(bottom: 5),
+                            child: Text(
+                              msg ?? '',
+                              style: GoogleFonts.notoSans(
+                                textStyle: kCartGrandTotalTextStyle,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
 
                           _con.showAnnouncement
                               ? AnnouncementWidget(
-                                  announcement: _con.announcement)
+                              announcement: _con.announcement)
                               : Container(),
                           SizedBox(height: 0),
                           Container(
@@ -1180,7 +1117,7 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                                 Container(
                                   child: Column(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    CrossAxisAlignment.start,
                                     children: [
                                       Container(
                                         child: Text(
@@ -1213,64 +1150,64 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                             margin: EdgeInsets.only(left: 5),
                             child: _con.trendingProducts.length < 1
                                 ? Center(
-                                    child: CircularProgressIndicator(),
-                                  )
+                              child: CircularProgressIndicator(),
+                            )
                                 : Column(
-                                    children: [
-                                      Container(
-                                        child: Row(
-                                          children: [],
-                                        ),
-                                      ),
-                                      Container(
-                                        height: 285,
-                                        child: GridView.builder(
-                                          gridDelegate:
-                                              SliverGridDelegateWithFixedCrossAxisCount(
-                                            childAspectRatio: 3.55 / 1.78,
-                                            crossAxisCount: 1,
-                                          ),
-                                          itemCount:
-                                              _con.trendingProducts.length,
-                                          scrollDirection: Axis.horizontal,
-                                          itemBuilder: (context, index) {
-                                            return Container(
-                                              margin: EdgeInsets.symmetric(
-                                                  horizontal: 5),
-                                              child: TrendingProductsWidget(
-                                                product: _con
-                                                    .trendingProducts[index],
-                                                buttonPressed: () async {
-                                                  _con.total = await Get.to(
-                                                    ProductDetails(
-                                                      routeArgument:
-                                                          RouteArgument(
-                                                        id: _con
-                                                            .trendingProducts[
-                                                                index]
-                                                            .id
-                                                            .toString(),
-                                                      ),
-                                                    ),
-                                                  );
-                                                },
+                              children: [
+                                Container(
+                                  child: Row(
+                                    children: [],
+                                  ),
+                                ),
+                                Container(
+                                  height: 285,
+                                  child: GridView.builder(
+                                    gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                      childAspectRatio: 3.55 / 1.78,
+                                      crossAxisCount: 1,
+                                    ),
+                                    itemCount:
+                                    _con.trendingProducts.length,
+                                    scrollDirection: Axis.horizontal,
+                                    itemBuilder: (context, index) {
+                                      return Container(
+                                        margin: EdgeInsets.symmetric(
+                                            horizontal: 5),
+                                        child: TrendingProductsWidget(
+                                          product: _con
+                                              .trendingProducts[index],
+                                          buttonPressed: () async {
+                                            _con.total = await Get.to(
+                                              ProductDetails(
+                                                routeArgument:
+                                                RouteArgument(
+                                                  id: _con
+                                                      .trendingProducts[
+                                                  index]
+                                                      .id
+                                                      .toString(),
+                                                ),
                                               ),
                                             );
                                           },
                                         ),
-                                      ),
-                                    ],
+                                      );
+                                    },
                                   ),
+                                ),
+                              ],
+                            ),
                           ),
 
                           SizedBox(height: 5),
                           offerImageUrl != null
                               ? Container(
-                                  width: size.width,
-                                  child: Image(
-                                    image: NetworkImage(offerImageUrl),
-                                  ),
-                                )
+                            width: size.width,
+                            child: Image(
+                              image: NetworkImage(offerImageUrl),
+                            ),
+                          )
                               : Container(),
                           SizedBox(height: 5),
 
@@ -1280,18 +1217,18 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                           (_con.slides2.length < 1 && !_con.showSlider)
                               ? Container()
                               : BannerScrollable(
-                                  slidesList: _con.slides2,
-                                  length: _con.slides2.length,
-                                  onPressed: (i) async {
-                                    _con.total = await Get.to(
-                                      ProductDetails(
-                                        routeArgument: RouteArgument(
-                                          id: i.foodId.toString(),
-                                        ),
-                                      ),
-                                    );
-                                  },
+                            slidesList: _con.slides2,
+                            length: _con.slides2.length,
+                            onPressed: (i) async {
+                              _con.total = await Get.to(
+                                ProductDetails(
+                                  routeArgument: RouteArgument(
+                                    id: i.foodId.toString(),
+                                  ),
                                 ),
+                              );
+                            },
+                          ),
                           SizedBox(height: 5),
                           Container(
                             child: Row(
@@ -1307,7 +1244,7 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                                 Container(
                                   child: Column(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    CrossAxisAlignment.start,
                                     children: [
                                       Container(
                                         child: Text(
@@ -1340,63 +1277,63 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                             margin: EdgeInsets.only(left: 5),
                             child: _con.trendingProducts.length < 1
                                 ? Center(
-                                    child: CircularProgressIndicator(),
-                                  )
+                              child: CircularProgressIndicator(),
+                            )
                                 : Column(
-                                    children: [
-                                      Container(
-                                        child: Row(
-                                          children: [],
-                                        ),
-                                      ),
-                                      Container(
-                                        height: 285,
-                                        child: GridView.builder(
-                                          gridDelegate:
-                                              SliverGridDelegateWithFixedCrossAxisCount(
-                                            childAspectRatio: 3.55 / 1.78,
-                                            crossAxisCount: 1,
-                                          ),
-                                          itemCount:
-                                              _con.trendingProducts.length,
-                                          scrollDirection: Axis.horizontal,
-                                          itemBuilder: (context, index) {
-                                            return Container(
-                                              margin: EdgeInsets.symmetric(
-                                                  horizontal: 5),
-                                              child: TrendingProductsWidget(
-                                                product: _con
-                                                    .trendingProducts[index],
-                                                buttonPressed: () async {
-                                                  _con.total = await Get.to(
-                                                    ProductDetails(
-                                                      routeArgument:
-                                                          RouteArgument(
-                                                        id: _con
-                                                            .trendingProducts[
-                                                                index]
-                                                            .id
-                                                            .toString(),
-                                                      ),
-                                                    ),
-                                                  );
-                                                },
+                              children: [
+                                Container(
+                                  child: Row(
+                                    children: [],
+                                  ),
+                                ),
+                                Container(
+                                  height: 285,
+                                  child: GridView.builder(
+                                    gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                      childAspectRatio: 3.55 / 1.78,
+                                      crossAxisCount: 1,
+                                    ),
+                                    itemCount:
+                                    _con.trendingProducts.length,
+                                    scrollDirection: Axis.horizontal,
+                                    itemBuilder: (context, index) {
+                                      return Container(
+                                        margin: EdgeInsets.symmetric(
+                                            horizontal: 5),
+                                        child: TrendingProductsWidget(
+                                          product: _con
+                                              .trendingProducts[index],
+                                          buttonPressed: () async {
+                                            _con.total = await Get.to(
+                                              ProductDetails(
+                                                routeArgument:
+                                                RouteArgument(
+                                                  id: _con
+                                                      .trendingProducts[
+                                                  index]
+                                                      .id
+                                                      .toString(),
+                                                ),
                                               ),
                                             );
                                           },
                                         ),
-                                      ),
-                                    ],
+                                      );
+                                    },
                                   ),
+                                ),
+                              ],
+                            ),
                           ),
                           SizedBox(height: 10),
                           offerImageUrl != null
                               ? Container(
-                                  width: size.width,
-                                  child: Image(
-                                    image: NetworkImage(offerImageUrl),
-                                  ),
-                                )
+                            width: size.width,
+                            child: Image(
+                              image: NetworkImage(offerImageUrl),
+                            ),
+                          )
                               : Container(),
 
                           HorizontalBannerWidget(
@@ -1405,10 +1342,8 @@ class _HomeState extends StateMVC<Home> with TickerProviderStateMixin {
                           SizedBox(height: 10),
                         ],
                       ),
-
-                  )
-                  )
-         // )
+                    ),
+                  )))
               : _widgetOptions.elementAt(_selectedIndex),
 
           //  _selectedIndex == 1

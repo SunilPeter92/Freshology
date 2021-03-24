@@ -15,6 +15,7 @@ import 'package:freshology/screens/home.dart';
 import 'package:freshology/screens/myAdresses.dart';
 import 'package:freshology/screens/productDetails.dart';
 import 'package:freshology/screens/start.dart';
+import 'package:freshology/screens/testhome.dart';
 import 'package:freshology/widget/bottom_bar.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -114,7 +115,9 @@ class _MyAppState extends State<MyApp> {
             Theme.of(context).textTheme,
           ),
         ),
-        home: AnimatedSplashScreen(),
+        home: Home(),
+        //TestHome(),
+        //AnimatedSplashScreen(),
         // home: Register(),
         initialRoute: 'splash',
         onGenerateRoute: RouteGenerator.generateRoute,

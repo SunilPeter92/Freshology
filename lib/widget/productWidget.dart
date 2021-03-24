@@ -151,7 +151,7 @@ class _ProductWidgetState extends State<ProductWidget> {
               //           ),
             ],
           ),
-          SizedBox(height: 20),
+          SizedBox(height: 10),
           Container(
             height: 45,
             padding: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
